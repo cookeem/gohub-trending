@@ -7,27 +7,22 @@ import (
 
 type User struct {
 	gorm.Model
-	Uid        int
-	Username   string
-	Password   string
-	Createtime int
+	Username string
+	Password string
 }
 
 type Review struct {
 	gorm.Model
-	Rid        int
-	Nid        int
-	Uid        int
-	Content    string
-	Createtime int
+	Nid     int
+	Uid     int
+	Content string
 }
 
 type News struct {
 	gorm.Model
-	Nid        int
-	Title      string
-	Abstract   string
-	Createtime int
+	Nid      int
+	Title    string
+	Abstract string
 }
 
 const connectStr = "hluser:hlpasswd@/headline?charset=utf8"
@@ -42,4 +37,18 @@ func CreateTables() {
 	db.AutoMigrate(&User{})
 	db.AutoMigrate(&Review{})
 	db.AutoMigrate(&News{})
+
+	// Create
+	db.Create(&User{Username: "cookeem", Password: "haha"})
+
+	// Read
+	var user User
+	db.First(&user, 1)                         // find user with id 1
+	db.First(&user, "username = ?", "cookeem") // find user with username cookeem
+
+	// Update - update user's price to 2000
+	// db.Model(&user).Update("password", "hehe")
+
+	// Delete - delete user
+	// db.Delete(&user)
 }
