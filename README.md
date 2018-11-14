@@ -3,9 +3,9 @@
 > golang toutiao.com headlines demo
 
 ```
-frontend -> backend -> user-svc(create/get/update/login/logout) -> db
+frontend -> backend -> news-svc (sync) -> toutiao.com-> db
                     -> review-svc(create/get/list/delete) -> db
-                    -> news-svc (sync) -> toutiao.com
+                    -> user-svc(create/get/update/login/logout)
                     -> news-svc (get/list) -> db
 ```
 
