@@ -1,28 +1,38 @@
 package sqlcommon
 
 import (
+	"time"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
 type User struct {
-	gorm.Model
-	Username string
-	Password string
+	Uid       int    `gorm:"PRIMARY_KEY;AUTO_INCREMENT;"`
+	Username  string `gorm:"type:varchar(12);unique_index;not null;default:''"`
+	Password  string `gorm:"type:varchar(50);not null;default:''"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt *time.Time
 }
 
 type Review struct {
-	gorm.Model
-	Nid     int
-	Uid     int
-	Content string
+	Rid       int    `gorm:"PRIMARY_KEY;AUTO_INCREMENT;"`
+	Nid       int    `gorm:"not null;default:0"`
+	Uid       int    `gorm:"not null;default:0"`
+	Content   string `gorm:"type:varchar(200);not null;default:''"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt *time.Time
 }
 
 type News struct {
-	gorm.Model
-	Nid      int
-	Title    string
-	Abstract string
+	Nid       int    `gorm:"primary_key;not null;"`
+	Title     string `gorm:"type:varchar(200);not null;default:''"`
+	Abstract  string `gorm:"type:varchar(200);not null;default:''"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+	DeletedAt *time.Time
 }
 
 const connectStr = "hluser:hlpasswd@/headline?charset=utf8"
@@ -34,12 +44,18 @@ func CreateTables() {
 	}
 	defer db.Close()
 
-	db.AutoMigrate(&User{})
-	db.AutoMigrate(&Review{})
-	db.AutoMigrate(&News{})
+	if !db.HasTable(&User{}) {
+		db.AutoMigrate(&User{})
+	}
+	if !db.HasTable(&Review{}) {
+		db.AutoMigrate(&Review{})
+	}
+	if !db.HasTable(&News{}) {
+		db.AutoMigrate(&News{})
+	}
 
 	// Create
-	db.Create(&User{Username: "cookeem", Password: "haha"})
+	db.Create(&User{Username: "haijian", Password: "mypassword"})
 
 	// Read
 	var user User
