@@ -6,9 +6,9 @@ services:
     image: mysql:8.0.13
     environment:
       MYSQL_ROOT_PASSWORD: root_pwd
-      MYSQL_DATABASE: headline
-      MYSQL_USER: hluser
-      MYSQL_PASSWORD: hlpasswd
+      MYSQL_DATABASE: github
+      MYSQL_USER: gituser
+      MYSQL_PASSWORD: gitpassword
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     ports:
     - "3306:3306"
