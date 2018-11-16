@@ -55,11 +55,11 @@ func main() {
 		return
 	}
 
-	var f map[string]interface{}
-	err = json.Unmarshal(bodyBytes, &f)
+	var m map[string]interface{}
+	err = json.Unmarshal(bodyBytes, &m)
 	var gts []dbcommon.GithubTrending
 
-	items := f["items"].([]interface{})
+	items := m["items"].([]interface{})
 	for _, v := range items {
 		item := v.(map[string]interface{})
 		timeformat := "2006-01-02T15:04:05Z"
