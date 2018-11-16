@@ -18,7 +18,7 @@ type Review struct {
 	Rid       int    `gorm:"PRIMARY_KEY;AUTO_INCREMENT;"`
 	Nid       int    `gorm:"not null;default:0"`
 	Uid       int    `gorm:"not null;default:0"`
-	Content   string `gorm:"type:varchar(200);not null;default:''"`
+	Content   string `gorm:"type:varchar(500);not null;default:''"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
@@ -26,8 +26,8 @@ type Review struct {
 type GithubTrending struct {
 	Gid             int    `gorm:"PRIMARY_KEY;AUTO_INCREMENT;"`
 	FullName        string `gorm:"type:varchar(100);PRIMARY_KEY;unique_index;not null;default:''"`
-	Description     string `gorm:"type:varchar(200);not null;default:''"`
-	Language        string `gorm:"type:varchar(20);not null;default:''"`
+	Description     string `gorm:"type:varchar(500);not null;default:''"`
+	Language        string `gorm:"type:varchar(50);not null;default:''"`
 	HtmlUrl         string `gorm:"type:varchar(200);not null;default:''"`
 	StargazersCount int    `gorm:"not null;default:0"`
 	WatchersCount   int    `gorm:"not null;default:0"`

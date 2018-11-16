@@ -44,8 +44,9 @@ func createRequestURL(params map[string]string) string {
 func main() {
 	dbcommon.CreateTables()
 	q := map[string]string{
-		"per_page": "5",
-		"q":        "topic:wechat+stars:>=10+pushed:>2018-05-16",
+		"per_page": "100",
+		"page":     "1",
+		"q":        "topic:wechat+stars:>=10",
 	}
 	url := createRequestURL(q)
 	fmt.Println(url)
@@ -64,15 +65,39 @@ func main() {
 		timeformat := "2006-01-02T15:04:05Z"
 		ct, err := time.Parse(timeformat, item["created_at"].(string))
 		if err != nil {
-			ct = time.Now()
+			ct, _ = time.Parse("2006-01-02", "1970-01-01")
 		}
 		ut, err := time.Parse(timeformat, item["updated_at"].(string))
 		if err != nil {
-			ut = time.Now()
+			ut, _ = time.Parse("2006-01-02", "1970-01-01")
 		}
 		pt, err := time.Parse(timeformat, item["pushed_at"].(string))
 		if err != nil {
-			pt = time.Now()
+			pt, _ = time.Parse("2006-01-02", "1970-01-01")
+		}
+		if item["full_name"] == nil {
+			item["full_name"] = ""
+		}
+		if item["description"] == nil {
+			item["description"] = ""
+		}
+		if item["language"] == nil {
+			item["language"] = ""
+		}
+		if item["html_url"] == nil {
+			item["html_url"] = ""
+		}
+		if item["stargazers_count"] == nil {
+			item["stargazers_count"] = 0
+		}
+		if item["watchers_count"] == nil {
+			item["watchers_count"] = 0
+		}
+		if item["forks_count"] == nil {
+			item["forks_count"] = 0
+		}
+		if item["open_issues_count"] == nil {
+			item["open_issues_count"] = 0
 		}
 		gt := dbcommon.GithubTrending{
 			FullName:        item["full_name"].(string),
