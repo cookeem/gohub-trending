@@ -61,14 +61,14 @@ func CreateTables() {
 	// db.Delete(&user)
 }
 
-func BatchInsertGithub(ghts []GithubTrending) {
+func BatchInsertGithub(gts []GithubTrending) {
 	db, err := gorm.Open("mysql", connectStr)
 	if err != nil {
 		panic("failed to connect database")
 	}
 	defer db.Close()
 
-	for _, ght := range ghts {
-		db.Where(GithubTrending{FullName: ght.FullName}).Assign(ght).FirstOrCreate(&ght)
+	for _, gt := range gts {
+		db.Where(GithubTrending{FullName: gt.FullName}).Assign(gt).FirstOrCreate(&gt)
 	}
 }

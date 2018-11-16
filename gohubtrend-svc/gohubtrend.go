@@ -56,7 +56,7 @@ func main() {
 
 	var f map[string]interface{}
 	err = json.Unmarshal(bodyBytes, &f)
-	var ghts []dbcommon.GithubTrending
+	var gts []dbcommon.GithubTrending
 
 	items := f["items"].([]interface{})
 	for _, v := range items {
@@ -74,7 +74,7 @@ func main() {
 		if err != nil {
 			pt = time.Now()
 		}
-		ght := dbcommon.GithubTrending{
+		gt := dbcommon.GithubTrending{
 			FullName:        item["full_name"].(string),
 			Description:     item["description"].(string),
 			Language:        item["language"].(string),
@@ -87,8 +87,8 @@ func main() {
 			UpdatedAt:       ut,
 			PushedAt:        pt,
 		}
-		ghts = append(ghts, ght)
+		gts = append(gts, gt)
 	}
-	dbcommon.BatchInsertGithub(ghts)
+	dbcommon.BatchInsertGithub(gts)
 	fmt.Println("batch insert github records succeed")
 }
