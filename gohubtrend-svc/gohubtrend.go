@@ -1,31 +1,22 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"gohub-trending/dbcommon"
 	"io/ioutil"
 	"net/http"
 	"strings"
+	"time"
 )
 
-func main() {
-	dbcommon.CreateTables()
-	q := map[string]string{
-		"per_page": "5",
-		"q":        "topic:wechat+stars:>=10+pushed:>2018-05-16",
+func requestContent(url string) (bytearr []byte, err error) {
+	resp, err := http.Get(url)
+	if err == nil {
+		bytearr, err = ioutil.ReadAll(resp.Body)
 	}
-	url := createRequestURL(q)
-	fmt.Println(url)
-	bodyBytes, err := requestContent(url)
-	if err != nil {
-		return
-	}
-
-	var outBuffers bytes.Buffer
-	err = json.Indent(&outBuffers, bodyBytes, "", "  ")
-	fmt.Println(outBuffers.String())
+	defer resp.Body.Close()
+	return bytearr, err
 }
 
 func createRequestURL(params map[string]string) string {
@@ -50,11 +41,54 @@ func createRequestURL(params map[string]string) string {
 	return url
 }
 
-func requestContent(url string) (bytearr []byte, err error) {
-	resp, err := http.Get(url)
-	if err == nil {
-		bytearr, err = ioutil.ReadAll(resp.Body)
+func main() {
+	dbcommon.CreateTables()
+	q := map[string]string{
+		"per_page": "5",
+		"q":        "topic:wechat+stars:>=10+pushed:>2018-05-16",
 	}
-	defer resp.Body.Close()
-	return bytearr, err
+	url := createRequestURL(q)
+	fmt.Println(url)
+	bodyBytes, err := requestContent(url)
+	if err != nil {
+		return
+	}
+
+	var f map[string]interface{}
+	err = json.Unmarshal(bodyBytes, &f)
+	var ghts []dbcommon.GithubTrending
+
+	items := f["items"].([]interface{})
+	for _, v := range items {
+		item := v.(map[string]interface{})
+		timeformat := "2006-01-02T15:04:05Z"
+		ct, err := time.Parse(timeformat, item["created_at"].(string))
+		if err != nil {
+			ct = time.Now()
+		}
+		ut, err := time.Parse(timeformat, item["updated_at"].(string))
+		if err != nil {
+			ut = time.Now()
+		}
+		pt, err := time.Parse(timeformat, item["pushed_at"].(string))
+		if err != nil {
+			pt = time.Now()
+		}
+		ght := dbcommon.GithubTrending{
+			FullName:        item["full_name"].(string),
+			Description:     item["description"].(string),
+			Language:        item["language"].(string),
+			HtmlUrl:         item["html_url"].(string),
+			StargazersCount: int(item["stargazers_count"].(float64)),
+			WatchersCount:   int(item["watchers_count"].(float64)),
+			ForksCount:      int(item["forks_count"].(float64)),
+			OpenIssuesCount: int(item["open_issues_count"].(float64)),
+			CreatedAt:       ct,
+			UpdatedAt:       ut,
+			PushedAt:        pt,
+		}
+		ghts = append(ghts, ght)
+	}
+	dbcommon.BatchInsertGithub(ghts)
+	fmt.Println("batch insert github records succeed")
 }
