@@ -4,17 +4,28 @@
 
 
 ```
-frontend -> backend -> gohubtrend-svc (search) -> github.com-> db
+frontend -> backend -> gitrepo-svc (search) -> github.com-> db
                     -> review-svc(create/list/delete) -> db
                     -> user-svc(create/get/update/login/logout)
-                    -> gohubtrend-svc (get/list) -> db
+                    -> gitrepo-svc (get/list) -> db
 ```
 
 ### user-svc
 
+``` create: 注册用户
+request:
+username, password
+======
+response:
+header: x-user-token // jwt token
+{
+    error: 0,       // 0: 成功，1: 失败
+    msg: "返回提示"  // 返回提示
+    uid: 1,         // 失败返回0
+}
 ```
-create: 注册用户
-###############
+
+``` login: 用户登录
 request:
 username, password
 ======
@@ -25,22 +36,9 @@ header: x-user-token // jwt token
     msg: "返回提示"  // 返回提示
     uid: 1,         // 失败返回0
 }
+```
 
-login: 用户登录
-###############
-request:
-username, password
-======
-response:
-header: x-user-token // jwt token
-{
-    error: 0,       // 0: 成功，1: 失败
-    msg: "返回提示"  // 返回提示
-    uid: 1,         // 失败返回0
-}
-
-logout: 用户注销
-###############
+``` logout: 用户注销
 request:
 request: header x-user-token
 ======
@@ -50,9 +48,9 @@ header: x-user-token // 清除x-user-token
     error: 0,       // 0: 成功，1: 失败
     msg: "返回提示"  // 返回提示
 }
+```
 
-get: 修改用户信息时获取用户信息
-###############
+``` get: 修改用户信息时获取用户信息
 request: header x-user-token
 ===
 response:
@@ -61,9 +59,9 @@ header: x-user-token // jwt token
     error: 0,       // 0: 成功，1: 失败
     msg: "返回提示"  // 返回提示
 }
+```
 
-update: 更新用户信息
-###############
+``` update: 更新用户信息
 request: header x-user-token
 password_current, password_new, password_repeat
 ===
@@ -77,9 +75,8 @@ header: x-user-token // jwt token
 ```
 
 ### review-svc
-```
-create: 点评github-repo
-###############
+
+``` create: 发表gitrepo点评
 request: header x-user-token
 gid, content
 ===
@@ -90,9 +87,9 @@ header: x-user-token // jwt token
     msg: "返回提示"  // 返回提示
     rid: 0,         // 失败返回0
 }
+```
 
-list: 获取github-repo的点评列表
-###############
+``` list: 获取gitrepo的点评列表
 request: header x-user-token
 gid
 ===
@@ -112,9 +109,9 @@ header: x-user-token // jwt token
         }
     ]
 }
+```
 
-delete: 删除点评
-###############
+``` delete: 删除点评
 request: header x-user-token
 gid
 ===
@@ -126,19 +123,60 @@ header: x-user-token // jwt token
 }
 ```
 
-### gohubtrend-svc
--> gohubtrend-svc (get/list) -> db
-```
-list: 获取github-repo列表
-###############
+### gitrepo-svc
+
+``` list: 获取gitrepo列表
 request: header x-user-token
-language, page
+language, page, per_page
 ===
 response:
 header: x-user-token // jwt token
 {
     error: 0,       // 0: 成功，1: 失败
     msg: "返回提示"  // 返回提示
+    languages: [
+        {
+            language: "Java",
+            repos_count: 1
+        }
+    ],
+    gitrepos: [
+        {
+            gid: 1,
+            full_name: "cookeem/kubeadm-ha",
+            description: "",
+            language: "",
+            stargazers_count: 1,
+            reviews_count: 1
+        }
+    ]
+}
+```
+
+``` get: 获取gitrepo详情
+request: header x-user-token
+gid
+===
+response:
+header: x-user-token // jwt token
+{
+    error: 0,       // 0: 成功，1: 失败
+    msg: "返回提示"  // 返回提示
+    gitrepos: {
+        gid: 1,
+        full_name: "",
+        description: "",
+        language: "",
+        html_url: "",
+        stargazers_count: 0,
+        watchers_count: 0,
+        forks_count: 0,
+        open_issues_count: 0,
+        reviews_count: 0,
+        created_at: "",
+        updated_at: "",
+        pushed_at: ""
+    },
     reviews: [
         {
             rid: 1,
@@ -152,42 +190,32 @@ header: x-user-token // jwt token
 }
 ```
 
-### users table
-
-```
-uid: 用户id
-username: 用户名
-password: 密码
-created_at: 创建时间
-updated_at: 更新时间
-```
-
-### reviews table
-
-```
-rid: 评论id
-nid: 新闻id
-uid: 用户id
-content: 评论内容
-created_at: 创建时间
-updated_at: 更新时间
-```
-
-### github_trendings table
-
-```
-gid: github trending id
-full_name: 全名
-description: 描述
-language: 语言
-html_url: url
-stargazers_count: 星星数
-watchers_count: watcher数
-forks_count: fork数
-open_issues_count: 打开的issue数
-created_at: 创建时间
-updated_at: 更新时间
-pushed_at: 推送时间
+``` search: 搜索gitrepo列表，从github拉取信息
+request: header x-user-token
+language, page, per_page, topic
+===
+response:
+header: x-user-token // jwt token
+{
+    error: 0,       // 0: 成功，1: 失败
+    msg: "返回提示"  // 返回提示
+    languages: [
+        {
+            language: "Java",
+            repos_count: 1
+        }
+    ],
+    gitrepos: [
+        {
+            gid: 1,
+            full_name: "cookeem/kubeadm-ha",
+            description: "",
+            language: "",
+            stargazers_count: 1,
+            reviews_count: 0
+        }
+    ]
+}
 ```
 
 ```

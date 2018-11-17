@@ -23,7 +23,7 @@ type Review struct {
 	UpdatedAt time.Time
 }
 
-type GithubTrending struct {
+type GitRepo struct {
 	Gid             int    `gorm:"PRIMARY_KEY;AUTO_INCREMENT;"`
 	FullName        string `gorm:"type:varchar(100);PRIMARY_KEY;unique_index;not null;default:''"`
 	Description     string `gorm:"type:varchar(500);not null;default:''"`
@@ -39,6 +39,7 @@ type GithubTrending struct {
 	PushedAt        time.Time
 }
 
-type GithubLanguage struct {
-	Language string `gorm:"type:varchar(50);PRIMARY_KEY;unique_index;not null;default:''"`
+type GitLanguage struct {
+	Language   string `gorm:"type:varchar(50);PRIMARY_KEY;unique_index;not null;default:''"`
+	ReposCount int    `gorm:"not null;default:0"`
 }

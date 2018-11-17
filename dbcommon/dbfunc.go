@@ -1,18 +1,16 @@
 package dbcommon
 
 import (
-	"fmt"
-
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
 const connectStr = "gituser:gitpassword@/github?charset=utf8mb4&parseTime=true"
 
-func CreateTables() {
+func CreateTables() (err error) {
 	db, err := gorm.Open("mysql", connectStr)
 	if err != nil {
-		panic("failed to connect database")
+		return err
 	}
 	defer db.Close()
 
@@ -22,56 +20,90 @@ func CreateTables() {
 	if !db.HasTable(&Review{}) {
 		db.AutoMigrate(&Review{})
 	}
-	if !db.HasTable(&GithubTrending{}) {
-		db.AutoMigrate(&GithubTrending{})
+	if !db.HasTable(&GitRepo{}) {
+		db.AutoMigrate(&GitRepo{})
 	}
-	if !db.HasTable(&GithubLanguage{}) {
-		db.AutoMigrate(&GithubLanguage{})
+	if !db.HasTable(&GitLanguage{}) {
+		db.AutoMigrate(&GitLanguage{})
 	}
-
-	user1 := User{
-		Username: "haijian",
-		Password: "mypassword",
-	}
-	user2 := User{
-		Username: "cookeem",
-		Password: "mypassword",
-	}
-
-	// Create
-	if db.Where(&User{Username: user1.Username}).RecordNotFound() {
-		db.Create(&user1)
-	}
-	if db.Where(&User{Username: user2.Username}).RecordNotFound() {
-		db.Create(&user2)
-	}
-
-	// find all
-	var users []User
-	db.Find(&users)
-	for index, user := range users {
-		fmt.Printf("%+v -> %+v\n", index, user)
-	}
-
-	// Read
-	// db.Where(&User{Username: user2.Username}).First(&user)
-	// fmt.Println(user)
-
-	// Update - update user's price to 2000
-	// db.Model(&user).Update("password", "hehe")
-
-	// Delete - delete user
-	// db.Delete(&user)
+	return err
 }
 
-func BatchInsertGithub(gts []GithubTrending) {
+func CreateUser(username string, password string) (uid int, errmsg string) {
 	db, err := gorm.Open("mysql", connectStr)
 	if err != nil {
-		panic("failed to connect database")
+		errmsg = "database connect error"
+		return uid, errmsg
 	}
 	defer db.Close()
 
-	for _, gt := range gts {
-		db.Where(GithubTrending{FullName: gt.FullName}).Assign(gt).FirstOrCreate(&gt)
+	var user User
+	if db.Where(&User{Username: username}).RecordNotFound() {
+		if err = db.Create(&user).Error; err != nil {
+			errmsg = err.Error()
+			return uid, errmsg
+		}
+		uid = user.Uid
+	} else {
+		errmsg = "username already exist"
 	}
+	return uid, errmsg
+}
+
+func LoginUser(username string, password string) (uid int, errmsg string) {
+	db, err := gorm.Open("mysql", connectStr)
+	if err != nil {
+		errmsg = "database connect error"
+		return uid, errmsg
+	}
+	defer db.Close()
+
+	var user User
+	if db.Where(&User{Username: username}).First(&user).RecordNotFound() {
+		errmsg = "user not exists"
+		return uid, errmsg
+	} else {
+		if user.Password != password {
+			errmsg = "username already exist"
+			return uid, errmsg
+		} else {
+			uid = user.Uid
+		}
+	}
+	return uid, errmsg
+}
+
+func GetUser(uid int) (user User, errmsg string) {
+	db, err := gorm.Open("mysql", connectStr)
+	if err != nil {
+		errmsg = "database connect error"
+		return user, errmsg
+	}
+	defer db.Close()
+
+	if db.Where(&User{Uid: uid}).First(&user).RecordNotFound() {
+		errmsg = "user not exists"
+		return user, errmsg
+	}
+	return user, errmsg
+}
+
+func SearchGitRepos(grs []GitRepo) (gitrepos []GitRepo, languages []GitLanguage, errmsg string) {
+	db, err := gorm.Open("mysql", connectStr)
+	if err != nil {
+		errmsg = "database connect error"
+		return gitrepos, languages, errmsg
+	}
+	defer db.Close()
+
+	if err = db.Find(&languages).Order("repos_count desc").Error; err != nil {
+		errmsg = "get languages error"
+		return gitrepos, languages, errmsg
+	}
+
+	for _, gr := range grs {
+		db.Where(GitRepo{FullName: gr.FullName}).Assign(gr).FirstOrCreate(&gr)
+		gitrepos = append(gitrepos, gr)
+	}
+	return gitrepos, languages, errmsg
 }

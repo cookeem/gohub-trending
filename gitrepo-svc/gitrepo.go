@@ -57,7 +57,7 @@ func main() {
 
 	var m map[string]interface{}
 	err = json.Unmarshal(bodyBytes, &m)
-	var gts []dbcommon.GithubTrending
+	var grs []dbcommon.GitRepo
 
 	items := m["items"].([]interface{})
 	for _, v := range items {
@@ -99,7 +99,7 @@ func main() {
 		if item["open_issues_count"] == nil {
 			item["open_issues_count"] = 0
 		}
-		gt := dbcommon.GithubTrending{
+		gr := dbcommon.GitRepo{
 			FullName:        item["full_name"].(string),
 			Description:     item["description"].(string),
 			Language:        item["language"].(string),
@@ -112,8 +112,10 @@ func main() {
 			UpdatedAt:       ut,
 			PushedAt:        pt,
 		}
-		gts = append(gts, gt)
+		grs = append(grs, gr)
 	}
-	dbcommon.BatchInsertGithub(gts)
+	dbcommon.SearchGitRepos(grs)
 	fmt.Println("batch insert github records succeed")
+
+	dbcommon.CreateUser("cookeem", "password")
 }
