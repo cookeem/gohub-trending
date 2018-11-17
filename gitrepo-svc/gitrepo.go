@@ -128,4 +128,10 @@ func main() {
 
 	errmsg = dbcommon.UpdateUser(2, "passwordx")
 	fmt.Println(errmsg)
+
+	rid, errmsg := dbcommon.CreateReview(1, 1, "orz ####")
+	fmt.Println(rid, errmsg)
+
+	rs, errmsg := dbcommon.ListReviews(1)
+	fmt.Println(rs, errmsg)
 }

@@ -45,7 +45,7 @@ func CreateUser(username string, password string) (uid int, errmsg string) {
 		}
 		uid = user.Uid
 	} else {
-		errmsg = "username already exist"
+		errmsg = "username already exists"
 	}
 	return uid, errmsg
 }
@@ -104,6 +104,57 @@ func UpdateUser(uid int, password string) (errmsg string) {
 		db.Model(&user).Update(User{Password: password})
 	}
 	return errmsg
+}
+
+func CreateReview(uid int, gid int, content string) (rid int, errmsg string) {
+	db, err := gorm.Open("mysql", connectStr)
+	if err != nil {
+		errmsg = "database connect error"
+		return rid, errmsg
+	}
+	defer db.Close()
+
+	var gitrepo GitRepo
+	if db.Where(&GitRepo{Gid: gid}).First(&gitrepo).RecordNotFound() {
+		errmsg = "gitrepo not exists"
+	} else {
+		var user User
+		if db.Where(&User{Uid: uid}).First(&user).RecordNotFound() {
+			errmsg = "user not exists"
+		} else {
+			review := Review{Gid: gid, Uid: uid, Content: content}
+			if err = db.Create(&review).Error; err != nil {
+				errmsg = err.Error()
+				return uid, errmsg
+			}
+			rid = review.Rid
+		}
+	}
+	return rid, errmsg
+}
+
+func ListReviews(gid int) (reviews []map[User]Review, errmsg string) {
+	db, err := gorm.Open("mysql", connectStr)
+	if err != nil {
+		errmsg = "database connect error"
+		return reviews, errmsg
+	}
+	defer db.Close()
+
+	var rs []Review
+	if err := db.Where(&Review{Gid: gid}).Find(&rs).Error; err != nil {
+		errmsg = "select rs error"
+		return reviews, errmsg
+	} else {
+		for _, r := range rs {
+			var u User
+			db.Where(&User{Uid: r.Uid}).First(&u)
+			review := make(map[User]Review)
+			review[u] = r
+			reviews = append(reviews, review)
+		}
+	}
+	return reviews, errmsg
 }
 
 func SearchGitRepos(grs []GitRepo) (gitrepos []GitRepo, languages []GitLanguage, errmsg string) {
