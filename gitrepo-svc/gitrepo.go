@@ -44,7 +44,7 @@ func createRequestURL(params map[string]string) string {
 func main() {
 	dbcommon.CreateTables()
 	q := map[string]string{
-		"per_page": "10",
+		"per_page": "20",
 		"page":     "1",
 		"q":        "topic:wechat+stars:>=10",
 	}
@@ -129,7 +129,7 @@ func main() {
 	errmsg = dbcommon.UpdateUser(2, "passwordx")
 	fmt.Println(errmsg)
 
-	rid, errmsg := dbcommon.CreateReview(1, 1, "orz ####")
+	rid, errmsg := dbcommon.CreateReview(1, 1, "orz ###@@@# ")
 	fmt.Println(rid, errmsg)
 
 	rs, errmsg := dbcommon.ListReviews(1)

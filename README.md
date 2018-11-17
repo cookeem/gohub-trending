@@ -5,7 +5,7 @@
 
 ```
 frontend -> backend -> gitrepo-svc (search) -> github.com-> db
-                    -> review-svc(create/list/delete) -> db
+                    -> review-svc(create/list) -> db
                     -> user-svc(create/get/update/login/logout)
                     -> gitrepo-svc (get/list) -> db
 ```
@@ -108,18 +108,6 @@ header: x-user-token // jwt token
             created_at: "2012-01-10 12:12:12",
         }
     ]
-}
-```
-
-``` delete: 删除点评
-request: header x-user-token
-gid
-===
-response:
-header: x-user-token // jwt token
-{
-    error: 0,       // 0: 成功，1: 失败
-    msg: "返回提示"  // 返回提示
 }
 ```
 
@@ -234,6 +222,6 @@ show tables;
 
 explain git_repos;
 
-drop table users;drop table reviews;drop table git_repos;
+drop table users;drop table reviews;drop table git_repos; drop table git_languages;
 
 ```

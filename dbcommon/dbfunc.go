@@ -127,6 +127,7 @@ func CreateReview(uid int, gid int, content string) (rid int, errmsg string) {
 				errmsg = err.Error()
 				return uid, errmsg
 			}
+			db.Model(&gitrepo).Update(GitRepo{ReviewsCount: gitrepo.ReviewsCount + 1})
 			rid = review.Rid
 		}
 	}
@@ -157,6 +158,30 @@ func ListReviews(gid int) (reviews []map[User]Review, errmsg string) {
 	return reviews, errmsg
 }
 
+// func ListGitRepos(language string, page int, perPage int) (gitrepos []GitRepo, errmsg string) {
+// 	db, err := gorm.Open("mysql", connectStr)
+// 	if err != nil {
+// 		errmsg = "database connect error"
+// 		return reviews, errmsg
+// 	}
+// 	defer db.Close()
+
+// 	grWhere := GitRepo
+// 	if err := db.Where(&Review{Gid: gid}).Find(&rs).Error; err != nil {
+// 		errmsg = "select rs error"
+// 		return reviews, errmsg
+// 	} else {
+// 		for _, r := range rs {
+// 			var u User
+// 			db.Where(&User{Uid: r.Uid}).First(&u)
+// 			review := make(map[User]Review)
+// 			review[u] = r
+// 			reviews = append(reviews, review)
+// 		}
+// 	}
+// 	return reviews, errmsg
+// }
+
 func SearchGitRepos(grs []GitRepo) (gitrepos []GitRepo, languages []GitLanguage, errmsg string) {
 	db, err := gorm.Open("mysql", connectStr)
 	if err != nil {
@@ -171,7 +196,12 @@ func SearchGitRepos(grs []GitRepo) (gitrepos []GitRepo, languages []GitLanguage,
 	}
 
 	for _, gr := range grs {
-		db.Where(GitRepo{FullName: gr.FullName}).Assign(gr).FirstOrCreate(&gr)
+		if db.Where(GitRepo{FullName: gr.FullName}).First(&gr).RecordNotFound() {
+			db.Create(&gr)
+			gl := GitLanguage{Language: gr.Language}
+			db.Where(GitLanguage{Language: gr.Language}).Assign(gr).FirstOrCreate(&gl)
+			db.Model(&gl).Update(GitLanguage{ReposCount: gl.ReposCount + 1})
+		}
 		gitrepos = append(gitrepos, gr)
 	}
 	return gitrepos, languages, errmsg
