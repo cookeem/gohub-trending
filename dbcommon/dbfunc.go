@@ -25,6 +25,9 @@ func CreateTables() {
 	if !db.HasTable(&GithubTrending{}) {
 		db.AutoMigrate(&GithubTrending{})
 	}
+	if !db.HasTable(&GithubLanguage{}) {
+		db.AutoMigrate(&GithubLanguage{})
+	}
 
 	user1 := User{
 		Username: "haijian",
