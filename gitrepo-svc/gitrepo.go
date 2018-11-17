@@ -132,6 +132,15 @@ func main() {
 	rid, errmsg := dbcommon.CreateReview(1, 1, "orz ###@@@# ")
 	fmt.Println(rid, errmsg)
 
+	errmsg = dbcommon.DeleteReview(1)
+	fmt.Println(errmsg)
+
 	rs, errmsg := dbcommon.ListReviews(1)
 	fmt.Println(rs, errmsg)
+
+	grs, errmsg = dbcommon.ListGitRepos("", 2, 2)
+	fmt.Println(grs, errmsg)
+
+	gr, errmsg := dbcommon.GetGitRepo(2)
+	fmt.Println(gr, errmsg)
 }

@@ -5,7 +5,7 @@
 
 ```
 frontend -> backend -> gitrepo-svc (search) -> github.com-> db
-                    -> review-svc(create/list) -> db
+                    -> review-svc(create/delete/list) -> db
                     -> user-svc(create/get/update/login/logout)
                     -> gitrepo-svc (get/list) -> db
 ```
@@ -86,6 +86,18 @@ header: x-user-token // jwt token
     error: 0,       // 0: 成功，1: 失败
     msg: "返回提示"  // 返回提示
     rid: 0,         // 失败返回0
+}
+```
+
+``` delete: 删除gitrepo点评
+request: header x-user-token
+rid
+===
+response:
+header: x-user-token // jwt token
+{
+    error: 0,       // 0: 成功，1: 失败
+    msg: "返回提示"  // 返回提示
 }
 ```
 
@@ -180,7 +192,7 @@ header: x-user-token // jwt token
 
 ``` search: 搜索gitrepo列表，从github拉取信息
 request: header x-user-token
-language, page, per_page, topic
+page, per_page
 ===
 response:
 header: x-user-token // jwt token
