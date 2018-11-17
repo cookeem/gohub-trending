@@ -232,10 +232,8 @@ mysql -uroot -p
 use github;
 show tables;
 
-explain github_trendings;
+explain git_repos;
 
-drop table users;
-drop table reviews;
-drop table github_trendings;
+drop table users;drop table reviews;drop table git_repos;
 
 ```

@@ -37,8 +37,8 @@ func CreateUser(username string, password string) (uid int, errmsg string) {
 	}
 	defer db.Close()
 
-	var user User
-	if db.Where(&User{Username: username}).RecordNotFound() {
+	user := User{Username: username, Password: password}
+	if db.Where(&User{Username: username}).First(&user).RecordNotFound() {
 		if err = db.Create(&user).Error; err != nil {
 			errmsg = err.Error()
 			return uid, errmsg
@@ -64,7 +64,7 @@ func LoginUser(username string, password string) (uid int, errmsg string) {
 		return uid, errmsg
 	} else {
 		if user.Password != password {
-			errmsg = "username already exist"
+			errmsg = "password incorrect"
 			return uid, errmsg
 		} else {
 			uid = user.Uid
@@ -86,6 +86,24 @@ func GetUser(uid int) (user User, errmsg string) {
 		return user, errmsg
 	}
 	return user, errmsg
+}
+
+func UpdateUser(uid int, password string) (errmsg string) {
+	db, err := gorm.Open("mysql", connectStr)
+	if err != nil {
+		errmsg = "database connect error"
+		return errmsg
+	}
+	defer db.Close()
+
+	var user User
+	if db.Where(&User{Uid: uid}).First(&user).RecordNotFound() {
+		errmsg = "user not exists"
+		return errmsg
+	} else {
+		db.Model(&user).Update(User{Password: password})
+	}
+	return errmsg
 }
 
 func SearchGitRepos(grs []GitRepo) (gitrepos []GitRepo, languages []GitLanguage, errmsg string) {

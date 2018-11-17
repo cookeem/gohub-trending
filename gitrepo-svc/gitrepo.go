@@ -44,7 +44,7 @@ func createRequestURL(params map[string]string) string {
 func main() {
 	dbcommon.CreateTables()
 	q := map[string]string{
-		"per_page": "100",
+		"per_page": "10",
 		"page":     "1",
 		"q":        "topic:wechat+stars:>=10",
 	}
@@ -117,5 +117,15 @@ func main() {
 	dbcommon.SearchGitRepos(grs)
 	fmt.Println("batch insert github records succeed")
 
-	dbcommon.CreateUser("cookeem", "password")
+	user, errmsg := dbcommon.CreateUser("cookeem", "password")
+	fmt.Println(user, errmsg)
+
+	uid, errmsg := dbcommon.LoginUser("cookeem", "password1")
+	fmt.Println(uid, errmsg)
+
+	user2, errmsg := dbcommon.GetUser(2)
+	fmt.Println(user2, errmsg)
+
+	errmsg = dbcommon.UpdateUser(2, "passwordx")
+	fmt.Println(errmsg)
 }
