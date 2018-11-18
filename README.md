@@ -10,7 +10,9 @@ frontend -> backend -> gitrepo-svc (search) -> github.com-> db
                     -> gitrepo-svc (get/list) -> db
 ```
 
-### user-svc
+## 接口说明
+
+### user-svc 接口说明
 
 #### create: 注册用户
 ```
@@ -79,7 +81,7 @@ header: x-user-token // jwt token
 
 ```
 
-### review-svc
+### review-svc 接口说明
 
 #### create: 发表gitrepo点评
 ```
@@ -131,7 +133,7 @@ header: x-user-token // jwt token
 }
 ```
 
-### gitrepo-svc
+### gitrepo-svc 接口说明
 
 #### list: 获取gitrepo列表
 ```
