@@ -177,13 +177,12 @@ func requestSearchGitRepos(topics string, perPage int, page int) {
 	var prettyJson bytes.Buffer
 	json.Indent(&prettyJson, byteJson, "", "  ")
 	fmt.Println(prettyJson.String())
-	fmt.Println("batch insert github records succeed")
 }
 
 func main() {
 	dbcommon.CreateTables()
 
-	requestSearchGitRepos("kubernetes chart", 20, 1)
+	requestSearchGitRepos("tensorflow", 20, 1)
 	// user, errmsg := dbcommon.CreateUser("cookeem", "password")
 	// fmt.Println(user, errmsg)
 
