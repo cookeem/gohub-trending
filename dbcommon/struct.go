@@ -24,22 +24,22 @@ type Review struct {
 }
 
 type GitRepo struct {
-	Gid             int    `gorm:"PRIMARY_KEY;AUTO_INCREMENT;"`
-	FullName        string `gorm:"type:varchar(100);PRIMARY_KEY;unique_index;not null;default:''"`
-	Description     string `gorm:"type:varchar(500);not null;default:''"`
-	Language        string `gorm:"type:varchar(50);not null;default:''"`
-	HtmlUrl         string `gorm:"type:varchar(200);not null;default:''"`
-	StargazersCount int    `gorm:"not null;default:0"`
-	WatchersCount   int    `gorm:"not null;default:0"`
-	ForksCount      int    `gorm:"not null;default:0"`
-	OpenIssuesCount int    `gorm:"not null;default:0"`
-	ReviewsCount    int    `gorm:"not null;default:0"`
-	CreatedAt       time.Time
-	UpdatedAt       time.Time
-	PushedAt        time.Time
+	Gid             int       `gorm:"PRIMARY_KEY;AUTO_INCREMENT;" json:"gid"`
+	FullName        string    `gorm:"type:varchar(100);PRIMARY_KEY;unique_index;not null;default:''" json:"full_name"`
+	Description     string    `gorm:"type:varchar(500);not null;default:''" json:"description"`
+	Language        string    `gorm:"type:varchar(50);not null;default:''" json:"language"`
+	HtmlUrl         string    `gorm:"type:varchar(200);not null;default:''" json:"html_url"`
+	StargazersCount int       `gorm:"not null;default:0" json:"stargazers_count"`
+	WatchersCount   int       `gorm:"not null;default:0" json:"watchers_count"`
+	ForksCount      int       `gorm:"not null;default:0" json:"forks_count"`
+	OpenIssuesCount int       `gorm:"not null;default:0" json:"open_issues_count"`
+	ReviewsCount    int       `gorm:"not null;default:0" json:"reviews_count"`
+	CreatedAt       time.Time `json:"created_at"`
+	UpdatedAt       time.Time `json:"updated_at"`
+	PushedAt        time.Time `json:"pushed_at"`
 }
 
 type GitLanguage struct {
-	Language   string `gorm:"type:varchar(50);PRIMARY_KEY;unique_index;not null;default:''"`
-	ReposCount int    `gorm:"not null;default:0"`
+	Language   string `gorm:"type:varchar(50);PRIMARY_KEY;unique_index;not null;default:''" json:"language"`
+	ReposCount int    `gorm:"not null;default:0" json:"repos_count"`
 }

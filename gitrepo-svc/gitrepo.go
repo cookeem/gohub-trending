@@ -1,11 +1,13 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"gohub-trending/dbcommon"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -41,14 +43,28 @@ func createRequestURL(params map[string]string) string {
 	return url
 }
 
-func main() {
-	dbcommon.CreateTables()
-	q := map[string]string{
-		"per_page": "20",
-		"page":     "1",
-		"q":        "topic:wechat+stars:>=10",
+func requestSearchGitRepos(topics string, perPage int, page int) {
+	var ts []string
+	for _, s := range strings.Split(topics, " ") {
+		s = strings.Trim(s, " ")
+		if s != "" {
+			ts = append(ts, "topic:"+s)
+		}
 	}
-	url := createRequestURL(q)
+	q := strings.Join(ts, "+")
+	fmt.Println(q)
+	if perPage <= 0 {
+		perPage = 10
+	}
+	if page <= 0 {
+		page = 1
+	}
+	mapQuerys := map[string]string{
+		"per_page": strconv.Itoa(perPage),
+		"page":     strconv.Itoa(page),
+		"q":        q,
+	}
+	url := createRequestURL(mapQuerys)
 	fmt.Println(url)
 	bodyBytes, err := requestContent(url)
 	if err != nil {
@@ -114,33 +130,84 @@ func main() {
 		}
 		grs = append(grs, gr)
 	}
-	dbcommon.SearchGitRepos(grs)
+	gitrepos, languages, errmsg := dbcommon.SearchGitRepos(grs)
+	var mapJson map[string]interface{}
+	if errmsg == "" {
+		gitreposJson, _ := json.Marshal(gitrepos)
+		languagesJson, _ := json.Marshal(languages)
+		var a []interface{}
+		var arrGitRepos []interface{}
+		var arrLanguages []interface{}
+		if json.Unmarshal(gitreposJson, &a) == nil {
+			for _, v := range a {
+				v2 := v.(map[string]interface{})
+				delete(v2, "html_url")
+				delete(v2, "watchers_count")
+				delete(v2, "forks_count")
+				delete(v2, "open_issues_count")
+				delete(v2, "created_at")
+				delete(v2, "updated_at")
+				delete(v2, "pushed_at")
+				arrGitRepos = append(arrGitRepos, v2)
+			}
+		}
+		if json.Unmarshal(languagesJson, &a) == nil {
+			for _, v := range a {
+				v2 := v.(map[string]interface{})
+				arrLanguages = append(arrLanguages, v2)
+			}
+		}
+		mo := map[string]interface{}{
+			"error":     0,
+			"msg":       "",
+			"languages": arrGitRepos,
+			"gitrepos":  arrLanguages,
+		}
+		mapJson = mo
+	} else {
+		mo := map[string]interface{}{
+			"error":     1,
+			"msg":       errmsg,
+			"languages": []interface{}{},
+			"gitrepos":  []interface{}{},
+		}
+		mapJson = mo
+	}
+	byteJson, _ := json.Marshal(mapJson)
+	var prettyJson bytes.Buffer
+	json.Indent(&prettyJson, byteJson, "", "  ")
+	fmt.Println(prettyJson.String())
 	fmt.Println("batch insert github records succeed")
+}
 
-	user, errmsg := dbcommon.CreateUser("cookeem", "password")
-	fmt.Println(user, errmsg)
+func main() {
+	dbcommon.CreateTables()
 
-	uid, errmsg := dbcommon.LoginUser("cookeem", "password1")
-	fmt.Println(uid, errmsg)
+	requestSearchGitRepos("kubernetes chart", 20, 1)
+	// user, errmsg := dbcommon.CreateUser("cookeem", "password")
+	// fmt.Println(user, errmsg)
 
-	user2, errmsg := dbcommon.GetUser(2)
-	fmt.Println(user2, errmsg)
+	// uid, errmsg := dbcommon.LoginUser("cookeem", "password1")
+	// fmt.Println(uid, errmsg)
 
-	errmsg = dbcommon.UpdateUser(2, "passwordx")
-	fmt.Println(errmsg)
+	// user2, errmsg := dbcommon.GetUser(2)
+	// fmt.Println(user2, errmsg)
 
-	rid, errmsg := dbcommon.CreateReview(1, 1, "orz ###@@@# ")
-	fmt.Println(rid, errmsg)
+	// errmsg = dbcommon.UpdateUser(2, "passwordx")
+	// fmt.Println(errmsg)
 
-	errmsg = dbcommon.DeleteReview(1)
-	fmt.Println(errmsg)
+	// rid, errmsg := dbcommon.CreateReview(1, 1, "orz ###@@@# ")
+	// fmt.Println(rid, errmsg)
 
-	rs, errmsg := dbcommon.ListReviews(1)
-	fmt.Println(rs, errmsg)
+	// errmsg = dbcommon.DeleteReview(1)
+	// fmt.Println(errmsg)
 
-	grs, errmsg = dbcommon.ListGitRepos("", 2, 2)
-	fmt.Println(grs, errmsg)
+	// rs, errmsg := dbcommon.ListReviews(1)
+	// fmt.Println(rs, errmsg)
 
-	gr, errmsg := dbcommon.GetGitRepo(2)
-	fmt.Println(gr, errmsg)
+	// grs, errmsg := dbcommon.ListGitRepos("", 2, 2)
+	// fmt.Println(grs, errmsg)
+
+	// gr, errmsg := dbcommon.GetGitRepo(2)
+	// fmt.Println(gr, errmsg)
 }
