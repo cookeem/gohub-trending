@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-func requestContent(url string) (bytearr []byte, err error) {
+func queryContent(url string) (bytearr []byte, err error) {
 	resp, err := http.Get(url)
 	if err == nil {
 		bytearr, err = ioutil.ReadAll(resp.Body)
@@ -52,7 +52,6 @@ func requestSearchGitRepos(topics string, perPage int, page int) {
 		}
 	}
 	q := strings.Join(ts, "+")
-	fmt.Println(q)
 	if perPage <= 0 {
 		perPage = 10
 	}
@@ -66,7 +65,7 @@ func requestSearchGitRepos(topics string, perPage int, page int) {
 	}
 	url := createRequestURL(mapQuerys)
 	fmt.Println(url)
-	bodyBytes, err := requestContent(url)
+	bodyBytes, err := queryContent(url)
 	if err != nil {
 		return
 	}

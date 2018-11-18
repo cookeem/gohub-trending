@@ -1,4 +1,4 @@
-# go-headlines
+# golang github trending demo app
 
 > golang github trending demo app
 
@@ -8,6 +8,14 @@ frontend -> backend -> gitrepo-svc (search) -> github.com-> db
                     -> review-svc(create/delete/list) -> db
                     -> user-svc(create/get/update/login/logout)
                     -> gitrepo-svc (get/list) -> db
+```
+
+## 编译说明
+
+```
+go get -u -v github.com/jinzhu/gorm
+go get -u -v github.com/jinzhu/gorm/dialects/mysql
+go get -u -v gopkg.in/yaml.v2
 ```
 
 ## 接口说明

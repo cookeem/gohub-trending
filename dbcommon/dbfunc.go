@@ -1,14 +1,14 @@
 package dbcommon
 
 import (
+	"gohub-trending/common"
+
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-const connectStr = "gituser:gitpassword@/github?charset=utf8mb4&parseTime=true"
-
 func CreateTables() (err error) {
-	db, err := gorm.Open("mysql", connectStr)
+	db, err := gorm.Open("mysql", common.ConnStr)
 	if err != nil {
 		return err
 	}
@@ -30,7 +30,7 @@ func CreateTables() (err error) {
 }
 
 func CreateUser(username string, password string) (uid int, errmsg string) {
-	db, err := gorm.Open("mysql", connectStr)
+	db, err := gorm.Open("mysql", common.ConnStr)
 	if err != nil {
 		errmsg = "database connect error"
 		return uid, errmsg
@@ -51,7 +51,7 @@ func CreateUser(username string, password string) (uid int, errmsg string) {
 }
 
 func LoginUser(username string, password string) (uid int, errmsg string) {
-	db, err := gorm.Open("mysql", connectStr)
+	db, err := gorm.Open("mysql", common.ConnStr)
 	if err != nil {
 		errmsg = "database connect error"
 		return uid, errmsg
@@ -74,7 +74,7 @@ func LoginUser(username string, password string) (uid int, errmsg string) {
 }
 
 func GetUser(uid int) (user User, errmsg string) {
-	db, err := gorm.Open("mysql", connectStr)
+	db, err := gorm.Open("mysql", common.ConnStr)
 	if err != nil {
 		errmsg = "database connect error"
 		return user, errmsg
@@ -89,7 +89,7 @@ func GetUser(uid int) (user User, errmsg string) {
 }
 
 func UpdateUser(uid int, password string) (errmsg string) {
-	db, err := gorm.Open("mysql", connectStr)
+	db, err := gorm.Open("mysql", common.ConnStr)
 	if err != nil {
 		errmsg = "database connect error"
 		return errmsg
@@ -107,7 +107,7 @@ func UpdateUser(uid int, password string) (errmsg string) {
 }
 
 func CreateReview(uid int, gid int, content string) (rid int, errmsg string) {
-	db, err := gorm.Open("mysql", connectStr)
+	db, err := gorm.Open("mysql", common.ConnStr)
 	if err != nil {
 		errmsg = "database connect error"
 		return rid, errmsg
@@ -135,7 +135,7 @@ func CreateReview(uid int, gid int, content string) (rid int, errmsg string) {
 }
 
 func DeleteReview(rid int) (errmsg string) {
-	db, err := gorm.Open("mysql", connectStr)
+	db, err := gorm.Open("mysql", common.ConnStr)
 	if err != nil {
 		errmsg = "database connect error"
 		return errmsg
@@ -161,7 +161,7 @@ func DeleteReview(rid int) (errmsg string) {
 }
 
 func ListReviews(gid int) (reviews []map[User]Review, errmsg string) {
-	db, err := gorm.Open("mysql", connectStr)
+	db, err := gorm.Open("mysql", common.ConnStr)
 	if err != nil {
 		errmsg = "database connect error"
 		return reviews, errmsg
@@ -185,7 +185,7 @@ func ListReviews(gid int) (reviews []map[User]Review, errmsg string) {
 }
 
 func ListGitRepos(language string, page int, perPage int) (gitrepos []GitRepo, errmsg string) {
-	db, err := gorm.Open("mysql", connectStr)
+	db, err := gorm.Open("mysql", common.ConnStr)
 	if err != nil {
 		errmsg = "database connect error"
 		return gitrepos, errmsg
@@ -204,7 +204,7 @@ func ListGitRepos(language string, page int, perPage int) (gitrepos []GitRepo, e
 }
 
 func GetGitRepo(gid int) (gitrepo GitRepo, errmsg string) {
-	db, err := gorm.Open("mysql", connectStr)
+	db, err := gorm.Open("mysql", common.ConnStr)
 	if err != nil {
 		errmsg = "database connect error"
 		return gitrepo, errmsg
@@ -219,7 +219,7 @@ func GetGitRepo(gid int) (gitrepo GitRepo, errmsg string) {
 }
 
 func SearchGitRepos(grs []GitRepo) (gitrepos []GitRepo, languages []GitLanguage, errmsg string) {
-	db, err := gorm.Open("mysql", connectStr)
+	db, err := gorm.Open("mysql", common.ConnStr)
 	if err != nil {
 		errmsg = "database connect error"
 		return gitrepos, languages, errmsg
