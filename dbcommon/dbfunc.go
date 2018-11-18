@@ -146,8 +146,15 @@ func DeleteReview(rid int) (errmsg string) {
 	if db.Where(&Review{Rid: rid}).First(&r).RecordNotFound() {
 		errmsg = "review not exists"
 	} else {
-		if err = db.Delete(&r).Error; err != nil {
-			errmsg = "review delete error"
+		var gitrepo GitRepo
+		if db.Where(&GitRepo{Gid: r.Gid}).First(&gitrepo).RecordNotFound() {
+			errmsg = "gitrepo not exists"
+		} else {
+			if err = db.Delete(&r).Error; err != nil {
+				errmsg = "review delete error"
+			} else {
+				db.Model(&gitrepo).Update(GitRepo{ReviewsCount: gitrepo.ReviewsCount - 1})
+			}
 		}
 	}
 	return errmsg
