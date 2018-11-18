@@ -12,7 +12,8 @@ frontend -> backend -> gitrepo-svc (search) -> github.com-> db
 
 ### user-svc
 
-``` create: 注册用户
+#### create: 注册用户
+```
 request:
 username, password
 ======
@@ -25,7 +26,8 @@ header: x-user-token // jwt token
 }
 ```
 
-``` login: 用户登录
+#### login: 用户登录
+```
 request:
 username, password
 ======
@@ -38,7 +40,8 @@ header: x-user-token // jwt token
 }
 ```
 
-``` logout: 用户注销
+#### logout: 用户注销
+```
 request:
 request: header x-user-token
 ======
@@ -50,7 +53,8 @@ header: x-user-token // 清除x-user-token
 }
 ```
 
-``` get: 修改用户信息时获取用户信息
+#### get: 修改用户信息时获取用户信息
+```
 request: header x-user-token
 ===
 response:
@@ -61,7 +65,8 @@ header: x-user-token // jwt token
 }
 ```
 
-``` update: 更新用户信息
+#### update: 更新用户信息
+```
 request: header x-user-token
 password_current, password_new, password_repeat
 ===
@@ -76,7 +81,8 @@ header: x-user-token // jwt token
 
 ### review-svc
 
-``` create: 发表gitrepo点评
+#### create: 发表gitrepo点评
+```
 request: header x-user-token
 uid, gid, content
 ===
@@ -89,7 +95,8 @@ header: x-user-token // jwt token
 }
 ```
 
-``` delete: 删除gitrepo点评
+#### delete: 删除gitrepo点评
+```
 request: header x-user-token
 rid
 ===
@@ -101,7 +108,8 @@ header: x-user-token // jwt token
 }
 ```
 
-``` list: 获取gitrepo的点评列表
+#### list: 获取gitrepo的点评列表
+```
 request: header x-user-token
 gid
 ===
@@ -125,7 +133,8 @@ header: x-user-token // jwt token
 
 ### gitrepo-svc
 
-``` list: 获取gitrepo列表
+#### list: 获取gitrepo列表
+```
 request: header x-user-token
 language, page, per_page
 ===
@@ -153,7 +162,8 @@ header: x-user-token // jwt token
 }
 ```
 
-``` get: 获取gitrepo详情
+#### get: 获取gitrepo详情
+```
 request: header x-user-token
 gid
 ===
@@ -190,7 +200,8 @@ header: x-user-token // jwt token
 }
 ```
 
-``` search: 搜索gitrepo列表，从github拉取信息
+#### search: 搜索gitrepo列表，从github拉取信息
+```
 request: header x-user-token
 page, per_page
 ===
@@ -226,10 +237,7 @@ header: x-user-token // jwt token
 }
 ```
 
-```
-curl -H "Accept: application/vnd.github.mercy-preview+json" \
-'https://api.github.com/search/repositories?per_page=10&page=1&sort=stars&order=desc&q=topic:wechat+stars:>=10+pushed:>2018-05-16' | jq ".items[] | {full_name, description, language, stargazers_count, watchers_count, forks_count, open_issues_count, created_at, updated_at, pushed_at, html_url}"
-```
+## 运行命令，检查数据库
 
 ```
 docker-compose stop && docker-compose rm -f && docker-compose up -d
@@ -243,5 +251,4 @@ show tables;
 explain git_repos;
 
 drop table users;drop table reviews;drop table git_repos; drop table git_languages;
-
 ```
