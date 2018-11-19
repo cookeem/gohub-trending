@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"strings"
+	"time"
 
+	jwt "github.com/dgrijalva/jwt-go"
 	yaml "gopkg.in/yaml.v2"
 )
 
@@ -18,6 +20,15 @@ type AppConfig struct {
 		Password string   `yaml:"password"`
 		Params   []string `yaml:"params"`
 	} `yaml:"mysql"`
+	Jwt struct {
+		Secret string `yaml:"secret"`
+	} `yaml:"jwt"`
+}
+
+type UserToken struct {
+	Username string `json:"username"`
+	Uid      int    `json:"uid"`
+	jwt.StandardClaims
 }
 
 func GetConfig() (conf AppConfig, err error) {
@@ -39,4 +50,40 @@ func GetDBConn() (dbstr string, err error) {
 	return dbstr, err
 }
 
+func GetJwtSecret() (secret string, err error) {
+	conf, err := GetConfig()
+	if err != nil || conf.Mysql.Database == "" {
+		err = errors.New("read config file failed")
+	} else {
+		secret = conf.Jwt.Secret
+	}
+	return secret, err
+}
+
+func CreateTokenString(username string, uid int, expSecs int, secretStr string) (string, error) {
+	var claims UserToken
+	claims.Username = "cookeem"
+	claims.Uid = 1
+	claims.IssuedAt = time.Now().Unix()
+	claims.ExpiresAt = time.Now().Add(time.Second * time.Duration(expSecs)).Unix()
+	claims.Issuer = "gitrepo"
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString([]byte(secretStr))
+}
+
+func VerifyTokenString(tokenStr string, secretStr string) (claims *UserToken, err error) {
+	token, err := jwt.ParseWithClaims(tokenStr, &UserToken{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(secretStr), nil
+	})
+	if err == nil {
+		claims, _ = token.Claims.(*UserToken)
+	} else {
+		var ut UserToken
+		claims = &ut
+	}
+	return claims, err
+}
+
 var ConnStr, _ = GetDBConn()
+
+var SecretStr, _ = GetJwtSecret()

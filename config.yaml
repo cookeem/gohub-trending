@@ -7,3 +7,5 @@ mysql:
   params:
   - "charset=utf8mb4"
   - "parseTime=true"
+jwt:
+  secret: "HAiOjE1NDI1OTU2ODgsInVpZCI6MSwidXNlcm5hbWUiOiJjb29rZWVt"
