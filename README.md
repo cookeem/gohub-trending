@@ -25,7 +25,7 @@ go get -u -v gopkg.in/yaml.v2
 #### create: 注册用户 (POST /users)
 ```
 request:
-username, password
+username, password, password_repeat
 ======
 response:
 header: x-user-token // jwt token

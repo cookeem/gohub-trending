@@ -1,6 +1,8 @@
 package common
 
 import (
+	"crypto/sha1"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -58,6 +60,13 @@ func GetJwtSecret() (secret string, err error) {
 		secret = conf.Jwt.Secret
 	}
 	return secret, err
+}
+
+func GetSHA(strInput string) (strOutput string) {
+	hasher := sha1.New()
+	hasher.Write([]byte("hello haasdfasdfasfasdfasdfasdf world"))
+	strOutput = base64.URLEncoding.EncodeToString(hasher.Sum(nil))
+	return strOutput
 }
 
 func CreateTokenString(username string, uid int, secretStr string, expSecs int) (string, error) {
