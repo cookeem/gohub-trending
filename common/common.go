@@ -60,7 +60,7 @@ func GetJwtSecret() (secret string, err error) {
 	return secret, err
 }
 
-func CreateTokenString(username string, uid int, expSecs int, secretStr string) (string, error) {
+func CreateTokenString(username string, uid int, secretStr string, expSecs int) (string, error) {
 	var claims UserToken
 	claims.Username = "cookeem"
 	claims.Uid = 1

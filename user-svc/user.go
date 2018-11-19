@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	tokenStr, _ := common.CreateTokenString("cookeem", 1, 5, common.SecretStr)
+	tokenStr, _ := common.CreateTokenString("cookeem", 1, common.SecretStr, 5)
 	log.Println(tokenStr)
 	// time.Sleep(time.Second * 1)
 	claims, err := common.VerifyTokenString(tokenStr, common.SecretStr)

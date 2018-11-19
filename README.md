@@ -22,7 +22,7 @@ go get -u -v gopkg.in/yaml.v2
 
 ### user-svc 接口说明
 
-#### create: 注册用户
+#### create: 注册用户 (POST /users)
 ```
 request:
 username, password
@@ -36,7 +36,7 @@ header: x-user-token // jwt token
 }
 ```
 
-#### login: 用户登录
+#### login: 用户登录 (POST /users/login)
 ```
 request:
 username, password
@@ -50,9 +50,8 @@ header: x-user-token // jwt token
 }
 ```
 
-#### logout: 用户注销
+#### logout: 用户注销 (POST /users/logout)
 ```
-request:
 request: header x-user-token
 ======
 response:
@@ -63,7 +62,7 @@ header: x-user-token // 清除x-user-token
 }
 ```
 
-#### get: 修改用户信息时获取用户信息
+#### get: 修改用户信息时获取用户信息 (GET /users)
 ```
 request: header x-user-token
 ===
@@ -75,7 +74,7 @@ header: x-user-token // jwt token
 }
 ```
 
-#### update: 更新用户信息
+#### update: 更新用户信息 (PUT /users)
 ```
 request: header x-user-token
 password_current, password_new, password_repeat
@@ -91,7 +90,7 @@ header: x-user-token // jwt token
 
 ### review-svc 接口说明
 
-#### create: 发表gitrepo点评
+#### create: 发表gitrepo点评 (POST /reviews)
 ```
 request: header x-user-token
 uid, gid, content
@@ -105,7 +104,7 @@ header: x-user-token // jwt token
 }
 ```
 
-#### delete: 删除gitrepo点评
+#### delete: 删除gitrepo点评 (DELETE /reviews)
 ```
 request: header x-user-token
 rid
@@ -118,7 +117,7 @@ header: x-user-token // jwt token
 }
 ```
 
-#### list: 获取gitrepo的点评列表
+#### list: 获取gitrepo的点评列表 (GET /reviews)
 ```
 request: header x-user-token
 gid
@@ -143,7 +142,7 @@ header: x-user-token // jwt token
 
 ### gitrepo-svc 接口说明
 
-#### list: 获取gitrepo列表
+#### list: 获取gitrepo列表 (GET /gitrepos)
 ```
 request: header x-user-token
 language, page, per_page
@@ -172,7 +171,7 @@ header: x-user-token // jwt token
 }
 ```
 
-#### get: 获取gitrepo详情
+#### get: 获取gitrepo详情 (GET /gitrepos/:gid)
 ```
 request: header x-user-token
 gid
@@ -210,7 +209,7 @@ header: x-user-token // jwt token
 }
 ```
 
-#### search: 搜索gitrepo列表，从github拉取信息
+#### search: 搜索gitrepo列表，从github拉取信息 (POST /gitrepos)
 ```
 request: header x-user-token
 page, per_page

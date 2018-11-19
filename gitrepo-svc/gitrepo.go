@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"gohub-trending/dbcommon"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -13,11 +14,15 @@ import (
 )
 
 func queryContent(url string) (bytearr []byte, err error) {
-	resp, err := http.Get(url)
+	timeout := time.Duration(10 * time.Second)
+	client := http.Client{
+		Timeout: timeout,
+	}
+	resp, err := client.Get(url)
 	if err == nil {
 		bytearr, err = ioutil.ReadAll(resp.Body)
+		defer resp.Body.Close()
 	}
-	defer resp.Body.Close()
 	return bytearr, err
 }
 
@@ -64,7 +69,6 @@ func requestSearchGitRepos(topics string, perPage int, page int) {
 		"q":        q,
 	}
 	url := createRequestURL(mapQuerys)
-	fmt.Println(url)
 	bodyBytes, err := queryContent(url)
 	if err != nil {
 		return
@@ -175,7 +179,7 @@ func requestSearchGitRepos(topics string, perPage int, page int) {
 	byteJson, _ := json.Marshal(mapJson)
 	var prettyJson bytes.Buffer
 	json.Indent(&prettyJson, byteJson, "", "  ")
-	fmt.Println(prettyJson.String())
+	log.Println(prettyJson.String())
 }
 
 func main() {
@@ -183,29 +187,29 @@ func main() {
 
 	requestSearchGitRepos("tensorflow", 20, 1)
 	// user, errmsg := dbcommon.CreateUser("cookeem", "password")
-	// fmt.Println(user, errmsg)
+	// log.Println(user, errmsg)
 
 	// uid, errmsg := dbcommon.LoginUser("cookeem", "password1")
-	// fmt.Println(uid, errmsg)
+	// log.Println(uid, errmsg)
 
 	// user2, errmsg := dbcommon.GetUser(2)
-	// fmt.Println(user2, errmsg)
+	// log.Println(user2, errmsg)
 
 	// errmsg = dbcommon.UpdateUser(2, "passwordx")
-	// fmt.Println(errmsg)
+	// log.Println(errmsg)
 
 	// rid, errmsg := dbcommon.CreateReview(1, 1, "orz ###@@@# ")
-	// fmt.Println(rid, errmsg)
+	// log.Println(rid, errmsg)
 
 	// errmsg = dbcommon.DeleteReview(1)
-	// fmt.Println(errmsg)
+	// log.Println(errmsg)
 
 	// rs, errmsg := dbcommon.ListReviews(1)
-	// fmt.Println(rs, errmsg)
+	// log.Println(rs, errmsg)
 
 	// grs, errmsg := dbcommon.ListGitRepos("", 2, 2)
-	// fmt.Println(grs, errmsg)
+	// log.Println(grs, errmsg)
 
 	// gr, errmsg := dbcommon.GetGitRepo(2)
-	// fmt.Println(gr, errmsg)
+	// log.Println(gr, errmsg)
 }
