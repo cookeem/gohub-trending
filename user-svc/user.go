@@ -53,28 +53,161 @@ func createUser(c *gin.Context) {
 }
 
 func loginUser(c *gin.Context) {
-	c.String(http.StatusOK, "Login")
+	username := c.DefaultPostForm("username", "")
+	password := c.DefaultPostForm("password", "")
+
+	errmsg := ""
+	errorRet := 1
+	msg := ""
+	uid := 0
+
+	userToken := ""
+	httpStatus := http.StatusForbidden
+
+	if len(username) == 0 {
+		errmsg = "please input username"
+	} else if len(username) > 12 {
+		errmsg = "username too long"
+	} else if len(password) == 0 {
+		errmsg = "please input password"
+	} else if len(password) < 6 || len(password) > 20 {
+		errmsg = "password should greater then 6 and less then 20 characters"
+	} else {
+		password = common.GetSHA(password)
+		uid, errmsg = dbcommon.LoginUser(username, password)
+	}
+	if errmsg == "" {
+		userToken, _ = common.CreateTokenString(username, uid, common.SecretStr, 15*60)
+		msg = "login succeed"
+		errorRet = 0
+		httpStatus = http.StatusOK
+	} else {
+		msg = errmsg
+	}
+	data := map[string]interface{}{
+		"error": errorRet,
+		"msg":   msg,
+		"uid":   uid,
+	}
+	c.Header("x-user-token", userToken)
+	c.JSON(httpStatus, data)
 }
 
 func logoutUser(c *gin.Context) {
-	c.String(http.StatusOK, "Logout")
+	errmsg := ""
+	errorRet := 1
+	msg := ""
+
+	userToken := c.Request.Header.Get("x-user-token")
+	httpStatus := http.StatusForbidden
+
+	ut := common.VerifyTokenString(userToken, common.SecretStr)
+	if ut.Uid == 0 {
+		errmsg = "user not login yet"
+	}
+
+	if errmsg == "" {
+		msg = "logout succeed"
+		errorRet = 0
+		httpStatus = http.StatusOK
+	} else {
+		msg = errmsg
+	}
+	data := map[string]interface{}{
+		"error": errorRet,
+		"msg":   msg,
+	}
+	c.Header("x-user-token", "")
+	c.JSON(httpStatus, data)
 }
 
 func getUser(c *gin.Context) {
-	c.String(http.StatusOK, "Get")
+	errmsg := ""
+	errorRet := 1
+	msg := ""
+	user := dbcommon.User{}
+
+	userToken := c.Request.Header.Get("x-user-token")
+	httpStatus := http.StatusForbidden
+
+	ut := common.VerifyTokenString(userToken, common.SecretStr)
+	if ut.Uid == 0 {
+		errmsg = "user not login yet"
+	} else {
+		user, errmsg = dbcommon.GetUser(ut.Uid)
+	}
+
+	if errmsg == "" {
+		msg = "get login user info succeed"
+		errorRet = 0
+		httpStatus = http.StatusOK
+		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.SecretStr, 15*60)
+	} else {
+		msg = errmsg
+		userToken = ""
+	}
+	data := map[string]interface{}{
+		"error":    errorRet,
+		"msg":      msg,
+		"username": user.Username,
+		"uid":      user.Uid,
+	}
+	c.Header("x-user-token", userToken)
+	c.JSON(httpStatus, data)
 }
 
 func updateUser(c *gin.Context) {
-	c.String(http.StatusOK, "Update")
+	passwordOld := c.DefaultPostForm("password_old", "")
+	password := c.DefaultPostForm("password", "")
+	passwordRepeat := c.DefaultPostForm("password_repeat", "")
+
+	errmsg := ""
+	errorRet := 1
+	msg := ""
+	user := dbcommon.User{}
+
+	userToken := c.Request.Header.Get("x-user-token")
+	httpStatus := http.StatusForbidden
+
+	ut := common.VerifyTokenString(userToken, common.SecretStr)
+	if ut.Uid == 0 {
+		errmsg = "user not login yet"
+	} else {
+		if len(passwordOld) == 0 {
+			errmsg = "please input old password"
+		} else if len(password) == 0 {
+			errmsg = "please input password"
+		} else if len(passwordOld) < 6 || len(passwordOld) > 20 {
+			errmsg = "old password should greater then 6 and less then 20 characters"
+		} else if len(password) < 6 || len(password) > 20 {
+			errmsg = "password should greater then 6 and less then 20 characters"
+		} else if password != passwordRepeat {
+			errmsg = "repeact password should be the same as password"
+		} else {
+			password = common.GetSHA(password)
+			passwordOld = common.GetSHA(passwordOld)
+			errmsg = dbcommon.UpdateUser(user.Uid, password, passwordOld)
+		}
+	}
+
+	if errmsg == "" {
+		msg = "update password succeed"
+		errorRet = 0
+		httpStatus = http.StatusOK
+		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.SecretStr, 15*60)
+	} else {
+		msg = errmsg
+		userToken = ""
+	}
+	data := map[string]interface{}{
+		"error": errorRet,
+		"msg":   msg,
+	}
+	c.Header("x-user-token", userToken)
+	c.JSON(httpStatus, data)
 }
 
 func main() {
-	// tokenStr, _ := common.CreateTokenString("cookeem", 1, common.SecretStr, 5)
-	// log.Println(tokenStr)
-	// time.Sleep(time.Second * 1)
-	// claims, err := common.VerifyTokenString(tokenStr, common.SecretStr)
-	// log.Println("[DEBUG]", claims.Uid, claims.Username, claims.ExpiresAt, claims.Issuer, err)
-
 	router := gin.Default()
 	router.NoRoute(func(c *gin.Context) {
 		c.JSON(404, gin.H{"error": 1, "msg": "404 page not found"})

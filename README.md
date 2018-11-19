@@ -71,13 +71,15 @@ header: x-user-token // jwt token
 {
     error: 0,       // 0: 成功，1: 失败
     msg: "返回提示"  // 返回提示
+    username: "",
+    uid: 0,
 }
 ```
 
 #### update: 更新用户信息 (PUT /users)
 ```
 request: header x-user-token
-password_current, password_new, password_repeat
+password_old, password, password_repeat
 ===
 response:
 header: x-user-token // jwt token

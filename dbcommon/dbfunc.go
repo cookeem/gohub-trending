@@ -88,7 +88,7 @@ func GetUser(uid int) (user User, errmsg string) {
 	return user, errmsg
 }
 
-func UpdateUser(uid int, password string) (errmsg string) {
+func UpdateUser(uid int, password string, passwordOld string) (errmsg string) {
 	db, err := gorm.Open("mysql", common.ConnStr)
 	if err != nil {
 		errmsg = "database connect error"
@@ -101,7 +101,11 @@ func UpdateUser(uid int, password string) (errmsg string) {
 		errmsg = "user not exists"
 		return errmsg
 	} else {
-		db.Model(&user).Update(User{Password: password})
+		if user.Password == passwordOld {
+			db.Model(&user).Update(User{Password: password})
+		} else {
+			errmsg = "user old password incorrect"
+		}
 	}
 	return errmsg
 }

@@ -64,7 +64,7 @@ func GetJwtSecret() (secret string, err error) {
 
 func GetSHA(strInput string) (strOutput string) {
 	hasher := sha1.New()
-	hasher.Write([]byte("hello haasdfasdfasfasdfasdfasdf world"))
+	hasher.Write([]byte(strInput))
 	strOutput = base64.URLEncoding.EncodeToString(hasher.Sum(nil))
 	return strOutput
 }
@@ -80,7 +80,7 @@ func CreateTokenString(username string, uid int, secretStr string, expSecs int) 
 	return token.SignedString([]byte(secretStr))
 }
 
-func VerifyTokenString(tokenStr string, secretStr string) (claims *UserToken, err error) {
+func VerifyTokenString(tokenStr string, secretStr string) (claims *UserToken) {
 	token, err := jwt.ParseWithClaims(tokenStr, &UserToken{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(secretStr), nil
 	})
@@ -90,7 +90,7 @@ func VerifyTokenString(tokenStr string, secretStr string) (claims *UserToken, er
 		var ut UserToken
 		claims = &ut
 	}
-	return claims, err
+	return claims
 }
 
 var ConnStr, _ = GetDBConn()
