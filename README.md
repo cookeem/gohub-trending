@@ -95,7 +95,7 @@ header: x-user-token // jwt token
 #### create: 发表gitrepo点评 (POST /reviews)
 ```
 request: header x-user-token
-uid, gid, content
+gid, content
 ===
 response:
 header: x-user-token // jwt token

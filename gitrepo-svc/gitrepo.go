@@ -11,6 +11,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 func queryContent(url string) (bytearr []byte, err error) {
@@ -183,33 +185,19 @@ func requestSearchGitRepos(topics string, perPage int, page int) {
 }
 
 func main() {
-	dbcommon.CreateTables()
-
 	requestSearchGitRepos("tensorflow", 20, 1)
-	// user, errmsg := dbcommon.CreateUser("cookeem", "password")
-	// log.Println(user, errmsg)
 
-	// uid, errmsg := dbcommon.LoginUser("cookeem", "password1")
-	// log.Println(uid, errmsg)
+	router := gin.Default()
+	router.NoRoute(func(c *gin.Context) {
+		c.JSON(404, gin.H{"error": 1, "msg": "404 page not found"})
+	})
 
-	// user2, errmsg := dbcommon.GetUser(2)
-	// log.Println(user2, errmsg)
+	routerGitRepos := router.Group("/GitRepos")
+	{
+		routerGitRepos.GET("/", listGitRepos)
+		routerGitRepos.GET("/:gid", getGitRepo)
+		routerGitRepos.POST("/", searchGitRepo)
+	}
 
-	// errmsg = dbcommon.UpdateUser(2, "passwordx")
-	// log.Println(errmsg)
-
-	// rid, errmsg := dbcommon.CreateReview(1, 1, "orz ###@@@# ")
-	// log.Println(rid, errmsg)
-
-	// errmsg = dbcommon.DeleteReview(1)
-	// log.Println(errmsg)
-
-	// rs, errmsg := dbcommon.ListReviews(1)
-	// log.Println(rs, errmsg)
-
-	// grs, errmsg := dbcommon.ListGitRepos("", 2, 2)
-	// log.Println(grs, errmsg)
-
-	// gr, errmsg := dbcommon.GetGitRepo(2)
-	// log.Println(gr, errmsg)
+	router.Run(":8080")
 }

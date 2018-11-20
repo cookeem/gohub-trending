@@ -1,6 +1,7 @@
 package dbcommon
 
 import (
+	"fmt"
 	"gohub-trending/common"
 
 	"github.com/jinzhu/gorm"
@@ -138,7 +139,7 @@ func CreateReview(uid int, gid int, content string) (rid int, errmsg string) {
 	return rid, errmsg
 }
 
-func DeleteReview(rid int) (errmsg string) {
+func DeleteReview(uid int, rid int) (errmsg string) {
 	db, err := gorm.Open("mysql", common.ConnStr)
 	if err != nil {
 		errmsg = "database connect error"
@@ -151,20 +152,20 @@ func DeleteReview(rid int) (errmsg string) {
 		errmsg = "review not exists"
 	} else {
 		var gitrepo GitRepo
-		if db.Where(&GitRepo{Gid: r.Gid}).First(&gitrepo).RecordNotFound() {
-			errmsg = "gitrepo not exists"
+		fmt.Println(r.Uid, uid)
+		if r.Uid != uid {
+			errmsg = "not privilege to delete this review"
+		} else if err = db.Delete(&r).Error; err != nil {
+			errmsg = "review delete error"
 		} else {
-			if err = db.Delete(&r).Error; err != nil {
-				errmsg = "review delete error"
-			} else {
-				db.Model(&gitrepo).Update(GitRepo{ReviewsCount: gitrepo.ReviewsCount - 1})
-			}
+			db.Model(&gitrepo).Update(GitRepo{ReviewsCount: gitrepo.ReviewsCount - 1})
 		}
 	}
 	return errmsg
 }
 
-func ListReviews(gid int) (reviews []map[User]Review, errmsg string) {
+func ListReviews(gid int) (reviews map[Review]User, errmsg string) {
+	reviews = make(map[Review]User)
 	db, err := gorm.Open("mysql", common.ConnStr)
 	if err != nil {
 		errmsg = "database connect error"
@@ -173,16 +174,14 @@ func ListReviews(gid int) (reviews []map[User]Review, errmsg string) {
 	defer db.Close()
 
 	var rs []Review
-	if err := db.Where(&Review{Gid: gid}).Find(&rs).Error; err != nil {
+	if err := db.Order("rid desc").Where(&Review{Gid: gid}).Find(&rs).Error; err != nil {
 		errmsg = "select rs error"
 		return reviews, errmsg
 	} else {
 		for _, r := range rs {
 			var u User
 			db.Where(&User{Uid: r.Uid}).First(&u)
-			review := make(map[User]Review)
-			review[u] = r
-			reviews = append(reviews, review)
+			reviews[r] = u
 		}
 	}
 	return reviews, errmsg

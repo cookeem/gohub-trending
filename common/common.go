@@ -71,8 +71,8 @@ func GetSHA(strInput string) (strOutput string) {
 
 func CreateTokenString(username string, uid int, secretStr string, expSecs int) (string, error) {
 	var claims UserToken
-	claims.Username = "cookeem"
-	claims.Uid = 1
+	claims.Username = username
+	claims.Uid = uid
 	claims.IssuedAt = time.Now().Unix()
 	claims.ExpiresAt = time.Now().Add(time.Second * time.Duration(expSecs)).Unix()
 	claims.Issuer = "gitrepo"
