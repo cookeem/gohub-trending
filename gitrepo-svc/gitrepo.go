@@ -14,12 +14,16 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func queryContent(url string) (bytearr []byte, err error) {
+func queryContent(url string, headers map[string]string) (bytearr []byte, err error) {
 	timeout := time.Duration(10 * time.Second)
 	client := http.Client{
 		Timeout: timeout,
 	}
-	resp, err := client.Get(url)
+	req, _ := http.NewRequest("GET", url, nil)
+	for k, v := range headers {
+		req.Header.Set(k, v)
+	}
+	resp, err := client.Do(req)
 	if err == nil {
 		bytearr, err = ioutil.ReadAll(resp.Body)
 		defer resp.Body.Close()
@@ -71,7 +75,7 @@ func requestSearchGitRepos(topics string, perPage int, page int) (gitrepos []dbc
 		"q":        q,
 	}
 	url := createRequestURL(mapQuerys)
-	bodyBytes, err := queryContent(url)
+	bodyBytes, err := queryContent(url, map[string]string{})
 	if err != nil {
 		errmsg = err.Error()
 		return gitrepos, languages, errmsg
@@ -142,52 +146,6 @@ func requestSearchGitRepos(topics string, perPage int, page int) (gitrepos []dbc
 	}
 	gitrepos, languages, errmsg = dbcommon.SearchGitRepos(grs)
 	return gitrepos, languages, errmsg
-	// var mapJson map[string]interface{}
-	// if errmsg == "" {
-	// 	gitreposJson, _ := json.Marshal(gitrepos)
-	// 	languagesJson, _ := json.Marshal(languages)
-	// 	var a []interface{}
-	// 	var arrGitRepos []interface{}
-	// 	var arrLanguages []interface{}
-	// 	if json.Unmarshal(gitreposJson, &a) == nil {
-	// 		for _, v := range a {
-	// 			v2 := v.(map[string]interface{})
-	// 			delete(v2, "html_url")
-	// 			delete(v2, "watchers_count")
-	// 			delete(v2, "forks_count")
-	// 			delete(v2, "open_issues_count")
-	// 			delete(v2, "created_at")
-	// 			delete(v2, "updated_at")
-	// 			delete(v2, "pushed_at")
-	// 			arrGitRepos = append(arrGitRepos, v2)
-	// 		}
-	// 	}
-	// 	if json.Unmarshal(languagesJson, &a) == nil {
-	// 		for _, v := range a {
-	// 			v2 := v.(map[string]interface{})
-	// 			arrLanguages = append(arrLanguages, v2)
-	// 		}
-	// 	}
-	// 	mo := map[string]interface{}{
-	// 		"error":     0,
-	// 		"msg":       "",
-	// 		"languages": arrGitRepos,
-	// 		"gitrepos":  arrLanguages,
-	// 	}
-	// 	mapJson = mo
-	// } else {
-	// 	mo := map[string]interface{}{
-	// 		"error":     1,
-	// 		"msg":       errmsg,
-	// 		"languages": []interface{}{},
-	// 		"gitrepos":  []interface{}{},
-	// 	}
-	// 	mapJson = mo
-	// }
-	// byteJson, _ := json.Marshal(mapJson)
-	// var prettyJson bytes.Buffer
-	// json.Indent(&prettyJson, byteJson, "", "  ")
-	// log.Println(prettyJson.String())
 }
 
 func listGitRepos(c *gin.Context) {
@@ -315,7 +273,7 @@ func getGitRepo(c *gin.Context) {
 	msg := ""
 	user := dbcommon.User{}
 	gitrepo := dbcommon.GitRepo{}
-	reviews := make([]dbcommon.Review, 0)
+	reviews := make([]interface{}, 0)
 
 	userToken := c.Request.Header.Get("x-user-token")
 	httpStatus := http.StatusForbidden
@@ -332,10 +290,30 @@ func getGitRepo(c *gin.Context) {
 		}
 
 		if errmsg == "" {
-			msg = "get gitrepo reviews succeed"
-			errorRet = 0
-			httpStatus = http.StatusOK
-			userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, 15*60)
+			headers := map[string]string{
+				"x-user-token": userToken,
+			}
+			bs, err := queryContent(fmt.Sprintf("http://%v:%v/reviews/%v", common.GlobalConfig.Reviews.Host, common.GlobalConfig.Reviews.Port, gid), headers)
+			if err != nil {
+				errmsg = "query reviews service error"
+			} else {
+				var mapReviews map[string]interface{}
+				err = json.Unmarshal(bs, &mapReviews)
+				if err != nil {
+					errmsg = "reviews service parse error"
+				} else {
+					if mapReviews["error"] == 1 {
+						errmsg = mapReviews["msg"].(string)
+					} else {
+						reviews = mapReviews["reviews"].([]interface{})
+						msg = "get gitrepo reviews succeed"
+						errorRet = 0
+						httpStatus = http.StatusOK
+						userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, 15*60)
+					}
+
+				}
+			}
 		} else {
 			msg = errmsg
 			userToken = ""
