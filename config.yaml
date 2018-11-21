@@ -9,3 +9,12 @@ mysql:
   - "parseTime=true"
 jwt:
   secret: "HAiOjE1NDI1OTU2ODgsInVpZCI6MSwidXNlcm5hbWUiOiJjb29rZWVt"
+users:
+  host: localhost
+  port: 8080
+gitrepos:
+  host: localhost
+  port: 8081
+reviews:
+  host: localhost
+  port: 8082

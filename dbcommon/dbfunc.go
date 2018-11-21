@@ -188,6 +188,8 @@ func ListReviews(gid int) (reviews map[Review]User, errmsg string) {
 }
 
 func ListGitRepos(language string, page int, perPage int) (gitrepos []GitRepo, languages []GitLanguage, errmsg string) {
+	gitrepos = make([]GitRepo, 0)
+	languages = make([]GitLanguage, 0)
 	db, err := gorm.Open("mysql", common.ConnStr)
 	if err != nil {
 		errmsg = "database connect error"
@@ -211,6 +213,8 @@ func ListGitRepos(language string, page int, perPage int) (gitrepos []GitRepo, l
 }
 
 func SearchGitRepos(grs []GitRepo) (gitrepos []GitRepo, languages []GitLanguage, errmsg string) {
+	gitrepos = make([]GitRepo, 0)
+	languages = make([]GitLanguage, 0)
 	db, err := gorm.Open("mysql", common.ConnStr)
 	if err != nil {
 		errmsg = "database connect error"

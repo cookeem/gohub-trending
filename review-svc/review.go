@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"gohub-trending/common"
 	"gohub-trending/dbcommon"
 	"net/http"
@@ -22,7 +23,7 @@ func createReview(c *gin.Context) {
 	userToken := c.Request.Header.Get("x-user-token")
 	httpStatus := http.StatusForbidden
 
-	ut := common.VerifyTokenString(userToken, common.SecretStr)
+	ut := common.VerifyTokenString(userToken, common.GlobalConfig.Jwt.Secret)
 	if ut.Uid == 0 {
 		errmsg = "user not login yet"
 	} else {
@@ -42,7 +43,7 @@ func createReview(c *gin.Context) {
 		msg = "new review succeed"
 		errorRet = 0
 		httpStatus = http.StatusOK
-		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.SecretStr, 15*60)
+		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, 15*60)
 	} else {
 		msg = errmsg
 		userToken = ""
@@ -67,7 +68,7 @@ func deleteReview(c *gin.Context) {
 	userToken := c.Request.Header.Get("x-user-token")
 	httpStatus := http.StatusForbidden
 
-	ut := common.VerifyTokenString(userToken, common.SecretStr)
+	ut := common.VerifyTokenString(userToken, common.GlobalConfig.Jwt.Secret)
 	if ut.Uid == 0 {
 		errmsg = "user not login yet"
 	} else {
@@ -83,7 +84,7 @@ func deleteReview(c *gin.Context) {
 		msg = "delete review succeed"
 		errorRet = 0
 		httpStatus = http.StatusOK
-		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.SecretStr, 15*60)
+		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, 15*60)
 	} else {
 		msg = errmsg
 		userToken = ""
@@ -109,7 +110,7 @@ func listReviews(c *gin.Context) {
 	userToken := c.Request.Header.Get("x-user-token")
 	httpStatus := http.StatusForbidden
 
-	ut := common.VerifyTokenString(userToken, common.SecretStr)
+	ut := common.VerifyTokenString(userToken, common.GlobalConfig.Jwt.Secret)
 	if ut.Uid == 0 {
 		errmsg = "user not login yet"
 	} else {
@@ -135,7 +136,7 @@ func listReviews(c *gin.Context) {
 			reviews = append(reviews, r)
 		}
 		httpStatus = http.StatusOK
-		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.SecretStr, 15*60)
+		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, 15*60)
 	} else {
 		msg = errmsg
 		userToken = ""
@@ -161,6 +162,5 @@ func main() {
 		routerReviews.DELETE("/", deleteReview)
 		routerReviews.GET("/:gid", listReviews)
 	}
-
-	router.Run(":8080")
+	router.Run(fmt.Sprintf(":%v", common.GlobalConfig.Reviews.Port))
 }

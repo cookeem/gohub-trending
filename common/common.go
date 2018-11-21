@@ -16,7 +16,7 @@ import (
 type AppConfig struct {
 	Mysql struct {
 		Host     string   `yaml:"host"`
-		Port     string   `yaml:"port"`
+		Port     int      `yaml:"port"`
 		Database string   `yaml:"database"`
 		User     string   `yaml:"user"`
 		Password string   `yaml:"password"`
@@ -25,6 +25,18 @@ type AppConfig struct {
 	Jwt struct {
 		Secret string `yaml:"secret"`
 	} `yaml:"jwt"`
+	Users struct {
+		Host string `yaml:"host"`
+		Port int    `yaml:"port"`
+	} `yaml:"users"`
+	GitRepos struct {
+		Host string `yaml:"host"`
+		Port int    `yaml:"port"`
+	} `yaml:"gitrepos"`
+	Reviews struct {
+		Host string `yaml:"host"`
+		Port int    `yaml:"port"`
+	} `yaml:"reviews"`
 }
 
 type UserToken struct {
@@ -96,3 +108,5 @@ func VerifyTokenString(tokenStr string, secretStr string) (claims *UserToken) {
 var ConnStr, _ = GetDBConn()
 
 var SecretStr, _ = GetJwtSecret()
+
+var GlobalConfig, _ = GetConfig()

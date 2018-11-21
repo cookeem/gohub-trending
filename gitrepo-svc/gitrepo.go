@@ -1,13 +1,11 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"gohub-trending/common"
 	"gohub-trending/dbcommon"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -51,8 +49,9 @@ func createRequestURL(params map[string]string) string {
 	return url
 }
 
-func requestSearchGitRepos(topics string, perPage int, page int) {
+func requestSearchGitRepos(topics string, perPage int, page int) (gitrepos []dbcommon.GitRepo, languages []dbcommon.GitLanguage, errmsg string) {
 	var ts []string
+	gitrepos = make([]dbcommon.GitRepo, 0)
 	for _, s := range strings.Split(topics, " ") {
 		s = strings.Trim(s, " ")
 		if s != "" {
@@ -74,11 +73,16 @@ func requestSearchGitRepos(topics string, perPage int, page int) {
 	url := createRequestURL(mapQuerys)
 	bodyBytes, err := queryContent(url)
 	if err != nil {
-		return
+		errmsg = err.Error()
+		return gitrepos, languages, errmsg
 	}
 
 	var m map[string]interface{}
 	err = json.Unmarshal(bodyBytes, &m)
+	if err != nil {
+		errmsg = err.Error()
+		return gitrepos, languages, errmsg
+	}
 	var grs []dbcommon.GitRepo
 
 	items := m["items"].([]interface{})
@@ -136,53 +140,54 @@ func requestSearchGitRepos(topics string, perPage int, page int) {
 		}
 		grs = append(grs, gr)
 	}
-	gitrepos, languages, errmsg := dbcommon.SearchGitRepos(grs)
-	var mapJson map[string]interface{}
-	if errmsg == "" {
-		gitreposJson, _ := json.Marshal(gitrepos)
-		languagesJson, _ := json.Marshal(languages)
-		var a []interface{}
-		var arrGitRepos []interface{}
-		var arrLanguages []interface{}
-		if json.Unmarshal(gitreposJson, &a) == nil {
-			for _, v := range a {
-				v2 := v.(map[string]interface{})
-				delete(v2, "html_url")
-				delete(v2, "watchers_count")
-				delete(v2, "forks_count")
-				delete(v2, "open_issues_count")
-				delete(v2, "created_at")
-				delete(v2, "updated_at")
-				delete(v2, "pushed_at")
-				arrGitRepos = append(arrGitRepos, v2)
-			}
-		}
-		if json.Unmarshal(languagesJson, &a) == nil {
-			for _, v := range a {
-				v2 := v.(map[string]interface{})
-				arrLanguages = append(arrLanguages, v2)
-			}
-		}
-		mo := map[string]interface{}{
-			"error":     0,
-			"msg":       "",
-			"languages": arrGitRepos,
-			"gitrepos":  arrLanguages,
-		}
-		mapJson = mo
-	} else {
-		mo := map[string]interface{}{
-			"error":     1,
-			"msg":       errmsg,
-			"languages": []interface{}{},
-			"gitrepos":  []interface{}{},
-		}
-		mapJson = mo
-	}
-	byteJson, _ := json.Marshal(mapJson)
-	var prettyJson bytes.Buffer
-	json.Indent(&prettyJson, byteJson, "", "  ")
-	log.Println(prettyJson.String())
+	gitrepos, languages, errmsg = dbcommon.SearchGitRepos(grs)
+	return gitrepos, languages, errmsg
+	// var mapJson map[string]interface{}
+	// if errmsg == "" {
+	// 	gitreposJson, _ := json.Marshal(gitrepos)
+	// 	languagesJson, _ := json.Marshal(languages)
+	// 	var a []interface{}
+	// 	var arrGitRepos []interface{}
+	// 	var arrLanguages []interface{}
+	// 	if json.Unmarshal(gitreposJson, &a) == nil {
+	// 		for _, v := range a {
+	// 			v2 := v.(map[string]interface{})
+	// 			delete(v2, "html_url")
+	// 			delete(v2, "watchers_count")
+	// 			delete(v2, "forks_count")
+	// 			delete(v2, "open_issues_count")
+	// 			delete(v2, "created_at")
+	// 			delete(v2, "updated_at")
+	// 			delete(v2, "pushed_at")
+	// 			arrGitRepos = append(arrGitRepos, v2)
+	// 		}
+	// 	}
+	// 	if json.Unmarshal(languagesJson, &a) == nil {
+	// 		for _, v := range a {
+	// 			v2 := v.(map[string]interface{})
+	// 			arrLanguages = append(arrLanguages, v2)
+	// 		}
+	// 	}
+	// 	mo := map[string]interface{}{
+	// 		"error":     0,
+	// 		"msg":       "",
+	// 		"languages": arrGitRepos,
+	// 		"gitrepos":  arrLanguages,
+	// 	}
+	// 	mapJson = mo
+	// } else {
+	// 	mo := map[string]interface{}{
+	// 		"error":     1,
+	// 		"msg":       errmsg,
+	// 		"languages": []interface{}{},
+	// 		"gitrepos":  []interface{}{},
+	// 	}
+	// 	mapJson = mo
+	// }
+	// byteJson, _ := json.Marshal(mapJson)
+	// var prettyJson bytes.Buffer
+	// json.Indent(&prettyJson, byteJson, "", "  ")
+	// log.Println(prettyJson.String())
 }
 
 func listGitRepos(c *gin.Context) {
@@ -215,7 +220,7 @@ func listGitRepos(c *gin.Context) {
 	userToken := c.Request.Header.Get("x-user-token")
 	httpStatus := http.StatusForbidden
 
-	ut := common.VerifyTokenString(userToken, common.SecretStr)
+	ut := common.VerifyTokenString(userToken, common.GlobalConfig.Jwt.Secret)
 	if ut.Uid == 0 {
 		errmsg = "user not login yet"
 	} else {
@@ -226,7 +231,7 @@ func listGitRepos(c *gin.Context) {
 		msg = "list gitrepos succeed"
 		errorRet = 0
 		httpStatus = http.StatusOK
-		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.SecretStr, 15*60)
+		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, 15*60)
 	} else {
 		msg = errmsg
 		userToken = ""
@@ -242,7 +247,7 @@ func listGitRepos(c *gin.Context) {
 }
 
 func searchGitRepos(c *gin.Context) {
-	language := c.DefaultPostForm("language", "")
+	topics := c.DefaultPostForm("topics", "")
 	pageStr := c.DefaultPostForm("page", "1")
 	perPageStr := c.DefaultPostForm("per_page", "10")
 
@@ -271,27 +276,77 @@ func searchGitRepos(c *gin.Context) {
 	userToken := c.Request.Header.Get("x-user-token")
 	httpStatus := http.StatusForbidden
 
-	ut := common.VerifyTokenString(userToken, common.SecretStr)
-	if ut.Uid == 0 {
-		errmsg = "user not login yet"
+	if topics == "" {
+		errmsg = "please input your topics"
 	} else {
-		gitrepos, languages, errmsg = dbcommon.ListGitRepos(language, page, perPage)
+		ut := common.VerifyTokenString(userToken, common.GlobalConfig.Jwt.Secret)
+		if ut.Uid == 0 {
+			errmsg = "user not login yet"
+		} else {
+			gitrepos, languages, errmsg = requestSearchGitRepos(topics, perPage, page)
+		}
+
+		if errmsg == "" {
+			msg = "search gitrepos succeed"
+			errorRet = 0
+			httpStatus = http.StatusOK
+			userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, 15*60)
+		} else {
+			msg = errmsg
+			userToken = ""
+		}
 	}
 
-	if errmsg == "" {
-		msg = "list gitrepos succeed"
-		errorRet = 0
-		httpStatus = http.StatusOK
-		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.SecretStr, 15*60)
-	} else {
-		msg = errmsg
-		userToken = ""
-	}
 	data := map[string]interface{}{
 		"error":     errorRet,
 		"msg":       msg,
 		"languages": languages,
 		"gitrepos":  gitrepos,
+	}
+	c.Header("x-user-token", userToken)
+	c.JSON(httpStatus, data)
+}
+
+func getGitRepo(c *gin.Context) {
+	gidStr := c.Params.ByName("gid")
+
+	errmsg := ""
+	errorRet := 1
+	msg := ""
+	user := dbcommon.User{}
+	gitrepo := dbcommon.GitRepo{}
+	reviews := make([]dbcommon.Review, 0)
+
+	userToken := c.Request.Header.Get("x-user-token")
+	httpStatus := http.StatusForbidden
+
+	gid, err := strconv.Atoi(gidStr)
+	if err != nil {
+		errmsg = "gitrepo id incorrect"
+	} else {
+		ut := common.VerifyTokenString(userToken, common.GlobalConfig.Jwt.Secret)
+		if ut.Uid == 0 {
+			errmsg = "user not login yet"
+		} else {
+			gitrepo, errmsg = dbcommon.GetGitRepo(gid)
+		}
+
+		if errmsg == "" {
+			msg = "get gitrepo reviews succeed"
+			errorRet = 0
+			httpStatus = http.StatusOK
+			userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, 15*60)
+		} else {
+			msg = errmsg
+			userToken = ""
+		}
+	}
+
+	data := map[string]interface{}{
+		"error":   errorRet,
+		"msg":     msg,
+		"gitrepo": gitrepo,
+		"reviews": reviews,
 	}
 	c.Header("x-user-token", userToken)
 	c.JSON(httpStatus, data)
@@ -306,9 +361,8 @@ func main() {
 	routerGitRepos := router.Group("/gitrepos")
 	{
 		routerGitRepos.PUT("/", listGitRepos)
-		routerGitRepos.POST("/", searchGitRepo)
-		// routerGitRepos.GET("/:gid", getGitRepo)
+		routerGitRepos.POST("/", searchGitRepos)
+		routerGitRepos.GET("/:gid", getGitRepo)
 	}
-
-	router.Run(":8082")
+	router.Run(fmt.Sprintf(":%v", common.GlobalConfig.GitRepos.Port))
 }

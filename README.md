@@ -176,7 +176,7 @@ header: x-user-token // jwt token
 #### search: 搜索gitrepo列表，从github拉取信息 (POST /gitrepos)
 ```
 request: header x-user-token
-topic, page, per_page
+topics, page, per_page
 ===
 response:
 header: x-user-token // jwt token
@@ -220,7 +220,7 @@ header: x-user-token // jwt token
 {
     error: 0,       // 0: 成功，1: 失败
     msg: "返回提示"  // 返回提示
-    gitrepos: {
+    gitrepo: {
         gid: 1,
         full_name: "",
         description: "",

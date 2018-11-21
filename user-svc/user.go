@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"gohub-trending/common"
 	"gohub-trending/dbcommon"
 	"net/http"
@@ -36,7 +37,7 @@ func createUser(c *gin.Context) {
 		uid, errmsg = dbcommon.CreateUser(username, password)
 	}
 	if errmsg == "" {
-		userToken, _ = common.CreateTokenString(username, uid, common.SecretStr, 15*60)
+		userToken, _ = common.CreateTokenString(username, uid, common.GlobalConfig.Jwt.Secret, 15*60)
 		msg = "create user succeed"
 		errorRet = 0
 		httpStatus = http.StatusOK
@@ -77,7 +78,7 @@ func loginUser(c *gin.Context) {
 		uid, errmsg = dbcommon.LoginUser(username, password)
 	}
 	if errmsg == "" {
-		userToken, _ = common.CreateTokenString(username, uid, common.SecretStr, 15*60)
+		userToken, _ = common.CreateTokenString(username, uid, common.GlobalConfig.Jwt.Secret, 15*60)
 		msg = "login succeed"
 		errorRet = 0
 		httpStatus = http.StatusOK
@@ -101,7 +102,7 @@ func logoutUser(c *gin.Context) {
 	userToken := c.Request.Header.Get("x-user-token")
 	httpStatus := http.StatusForbidden
 
-	ut := common.VerifyTokenString(userToken, common.SecretStr)
+	ut := common.VerifyTokenString(userToken, common.GlobalConfig.Jwt.Secret)
 	if ut.Uid == 0 {
 		errmsg = "user not login yet"
 	}
@@ -130,7 +131,7 @@ func getUser(c *gin.Context) {
 	userToken := c.Request.Header.Get("x-user-token")
 	httpStatus := http.StatusForbidden
 
-	ut := common.VerifyTokenString(userToken, common.SecretStr)
+	ut := common.VerifyTokenString(userToken, common.GlobalConfig.Jwt.Secret)
 	if ut.Uid == 0 {
 		errmsg = "user not login yet"
 	} else {
@@ -141,7 +142,7 @@ func getUser(c *gin.Context) {
 		msg = "get login user info succeed"
 		errorRet = 0
 		httpStatus = http.StatusOK
-		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.SecretStr, 15*60)
+		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, 15*60)
 	} else {
 		msg = errmsg
 		userToken = ""
@@ -169,7 +170,7 @@ func updateUser(c *gin.Context) {
 	userToken := c.Request.Header.Get("x-user-token")
 	httpStatus := http.StatusForbidden
 
-	ut := common.VerifyTokenString(userToken, common.SecretStr)
+	ut := common.VerifyTokenString(userToken, common.GlobalConfig.Jwt.Secret)
 	if ut.Uid == 0 {
 		errmsg = "user not login yet"
 	} else {
@@ -194,7 +195,7 @@ func updateUser(c *gin.Context) {
 		msg = "update password succeed"
 		errorRet = 0
 		httpStatus = http.StatusOK
-		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.SecretStr, 15*60)
+		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, 15*60)
 	} else {
 		msg = errmsg
 		userToken = ""
@@ -221,6 +222,5 @@ func main() {
 		routerUsers.GET("/", getUser)
 		routerUsers.PUT("/", updateUser)
 	}
-
-	router.Run(":8081")
+	router.Run(fmt.Sprintf(":%v", common.GlobalConfig.Users.Port))
 }
