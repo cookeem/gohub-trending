@@ -144,7 +144,7 @@ header: x-user-token // jwt token
 
 ### gitrepo-svc 接口说明
 
-#### list: 获取gitrepo列表 (GET /gitrepos)
+#### list: 获取gitrepo列表 (PUT /gitrepos)
 ```
 request: header x-user-token
 language, page, per_page
@@ -169,6 +169,43 @@ header: x-user-token // jwt token
             stargazers_count: 1,
             reviews_count: 1
         }
+    ]
+}
+```
+
+#### search: 搜索gitrepo列表，从github拉取信息 (POST /gitrepos)
+```
+request: header x-user-token
+topic, page, per_page
+===
+response:
+header: x-user-token // jwt token
+{
+    error: 0,       // 0: 成功，1: 失败
+    msg: "返回提示"  // 返回提示
+    languages: [
+        {
+            language: "Java",
+            repos_count: 1
+        }
+    ],
+    gitrepos: [
+        {
+            gid: 1,
+            full_name: "cookeem/kubeadm-ha",
+            description: "",
+            language: "",
+            stargazers_count: 1,
+            reviews_count: 0
+        }
+        {
+            "Gid":59,
+            "WatchersCount":3,
+            "description":"Ubiquiti UNMS Helm Chart. ",
+            "full_name":"valentin2105/unms-chart",
+            "language":"",
+            "reviews_count":0,
+            "stargazers_count":3}
     ]
 }
 ```
@@ -207,43 +244,6 @@ header: x-user-token // jwt token
             content: "content",
             created_at: "2012-01-10 12:12:12",
         }
-    ]
-}
-```
-
-#### search: 搜索gitrepo列表，从github拉取信息 (POST /gitrepos)
-```
-request: header x-user-token
-page, per_page
-===
-response:
-header: x-user-token // jwt token
-{
-    error: 0,       // 0: 成功，1: 失败
-    msg: "返回提示"  // 返回提示
-    languages: [
-        {
-            language: "Java",
-            repos_count: 1
-        }
-    ],
-    gitrepos: [
-        {
-            gid: 1,
-            full_name: "cookeem/kubeadm-ha",
-            description: "",
-            language: "",
-            stargazers_count: 1,
-            reviews_count: 0
-        }
-        {
-            "Gid":59,
-            "WatchersCount":3,
-            "description":"Ubiquiti UNMS Helm Chart. ",
-            "full_name":"valentin2105/unms-chart",
-            "language":"",
-            "reviews_count":0,
-            "stargazers_count":3}
     ]
 }
 ```

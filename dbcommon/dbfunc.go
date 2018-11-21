@@ -187,11 +187,11 @@ func ListReviews(gid int) (reviews map[Review]User, errmsg string) {
 	return reviews, errmsg
 }
 
-func ListGitRepos(language string, page int, perPage int) (gitrepos []GitRepo, errmsg string) {
+func ListGitRepos(language string, page int, perPage int) (gitrepos []GitRepo, languages []GitLanguage, errmsg string) {
 	db, err := gorm.Open("mysql", common.ConnStr)
 	if err != nil {
 		errmsg = "database connect error"
-		return gitrepos, errmsg
+		return gitrepos, languages, errmsg
 	}
 	defer db.Close()
 
@@ -199,26 +199,15 @@ func ListGitRepos(language string, page int, perPage int) (gitrepos []GitRepo, e
 	if language != "" {
 		grWhere.Language = language
 	}
-	if err := db.Offset(perPage*(page-1)).Limit(perPage).Where(&grWhere).Find(&gitrepos).Order("stargazers_count", true).Error; err != nil {
+	if err := db.Where(&grWhere).Offset(perPage*(page-1)).Limit(perPage).Find(&gitrepos).Order("stargazers_count", true).Error; err != nil {
 		errmsg = "select gitrepos error"
-		return gitrepos, errmsg
+		return gitrepos, languages, errmsg
+	} else if err = db.Find(&languages).Order("repos_count desc").Error; err != nil {
+		errmsg = "get languages error"
+		return gitrepos, languages, errmsg
 	}
-	return gitrepos, errmsg
-}
 
-func GetGitRepo(gid int) (gitrepo GitRepo, errmsg string) {
-	db, err := gorm.Open("mysql", common.ConnStr)
-	if err != nil {
-		errmsg = "database connect error"
-		return gitrepo, errmsg
-	}
-	defer db.Close()
-
-	if db.Where(&GitRepo{Gid: gid}).First(&gitrepo).RecordNotFound() {
-		errmsg = "gitrepo not exists"
-		return gitrepo, errmsg
-	}
-	return gitrepo, errmsg
+	return gitrepos, languages, errmsg
 }
 
 func SearchGitRepos(grs []GitRepo) (gitrepos []GitRepo, languages []GitLanguage, errmsg string) {
@@ -244,4 +233,19 @@ func SearchGitRepos(grs []GitRepo) (gitrepos []GitRepo, languages []GitLanguage,
 		gitrepos = append(gitrepos, gr)
 	}
 	return gitrepos, languages, errmsg
+}
+
+func GetGitRepo(gid int) (gitrepo GitRepo, errmsg string) {
+	db, err := gorm.Open("mysql", common.ConnStr)
+	if err != nil {
+		errmsg = "database connect error"
+		return gitrepo, errmsg
+	}
+	defer db.Close()
+
+	if db.Where(&GitRepo{Gid: gid}).First(&gitrepo).RecordNotFound() {
+		errmsg = "gitrepo not exists"
+		return gitrepo, errmsg
+	}
+	return gitrepo, errmsg
 }

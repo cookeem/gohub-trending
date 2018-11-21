@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"gohub-trending/common"
 	"gohub-trending/dbcommon"
 	"io/ioutil"
 	"log"
@@ -184,20 +185,130 @@ func requestSearchGitRepos(topics string, perPage int, page int) {
 	log.Println(prettyJson.String())
 }
 
-func main() {
-	requestSearchGitRepos("tensorflow", 20, 1)
+func listGitRepos(c *gin.Context) {
+	language := c.DefaultPostForm("language", "")
+	pageStr := c.DefaultPostForm("page", "1")
+	perPageStr := c.DefaultPostForm("per_page", "10")
 
+	page, err := strconv.Atoi(pageStr)
+	if err != nil {
+		page = 1
+	}
+	perPage, err := strconv.Atoi(perPageStr)
+	if err != nil {
+		perPage = 10
+	}
+	if page < 1 {
+		page = 1
+	}
+	if perPage < 1 {
+		perPage = 10
+	}
+
+	errmsg := ""
+	errorRet := 1
+	msg := ""
+	user := dbcommon.User{}
+	gitrepos := make([]dbcommon.GitRepo, 0)
+	languages := make([]dbcommon.GitLanguage, 0)
+
+	userToken := c.Request.Header.Get("x-user-token")
+	httpStatus := http.StatusForbidden
+
+	ut := common.VerifyTokenString(userToken, common.SecretStr)
+	if ut.Uid == 0 {
+		errmsg = "user not login yet"
+	} else {
+		gitrepos, languages, errmsg = dbcommon.ListGitRepos(language, page, perPage)
+	}
+
+	if errmsg == "" {
+		msg = "list gitrepos succeed"
+		errorRet = 0
+		httpStatus = http.StatusOK
+		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.SecretStr, 15*60)
+	} else {
+		msg = errmsg
+		userToken = ""
+	}
+	data := map[string]interface{}{
+		"error":     errorRet,
+		"msg":       msg,
+		"languages": languages,
+		"gitrepos":  gitrepos,
+	}
+	c.Header("x-user-token", userToken)
+	c.JSON(httpStatus, data)
+}
+
+func searchGitRepos(c *gin.Context) {
+	language := c.DefaultPostForm("language", "")
+	pageStr := c.DefaultPostForm("page", "1")
+	perPageStr := c.DefaultPostForm("per_page", "10")
+
+	page, err := strconv.Atoi(pageStr)
+	if err != nil {
+		page = 1
+	}
+	perPage, err := strconv.Atoi(perPageStr)
+	if err != nil {
+		perPage = 10
+	}
+	if page < 1 {
+		page = 1
+	}
+	if perPage < 1 {
+		perPage = 10
+	}
+
+	errmsg := ""
+	errorRet := 1
+	msg := ""
+	user := dbcommon.User{}
+	gitrepos := make([]dbcommon.GitRepo, 0)
+	languages := make([]dbcommon.GitLanguage, 0)
+
+	userToken := c.Request.Header.Get("x-user-token")
+	httpStatus := http.StatusForbidden
+
+	ut := common.VerifyTokenString(userToken, common.SecretStr)
+	if ut.Uid == 0 {
+		errmsg = "user not login yet"
+	} else {
+		gitrepos, languages, errmsg = dbcommon.ListGitRepos(language, page, perPage)
+	}
+
+	if errmsg == "" {
+		msg = "list gitrepos succeed"
+		errorRet = 0
+		httpStatus = http.StatusOK
+		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.SecretStr, 15*60)
+	} else {
+		msg = errmsg
+		userToken = ""
+	}
+	data := map[string]interface{}{
+		"error":     errorRet,
+		"msg":       msg,
+		"languages": languages,
+		"gitrepos":  gitrepos,
+	}
+	c.Header("x-user-token", userToken)
+	c.JSON(httpStatus, data)
+}
+
+func main() {
 	router := gin.Default()
 	router.NoRoute(func(c *gin.Context) {
 		c.JSON(404, gin.H{"error": 1, "msg": "404 page not found"})
 	})
 
-	routerGitRepos := router.Group("/GitRepos")
+	routerGitRepos := router.Group("/gitrepos")
 	{
-		routerGitRepos.GET("/", listGitRepos)
-		routerGitRepos.GET("/:gid", getGitRepo)
+		routerGitRepos.PUT("/", listGitRepos)
 		routerGitRepos.POST("/", searchGitRepo)
+		// routerGitRepos.GET("/:gid", getGitRepo)
 	}
 
-	router.Run(":8080")
+	router.Run(":8082")
 }
