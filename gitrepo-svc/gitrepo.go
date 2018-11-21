@@ -311,7 +311,6 @@ func getGitRepo(c *gin.Context) {
 						httpStatus = http.StatusOK
 						userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, 15*60)
 					}
-
 				}
 			}
 		} else {
