@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"gohub-trending/common"
 	"gohub-trending/dbcommon"
 
 	"github.com/gin-gonic/gin"
@@ -8,11 +10,18 @@ import (
 
 func main() {
 	dbcommon.CreateTables()
-	r := gin.Default()
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
+	router := gin.Default()
+	router.NoRoute(func(c *gin.Context) {
+		c.JSON(404, gin.H{"error": 1, "msg": "404 page not found"})
 	})
-	r.Run() // listen and serve on 0.0.0.0:8080
+
+	// routerUsers := router.Group("/users")
+	// {
+	// 	routerUsers.POST("/", createUser)
+	// 	routerUsers.POST("/login/", loginUser)
+	// 	routerUsers.POST("/logout/", logoutUser)
+	// 	routerUsers.GET("/", getUser)
+	// 	routerUsers.PUT("/", updateUser)
+	// }
+	router.Run(fmt.Sprintf(":%v", common.GlobalConfig.Backend.Port))
 }

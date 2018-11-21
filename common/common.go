@@ -25,6 +25,9 @@ type AppConfig struct {
 	Jwt struct {
 		Secret string `yaml:"secret"`
 	} `yaml:"jwt"`
+	Backend struct {
+		Port int `yaml:"port"`
+	} `yaml:"backend"`
 	Users struct {
 		Host string `yaml:"host"`
 		Port int    `yaml:"port"`

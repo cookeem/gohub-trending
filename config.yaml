@@ -9,6 +9,8 @@ mysql:
   - "parseTime=true"
 jwt:
   secret: "HAiOjE1NDI1OTU2ODgsInVpZCI6MSwidXNlcm5hbWUiOiJjb29rZWVt"
+backend:
+  port: 3000
 users:
   host: localhost
   port: 8080
