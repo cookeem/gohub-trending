@@ -40,5 +40,9 @@ func main() {
 		target := fmt.Sprintf("%v:%v", common.GlobalConfig.Reviews.Host, common.GlobalConfig.Reviews.Port)
 		routerReview.Any("/*subpath", ReverseProxy(target))
 	}
+	routerFrontend := router.Group("/frontend")
+	{
+		routerFrontend.StaticFS("/", http.Dir("frontend-svc"))
+	}
 	router.Run(":3000")
 }
