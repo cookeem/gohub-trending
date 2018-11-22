@@ -1,13 +1,10 @@
 {
   "name": "frontend-svc",
   "version": "1.0.0",
-  "description": "```sh $ mkdir react-webpack-demo $ cd react-webpack-demo/ ```",
+  "description": "gohub-trending frontend",
   "main": "like_button.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "webpack-dev-server --hot",
-    "build": "webpack",
-    "production": "webpack --mode production"
+    "build": "webpack --mode production"
   },
   "keywords": [],
   "author": "",
