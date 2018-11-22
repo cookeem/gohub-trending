@@ -3,6 +3,8 @@
 > golang github trending demo app
 
 
+## 服务架构
+
 ```
 frontend -> backend -> gitrepo-svc (search) -> github.com-> db
                     -> review-svc(create/delete/list) -> db
