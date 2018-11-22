@@ -2,6 +2,7 @@ package dbcommon
 
 import (
 	"fmt"
+
 	"gohub-trending/common"
 
 	"github.com/jinzhu/gorm"

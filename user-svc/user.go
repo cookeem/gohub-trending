@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
+	"net/http"
+
 	"gohub-trending/common"
 	"gohub-trending/dbcommon"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )

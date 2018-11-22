@@ -3,13 +3,14 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"gohub-trending/common"
-	"gohub-trending/dbcommon"
 	"io/ioutil"
 	"net/http"
 	"strconv"
 	"strings"
 	"time"
+
+	"gohub-trending/common"
+	"gohub-trending/dbcommon"
 
 	"github.com/gin-gonic/gin"
 )
