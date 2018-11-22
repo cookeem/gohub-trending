@@ -25,7 +25,7 @@ func ReverseProxy(target string) gin.HandlerFunc {
 
 func main() {
 	router := gin.New()
-	router.Use(common.IstioHeaderPass(), gin.Recovery(), gin.Logger())
+	router.Use(common.IstioHeadersForward(), gin.Recovery(), gin.Logger())
 
 	router.Any("/users/*subpath", ReverseProxy(fmt.Sprintf("%v:%v", common.GlobalConfig.Users.Host, common.GlobalConfig.Users.Port)))
 	router.Any("/gitrepos/*subpath", ReverseProxy(fmt.Sprintf("%v:%v", common.GlobalConfig.GitRepos.Host, common.GlobalConfig.GitRepos.Port)))

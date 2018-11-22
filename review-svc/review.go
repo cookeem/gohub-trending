@@ -153,7 +153,7 @@ func listReviews(c *gin.Context) {
 
 func main() {
 	router := gin.New()
-	router.Use(common.IstioHeaderPass(), gin.Recovery(), gin.Logger())
+	router.Use(common.IstioHeadersForward(), gin.Recovery(), gin.Logger())
 
 	router.NoRoute(func(c *gin.Context) {
 		c.JSON(404, gin.H{"error": 1, "msg": "404 page not found"})
