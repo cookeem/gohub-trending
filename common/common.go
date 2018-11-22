@@ -10,6 +10,7 @@ import (
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
 	yaml "gopkg.in/yaml.v2"
 )
 
@@ -106,6 +107,23 @@ func VerifyTokenString(tokenStr string, secretStr string) (claims *UserToken) {
 		claims = &ut
 	}
 	return claims
+}
+
+func IstioHeaderPass() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		istioHeaders := []string{
+			"x-request-id",
+			"x-b3-traceid",
+			"x-b3-spanid",
+			"x-b3-parentspanid",
+			"x-b3-sampled",
+			"x-b3-flags",
+			"x-ot-span-context",
+		}
+		for _, ih := range istioHeaders {
+			c.Header(ih, c.Request.Header.Get(ih))
+		}
+	}
 }
 
 var ConnStr, _ = GetDBConn()
