@@ -16,6 +16,13 @@ frontend -> backend -> gitrepo-svc (search) -> github.com-> db
 go get -u -v github.com/jinzhu/gorm
 go get -u -v github.com/jinzhu/gorm/dialects/mysql
 go get -u -v gopkg.in/yaml.v2
+go get -u -v github.com/gin-gonic/gin
+go get -u -v github.com/dgrijalva/jwt-go
+
+go build user-svc/user.go && ./user
+go build gitrepo-svc/gitrepo.go && ./gitrepo
+go build review-svc/review.go && ./review
+go build backend-svc/backend.go && ./backend
 ```
 
 ## 接口说明
