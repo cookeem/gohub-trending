@@ -19,6 +19,8 @@ npm install react-tap-event-plugin --save
 npm install @babel/core babel-loader @babel/preset-env @babel/preset-react --save
 npm install material-ui --save
 npm install react-redux redux --save
+npm install @material-ui/core --save
+npm install @material-ui/icons --save
 ```
 
 ## 在package.json文件中，添加scripts部分描述，相当于增加start、build指令
