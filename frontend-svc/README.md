@@ -6,5 +6,12 @@ npm install css-loader style-loader file-loader -D
 npm install html-webpack-plugin -D
 npm install webpack-dev-server -D
 
+# 运行调试
 npm run start
+
+# 正式打包
+npm run build
+
+# 打包输出目录
+dist
 ```
