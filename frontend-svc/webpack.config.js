@@ -3,7 +3,9 @@ const HtmlWebPackPlugin = require('html-webpack-plugin');
 
 module.exports = {
   mode: 'production',
-  entry: './js/main.js',
+  entry: {
+    index: './js/main.js'
+  },
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js'
@@ -34,6 +36,13 @@ module.exports = {
         ]
       }
     ]
+  },
+  optimization: {
+    splitChunks: {
+      minSize: 1024 * 64,
+      maxSize: 1024 * 128,
+      chunks: 'all'
+    }
   },
   plugins: [
     new HtmlWebPackPlugin({
