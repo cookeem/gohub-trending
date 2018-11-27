@@ -1,4 +1,6 @@
-```
+# 如何安装运行
+
+```sh
 npm install webpack webpack-cli -D
 npm install react react-dom -S
 npm install babel-loader@8 @babel/core @babel/preset-env @babel/preset-react -D
