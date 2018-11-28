@@ -1,15 +1,24 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-// import css from '../css/test.css';
 import '../css/style.css';
 import devops_image from '../images/devops.png';
-import Fab from './fab';
-import Card from './card';
 
+const Fab = React.lazy(() => import('./fab'));
+const Card = React.lazy(() => import('./card'));
 
-ReactDOM.render(<Fab />, document.getElementById('fab'))
-
-ReactDOM.render(<Card />, document.getElementById('card'))
+function LazyComponent() {
+  return (
+    <>
+      <React.Suspense fallback={<div>Loading...</div>}>
+        <section>
+          <Fab />
+          <Card />
+        </section>
+      </React.Suspense>
+    </>
+  );
+}
+ReactDOM.render(<LazyComponent />, document.getElementById('lazy'));
 
 function tick() {
   const element = (
