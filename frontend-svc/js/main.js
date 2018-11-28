@@ -1,41 +1,62 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { HashRouter, Route, Switch, Link, Redirect } from 'react-router-dom';
+
+import axios from 'axios';
+
 import '../css/style.css';
-import devops_image from '../images/devops.png';
+import ImageService from '../images/service-icon.png';
+import Loading from './loading';
 
 const Fab = React.lazy(() => import('./fab'));
 const Card = React.lazy(() => import('./card'));
 
-function LazyComponent() {
-  return (
+const FabLazy = () => (
+  <>
+    <Fab />
+  </>
+);
+
+const CardLazy = () => (
+  <>
+    <Card />
+  </>
+);
+
+const LazyRouterApp = () => (
+  <HashRouter>
     <>
-      <React.Suspense fallback={<div>Loading...</div>}>
-        <section>
-          <Fab />
-          <Card />
-        </section>
+      <nav>
+        <ul>
+          <li>
+            <Link to="/fab">Fab</Link>
+          </li>
+          <li>
+            <Link to="/card">Card</Link>
+          </li>
+          <li>
+            <Link to="/loading">Loading</Link>
+          </li>
+        </ul>
+      </nav>
+      <React.Suspense fallback={<div>Now loading...</div>}>
+        <Switch>
+          <Route exact path="/fab" component={FabLazy}/>
+          <Route path="/card" component={CardLazy}/>
+          <Route path="/loading" component={Loading}/>
+          <Redirect to="/loading"/>
+        </Switch>
       </React.Suspense>
     </>
-  );
-}
-ReactDOM.render(<LazyComponent />, document.getElementById('lazy'));
+  </HashRouter>
+);
 
-function tick() {
-  const element = (
-    <div>
-      <h1>Hello, world!</h1>
-      <h2>It is {new Date().toLocaleTimeString()}.</h2>
-    </div>
-  );
-  ReactDOM.render(element, document.getElementById('clock'));
-}
-
-setInterval(tick, 1000);
+ReactDOM.render(<LazyRouterApp />, document.getElementById('lazy'));
 
 const Index = () => {
   return <div>Hello React! 
       <div>
-        <img src={devops_image}/>
+        <img src={ImageService}/>
       </div>
     </div>;
 };
@@ -74,3 +95,28 @@ ReactDOM.render(
   <PropsElm name="haijian"></PropsElm>, 
   document.getElementById('props_elm')
 )
+
+function checkStatus(response) {
+  if (response.status >= 200 && response.status < 300) {
+    return response
+  } else {
+    var error = new Error(response.statusText)
+    error.response = response
+    throw error
+  }
+}
+
+axios({
+  url:'https://api.github.com/search/repositories?q=topic:kubernetes',
+  method:'get',
+  timeout: 5000
+}).then(function (response) {
+  response = checkStatus(response);
+  console.log(response.data);
+  console.log(response.headers);
+}).catch(function (error) {
+  console.log(error);
+}).then(function () {
+  // always executed
+  console.log('success fetch github api!');
+});  
