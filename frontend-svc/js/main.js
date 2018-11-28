@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter, Route, Switch, Link, Redirect } from 'react-router-dom';
-
+import { createStore } from 'redux';
 import axios from 'axios';
 
 import '../css/style.css';
@@ -120,3 +120,33 @@ axios({
   // always executed
   console.log('success fetch github api!');
 });  
+
+/////////////////////////////////
+// redux demo
+/////////////////////////////////
+//reducer
+function counter(state = 0, action) {
+	switch (action.type) {
+		case 'INCREMENT':
+			return state + 1;
+		case 'DECREMENT':
+			return state - 1;
+		default:
+			return state;
+	}
+}
+//store绑定到reducer
+const store = createStore(counter);
+//订阅store的变更事件
+store.subscribe(() =>
+	console.log("# store.state: ", store.getState())
+);
+//向store发送action改变state
+const actionInc = { type: 'INCREMENT' };
+const actionDec = { type: 'DECREMENT' };
+console.log("# store.dispatch(actionInc)");
+store.dispatch(actionInc);
+console.log("# store.dispatch(actionDec)");
+store.dispatch(actionDec);
+console.log("# store.dispatch(actionInc)");
+store.dispatch(actionInc);
