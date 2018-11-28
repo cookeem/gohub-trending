@@ -36,12 +36,12 @@ class Loading extends React.Component {
           variant="determinate"
           value={this.state.completed}
         />
-        <CircularProgress
+        {/* <CircularProgress
           className={classes.progress}
           variant="determinate"
           value={this.state.completed}
           color="secondary"
-        />
+        /> */}
       </div>
     );
   }

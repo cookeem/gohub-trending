@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"net/http/httputil"
 
 	"gohub-trending/common"
+	"gohub-trending/dbcommon"
 
 	"github.com/gin-gonic/gin"
 )
@@ -24,6 +26,11 @@ func ReverseProxy(target string) gin.HandlerFunc {
 }
 
 func main() {
+	err := dbcommon.CreateTables()
+	if err != nil {
+		log.Fatal("database connect error:", err.Error())
+		return
+	}
 	router := gin.New()
 	router.Use(common.IstioHeadersForward(), gin.Recovery(), gin.Logger())
 

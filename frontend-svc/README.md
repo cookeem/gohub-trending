@@ -10,6 +10,7 @@ npm install css-loader style-loader file-loader -D
 npm install html-webpack-plugin -D
 npm install webpack-dev-server -D
 npm install axios -S
+npm install redux react-redux -S
 
 # 运行调试
 npm run start
