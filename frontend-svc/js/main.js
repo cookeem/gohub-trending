@@ -1,13 +1,92 @@
-import React from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter, Route, Switch, Link, Redirect } from 'react-router-dom';
 import { createStore } from 'redux';
+import { Provider, connect } from 'react-redux';
 import axios from 'axios';
 
 import '../css/style.css';
 import ImageService from '../images/service-icon.png';
 import Loading from './loading';
 
+/////////////////////////////////
+// react redux demo
+/////////////////////////////////
+//reducer
+function reducerCounter(state = 0, action) {
+	switch (action.type) {
+		case 'INCREMENT':
+			return state + 1;
+		case 'DECREMENT':
+			return state - 1;
+		default:
+			return state;
+	}
+}
+//store绑定到reducer
+const storeCounter = createStore(reducerCounter);
+//订阅store的变更事件
+storeCounter.subscribe(() =>
+	console.log("# storeCounter.state: ", storeCounter.getState())
+);
+//向store发送action改变state
+const actionCounterInc = { type: 'INCREMENT' };
+const actionCounterDec = { type: 'DECREMENT' };
+console.log("# storeCounter.dispatch(actionInc)");
+storeCounter.dispatch(actionCounterInc);
+console.log("# storeCounter.dispatch(actionDec)");
+storeCounter.dispatch(actionCounterDec);
+
+//把redux的state输出到component的props
+const mapStateCounter = (state) => {
+  return {
+    counterResult: state
+  }
+}
+
+//把component的事件映射到dispatch，可以返回一系列函数
+const mapDispatchCounter = (dispatch) => {
+  return {
+    onClickIncrement: (e) => {
+      e.preventDefault();
+      dispatch(actionCounterInc);
+    },
+    onClickDecrement: (e) => {
+      e.preventDefault();
+      dispatch(actionCounterDec);
+    }
+  }
+}
+
+const Counter = (props) => {
+  return (
+    <div>
+      <ul>
+        <li>
+          <a onClick={props.onClickIncrement} href="#">+1</a>
+        </li>
+        <li>
+          <a onClick={props.onClickDecrement} href="#">-1</a>
+        </li>
+      </ul>
+      counter result is: {props.counterResult}
+    </div>
+  )
+}
+const CounterRedux = connect(mapStateCounter, mapDispatchCounter)(Counter)
+
+const ReduxApp = (
+  <Provider store={storeCounter}>
+    <CounterRedux></CounterRedux>
+  </Provider>
+);
+
+
+ReactDOM.render(ReduxApp, document.getElementById('redux'));
+
+/////////////////////////
+// lazy import
+/////////////////////////
 const Fab = React.lazy(() => import('./fab'));
 const Card = React.lazy(() => import('./card'));
 
@@ -54,7 +133,7 @@ const LazyRouterApp = () => (
 ReactDOM.render(<LazyRouterApp />, document.getElementById('lazy'));
 
 const Index = () => {
-  return <div>Hello React! 
+  return <div>Hello React!
       <div>
         <img src={ImageService}/>
       </div>
@@ -83,16 +162,19 @@ ReactDOM.render(
   document.getElementById('hello')
 );
 
-const PropsElm = (props) => {
-  return (
-    <h1>
-      My name is: {props.name}
-    </h1>
-  )
+export default class ExampleProps extends Component {
+  render() {
+    return (
+      <div>
+        props name is: {this.props.name}
+      </div>
+    )
+  }
 }
 
+
 ReactDOM.render(
-  <PropsElm name="haijian"></PropsElm>, 
+  <ExampleProps name="example-props"></ExampleProps>,
   document.getElementById('props_elm')
 )
 
@@ -119,34 +201,5 @@ axios({
 }).then(function () {
   // always executed
   console.log('success fetch github api!');
-});  
+});
 
-/////////////////////////////////
-// redux demo
-/////////////////////////////////
-//reducer
-function counter(state = 0, action) {
-	switch (action.type) {
-		case 'INCREMENT':
-			return state + 1;
-		case 'DECREMENT':
-			return state - 1;
-		default:
-			return state;
-	}
-}
-//store绑定到reducer
-const store = createStore(counter);
-//订阅store的变更事件
-store.subscribe(() =>
-	console.log("# store.state: ", store.getState())
-);
-//向store发送action改变state
-const actionInc = { type: 'INCREMENT' };
-const actionDec = { type: 'DECREMENT' };
-console.log("# store.dispatch(actionInc)");
-store.dispatch(actionInc);
-console.log("# store.dispatch(actionDec)");
-store.dispatch(actionDec);
-console.log("# store.dispatch(actionInc)");
-store.dispatch(actionInc);
