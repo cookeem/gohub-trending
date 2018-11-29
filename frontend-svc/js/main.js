@@ -12,6 +12,7 @@ import Loading from './loading';
 /////////////////////////////////
 // react redux demo
 /////////////////////////////////
+
 //reducer
 function reducerCounter(state = 0, action) {
 	switch (action.type) {
@@ -25,10 +26,12 @@ function reducerCounter(state = 0, action) {
 }
 //store绑定到reducer
 const storeCounter = createStore(reducerCounter);
+
 //订阅store的变更事件
 storeCounter.subscribe(() =>
 	console.log("# storeCounter.state: ", storeCounter.getState())
 );
+
 //向store发送action改变state
 const actionCounterInc = { type: 'INCREMENT' };
 const actionCounterDec = { type: 'DECREMENT' };
