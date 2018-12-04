@@ -4,7 +4,7 @@ const HtmlWebPackPlugin = require('html-webpack-plugin');
 module.exports = {
   mode: 'production',
   entry: {
-    index: './app/app.js'
+    index: './js/main.js'
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -48,7 +48,7 @@ module.exports = {
     new HtmlWebPackPlugin({
       template: './index.html',
       filename: './index.html',
-      favicon: './app/images/favicon.ico'
+      favicon: './images/favicon.ico'
     })
   ]
 };
