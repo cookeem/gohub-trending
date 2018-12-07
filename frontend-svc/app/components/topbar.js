@@ -35,7 +35,7 @@ function TopBar(props) {
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton onClick={props.onClickShowSideBar} className={classes.menuButton} color="inherit" aria-label="Menu">
+          <IconButton onClick={props.onShowSideBar} className={classes.menuButton} color="inherit" aria-label="Menu">
             <MenuIcon />
           </IconButton>
           <Grid container className={classes.topBar} alignContent="center" alignItems="center">
@@ -44,7 +44,7 @@ function TopBar(props) {
             </Grid>
             <Grid item xs={7}>
               <Typography variant="h6" color="inherit" align="left" className={classes.barText}>
-                Go - Github Trending {props.login.username}
+                Github Trending Go - {props.login.username}
               </Typography>  
             </Grid>
           </Grid>

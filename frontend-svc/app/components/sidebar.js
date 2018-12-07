@@ -2,14 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
-import Button from '@material-ui/core/Button';
 import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
+import ExitToApp from '@material-ui/icons/ExitToApp';
+import Whatshot from '@material-ui/icons/Whatshot';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import InsertEmoticon from '@material-ui/icons/InsertEmoticon';
+
+import { Link } from 'react-router-dom';
 
 const styles = {
   list: {
@@ -17,55 +20,75 @@ const styles = {
   },
 };
 
+
 class SideBar extends React.Component {
-  state = {
-    open: false,
-  };
-
-  toggleDrawer = (open) => () => {
-    this.setState({
-      open: open,
-    });
-  };
-
   render() {
     const { classes } = this.props;
-
+    const menuList1 = [
+      { text: "Trending", icon: (<Whatshot />), url: "/gitrepo-list" },
+      { text: "Account", icon: (<AccountCircle />), url: "/user-update" },
+    ]
+    const menuList2 = [
+      { text: "Sign Out", icon: (<ExitToApp />), url: "/user-logout" },
+    ]
+    const menuList3 = [
+      { text: "Sign In", icon: (<InsertEmoticon />), url: "/user-login" },
+      { text: "Sign Up", icon: (<InsertEmoticon />), url: "/user-create" },
+      { text: "Sign Out", icon: (<InsertEmoticon />), url: "/user-logout" },
+      { text: "Account", icon: (<InsertEmoticon />), url: "/user-update" },
+      { text: "Trending", icon: (<InsertEmoticon />), url: "/gitrepo-list" },
+      { text: "Github Repo", icon: (<InsertEmoticon />), url: "/gitrepo-view" },
+      { text: "Loading", icon: (<InsertEmoticon />), url: "/loading" },
+    ]
     const sideList = (
       <div className={classes.list}>
         <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItem>
+          {menuList1.map((menu, _) => (
+            <Link to={menu.url} key={menu.text}>
+              <ListItem button>
+                <ListItemIcon>{menu.icon}</ListItemIcon>
+                <ListItemText primary={menu.text} />
+              </ListItem>
+            </Link>
           ))}
         </List>
         <Divider />
         <List>
-          {['All mail', 'Trash', 'Spam'].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={text} />
+        {menuList2.map((menu, _) => (
+          <Link to={menu.url} key={menu.text}>
+            <ListItem button>
+              <ListItemIcon>{menu.icon}</ListItemIcon>
+              <ListItemText primary={menu.text} />
             </ListItem>
-          ))}
+          </Link>
+        ))}
+        </List>
+        <Divider />
+        <List>
+        {menuList3.map((menu, _) => (
+          <Link to={menu.url} key={menu.text}>
+            <ListItem button>
+              <ListItemIcon>{menu.icon}</ListItemIcon>
+              <ListItemText primary={menu.text} />
+            </ListItem>
+          </Link>
+        ))}
         </List>
       </div>
     );
 
     return (
       <div>
-        <Button onClick={this.toggleDrawer(true)}>Open SideBar</Button>
         <SwipeableDrawer
-          open={this.state.open}
-          onClose={this.toggleDrawer(false)}
-          onOpen={this.toggleDrawer(true)}
+          open={this.props.ui.showSideBar}
+          onClose={this.props.onHideSideBar}
+          onOpen={this.props.onShowSideBar}
         >
           <div
             tabIndex={0}
             role="button"
-            onClick={this.toggleDrawer(false)}
-            onKeyDown={this.toggleDrawer(false)}
+            onClick={this.props.onHideSideBar}
+            onKeyDown={this.props.onHideSideBar}
           >
             {sideList}
           </div>
