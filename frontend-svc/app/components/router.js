@@ -1,7 +1,9 @@
 import React from 'react';
+import Loading from './loading';
+import { UserLogin } from '../user-login/user-login';
 
 export const UserLoginView = () => (
-  <div>user-login</div>
+  <UserLogin />
 );
 
 export const UserCreateView = () => (
@@ -25,6 +27,6 @@ export const GitRepoViewView = () => (
 );
 
 export const LoadingView = () => (
-  <div>loading</div>
+  <Loading />
 );
 
