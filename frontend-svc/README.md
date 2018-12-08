@@ -12,6 +12,7 @@ npm install webpack-dev-server -D
 npm install axios -S
 npm install redux react-redux -S
 npm install typeface-roboto -S
+npm install jwt-decode -S
 
 # 运行调试
 npm run start

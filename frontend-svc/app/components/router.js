@@ -30,3 +30,12 @@ export const LoadingView = () => (
   <Loading />
 );
 
+import jwtDecode from 'jwt-decode';
+
+var token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNvb2tlZW0iLCJ1aWQiOjEsImV4cCI6MTU0NDE2NTcyMiwiaWF0IjoxNTQ0MTY0ODIyLCJpc3MiOiJnaXRyZXBvIn0.8LEyAl7liykbs9kQG_VCtvEo-6TTpWAzmmEBINbUzdU';
+try {
+  var output = jwtDecode(token);
+  console.log(output);
+} catch(e) {
+  console.log(e);
+}
