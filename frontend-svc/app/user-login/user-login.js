@@ -35,7 +35,22 @@ function InputWithIcon(props) {
   return (
     <FormGroup row>
       <FormControl className={classes.margin} fullWidth={true}>
-        <Grid container spacing={8} alignItems="flex-end" justify="center">
+
+        <div style={{ display: 'flex', margin: 40, background: 'red', height: 300, verticalAlign: 'middle', }}>
+          <Grid container spacing={24} direction="column">
+            <Grid container item spacing={0} justify="center" >
+              <Grid item xs={12} style={{ background: 'blue' }}>xs=12</Grid>
+            </Grid>
+            <Grid container item spacing={0} justify="center" >
+              <Grid item xs={6} style={{ background: 'blue' }}>xs=6</Grid>
+            </Grid>
+            <Grid container item spacing={0} justify="center" >
+              <Grid item xs={3} style={{background: 'blue'}}>xs=3</Grid>
+            </Grid>
+          </Grid>
+        </div>
+
+        <Grid container spacing={8} alignItems="flex-end" justify="center" style={{background: 'red'}}>
           <Grid item>
             <AccountCircle />
           </Grid>
