@@ -1,8 +1,22 @@
 
 export const actionShowSideBar = (showSideBar) => (
   {
-    type: 'SHOWSIDEBAR',
+    type: 'SHOW_SIDEBAR',
     showSideBar: showSideBar,
+  }
+);
+
+export const actionShowComment = (showComment) => (
+  {
+    type: 'SHOW_COMMENT',
+    showComment: showComment,
+  }
+);
+
+export const actionShowDelete = (showDelete) => (
+  {
+    type: 'SHOW_DELETE',
+    showDelete: showDelete,
   }
 );
 

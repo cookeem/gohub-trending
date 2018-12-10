@@ -9,8 +9,11 @@ import Grid from '@material-ui/core/Grid';
 
 // 非default export 必须包含{}
 import { store } from './redux/store/store';
-import { TopBarView, SideBarView } from './redux/react';
-import { UserCreateView, UserLoginView, UserLogoutView, UserUpdateView, GitRepoListView, GitRepoViewView, LoadingView } from './components/router'
+import { TopBarConnect } from './components/topbar';
+import { SideBarConnect } from './components/sidebar';
+import { CommentDialogConnect, DeleteDialogConnect, ErrorDialog, SuccessTips } from './components/dialog';
+import { GitRepoViewView } from './gitrepo-view';
+import { UserCreateView, UserLoginView, UserLogoutView, UserUpdateView, GitRepoSearchView, GitRepoListView, LoadingView } from './components/router'
 
 import './css/style.css';
 
@@ -38,8 +41,12 @@ const App = () => {
     <HashRouter>
       <Provider store={store}>
         <MuiThemeProvider theme={theme}>
-          <TopBarView />
-          <SideBarView />
+          <TopBarConnect />
+          <SideBarConnect />
+          <CommentDialogConnect />
+          <DeleteDialogConnect />
+          <ErrorDialog />
+          <SuccessTips />
           <Grid container spacing={24} className={styles.main} style={{padding: "20px"}}>
             <Grid item xs={12}>
               <React.Suspense fallback={<div>Now loading...</div>}>
@@ -48,6 +55,7 @@ const App = () => {
                   <Route path="/user-create" component={UserCreateView}/>
                   <Route path="/user-logout" component={UserLogoutView}/>
                   <Route path="/user-update" component={UserUpdateView}/>
+                  <Route path="/gitrepo-search" component={GitRepoSearchView}/>
                   <Route path="/gitrepo-list" component={GitRepoListView}/>
                   <Route path="/gitrepo-view" component={GitRepoViewView}/>
                   <Route path="/loading" component={LoadingView}/>

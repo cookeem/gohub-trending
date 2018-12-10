@@ -2,6 +2,8 @@ import { combineReducers } from 'redux';
 
 const stateInitUI = {
   showSideBar: false,
+  showComment: false,
+  showDelete: false,
 };
 
 const stateInitLogin = {
@@ -21,9 +23,17 @@ const stateInitData = {
 
 export const ui = (state = stateInitUI, action) => {
   switch (action.type) {
-    case 'SHOWSIDEBAR':
+    case 'SHOW_SIDEBAR':
       return Object.assign({}, state, {
         showSideBar: action.showSideBar,
+      });
+    case 'SHOW_COMMENT':
+      return Object.assign({}, state, {
+        showComment: action.showComment,
+      });
+    case 'SHOW_DELETE':
+      return Object.assign({}, state, {
+        showDelete: action.showDelete,
       });
     default:
       return state;

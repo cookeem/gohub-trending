@@ -14,18 +14,20 @@ import InsertEmoticon from '@material-ui/icons/InsertEmoticon';
 
 import { Link } from 'react-router-dom';
 
+import { mapDispatchToProps, mapStateToProps } from '../redux/react';
+import { connect } from 'react-redux';
+
 const styles = {
   list: {
     width: 250,
   },
 };
 
-
 class SideBar extends React.Component {
   render() {
     const { classes } = this.props;
     const menuList1 = [
-      { text: "Trending", icon: (<Whatshot />), url: "/gitrepo-list" },
+      { text: "List Repo", icon: (<Whatshot />), url: "/gitrepo-list" },
       { text: "Account", icon: (<AccountCircle />), url: "/user-update" },
     ]
     const menuList2 = [
@@ -36,7 +38,8 @@ class SideBar extends React.Component {
       { text: "Sign Up", icon: (<InsertEmoticon />), url: "/user-create" },
       { text: "Sign Out", icon: (<InsertEmoticon />), url: "/user-logout" },
       { text: "Account", icon: (<InsertEmoticon />), url: "/user-update" },
-      { text: "Trending", icon: (<InsertEmoticon />), url: "/gitrepo-list" },
+      { text: "List Repo", icon: (<InsertEmoticon />), url: "/gitrepo-list" },
+      { text: "Search Repo", icon: (<InsertEmoticon />), url: "/gitrepo-search" },
       { text: "Github Repo", icon: (<InsertEmoticon />), url: "/gitrepo-view" },
       { text: "Loading", icon: (<InsertEmoticon />), url: "/loading" },
     ]
@@ -102,4 +105,4 @@ SideBar.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(SideBar);
+export const SideBarConnect = connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(SideBar));

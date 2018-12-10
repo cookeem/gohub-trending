@@ -1,13 +1,17 @@
 import React from 'react';
 import Loading from './loading';
-import { UserLogin } from '../user-login/user-login';
+import { UserLogin } from '../user-login';
+import { UserCreate } from '../user-create';
+import { UserUpdate } from '../user-update';
+import { GitRepoList } from '../gitrepo-list';
+import { GitRepoSearch } from '../gitrepo-search';
 
 export const UserLoginView = () => (
   <UserLogin />
 );
 
 export const UserCreateView = () => (
-  <div>user-create</div>
+  <UserCreate />
 );
 
 export const UserLogoutView = () => (
@@ -15,15 +19,15 @@ export const UserLogoutView = () => (
 );
 
 export const UserUpdateView = () => (
-  <div>user-update</div>
+  <UserUpdate />
+);
+
+export const GitRepoSearchView = () => (
+  <GitRepoSearch />
 );
 
 export const GitRepoListView = () => (
-  <div>girepor-list</div>
-);
-
-export const GitRepoViewView = () => (
-  <div>girepor-view</div>
+  <GitRepoList />
 );
 
 export const LoadingView = () => (

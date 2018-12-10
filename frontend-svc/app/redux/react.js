@@ -1,34 +1,43 @@
-import { connect } from 'react-redux';
-
-import { actionShowSideBar } from './action/action';
-import TopBar from '../components/topbar';
-import SideBar from '../components/sidebar';
+import { actionShowSideBar, actionShowComment, actionShowDelete } from './action/action';
 
 //把redux的state输出到component的props
-const mapStateToProps = (state) => {
-    return {
-      ui: state.ui,
-      login: state.login,
-      data: state.data,
-    }
-  };
+export const mapStateToProps = (state) => {
+  return {
+    ui: state.ui,
+    login: state.login,
+    data: state.data,
+  }
+};
   
-  //把component的事件映射到dispatch，可以返回一系列函数
-  const mapDispatchToProps = (dispatch) => {
-    return {
-      onShowSideBar: (e) => {
-        // e.preventDefault();
-        dispatch(actionShowSideBar(true));
-      },
-      onHideSideBar: (e) => {
-        // e.preventDefault();
-        dispatch(actionShowSideBar(false));
-      },
-    }
-  };
+//把component的事件映射到dispatch，可以返回一系列函数
+export const mapDispatchToProps = (dispatch) => {
+  return {
+    onShowSideBar: (e) => {
+      // e.preventDefault();
+      dispatch(actionShowSideBar(true));
+    },
+    onHideSideBar: (e) => {
+      // e.preventDefault();
+      dispatch(actionShowSideBar(false));
+    },
+    onShowComment: (e) => {
+      // e.preventDefault();
+      dispatch(actionShowComment(true));
+    },
+    onHideComment: (e) => {
+      // e.preventDefault();
+      dispatch(actionShowComment(false));
+    },
+    onShowDelete: (e) => {
+      // e.preventDefault();
+      dispatch(actionShowDelete(true));
+    },
+    onHideDelete: (e) => {
+      // e.preventDefault();
+      dispatch(actionShowDelete(false));
+    },
+  }
+};
   
-export const TopBarView = connect(mapStateToProps, mapDispatchToProps)(TopBar);
-export const SideBarView = connect(mapStateToProps, mapDispatchToProps)(SideBar);
-
 
   

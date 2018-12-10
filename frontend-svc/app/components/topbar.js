@@ -11,6 +11,9 @@ import Typography from '@material-ui/core/Typography';
 
 import GithubIcon from '../images/github.png';
 
+import { mapDispatchToProps, mapStateToProps } from '../redux/react';
+import { connect } from 'react-redux';
+
 const styles = {
   root: {
     flexGrow: 1,
@@ -58,4 +61,4 @@ TopBar.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(TopBar);
+export const TopBarConnect = connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(TopBar));
