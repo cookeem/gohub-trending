@@ -155,7 +155,7 @@ export class SuccessTips extends React.Component {
         <Snackbar
           open={this.state.open}
           onClose={this.handleClose}
-          autoHideDuration={2000}
+          autoHideDuration={1500}
           TransitionComponent={this.state.Transition}
           ContentProps={{
             'aria-describedby': 'message-id',
