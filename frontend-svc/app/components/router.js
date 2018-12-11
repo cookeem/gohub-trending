@@ -5,6 +5,8 @@ import { UserUpdate } from '../user-update';
 import { GitRepoList } from '../gitrepo-list';
 import { GitRepoSearch } from '../gitrepo-search';
 
+import axios from 'axios';
+
 export const UserLoginView = () => (
   <UserLogin />
 );
@@ -38,3 +40,34 @@ try {
 } catch(e) {
   console.log(e);
 }
+
+function checkStatus(response) {
+  if (response.status >= 200 && response.status < 300) {
+    return response
+  } else {
+    var error = new Error(response.statusText)
+    error.response = response
+    throw error
+  }
+}
+
+axios({
+  // url:'https://api.github.com/search/repositories?q=topic:kubernetes',
+  url:'http://localhost:3000/users/',
+  method:'get',
+  timeout: 5000,
+}).then(function (response) {
+  // response = checkStatus(response);
+  console.log('fetch github api succeeded!');
+  console.log(response.data);
+  console.log(response.headers);
+}).catch(function (error) {
+  console.log('fetch github api failed!');
+  // console.log(response.data);
+  // console.log(response.headers);
+  console.log(error)
+  console.log(error.response);
+}).then(function () {
+  // always executed
+  console.log('always show fetch github api!');
+});

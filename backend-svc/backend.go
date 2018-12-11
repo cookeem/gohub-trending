@@ -40,6 +40,10 @@ func main() {
 	config.AllowAllOrigins = true
 	router.Use(common.IstioHeadersForward(), gin.Recovery(), gin.Logger(), cors.New(config))
 
+	router.NoRoute(func(c *gin.Context) {
+		c.JSON(404, gin.H{"error": 1, "msg": "404 page not found"})
+	})
+
 	router.Any("/users/*subpath", ReverseProxy(fmt.Sprintf("%v:%v", common.GlobalConfig.Users.Host, common.GlobalConfig.Users.Port)))
 	router.Any("/gitrepos/*subpath", ReverseProxy(fmt.Sprintf("%v:%v", common.GlobalConfig.GitRepos.Host, common.GlobalConfig.GitRepos.Port)))
 	router.Any("/reviews/*subpath", ReverseProxy(fmt.Sprintf("%v:%v", common.GlobalConfig.Reviews.Host, common.GlobalConfig.Reviews.Port)))
