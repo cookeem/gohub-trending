@@ -24,7 +24,8 @@ type AppConfig struct {
 		Params   []string `yaml:"params"`
 	} `yaml:"mysql"`
 	Jwt struct {
-		Secret string `yaml:"secret"`
+		Secret  string `yaml:"secret"`
+		Expires int    `yaml:"expires"`
 	} `yaml:"jwt"`
 	Backend struct {
 		Port int `yaml:"port"`

@@ -9,6 +9,7 @@ mysql:
   - "parseTime=true"
 jwt:
   secret: "iZXhwIjoxNTQyODY2ODA0LCJpYXQiOjE1NDI4NjU5MDQsImlzcyI6Imdp"
+  expires: 900
 backend:
   port: 3000
 users:

@@ -44,7 +44,7 @@ func createReview(c *gin.Context) {
 		msg = "new review succeed"
 		errorRet = 0
 		httpStatus = http.StatusOK
-		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, 15*60)
+		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, common.GlobalConfig.Jwt.Expires)
 	} else {
 		msg = errmsg
 		userToken = ""
@@ -85,7 +85,7 @@ func deleteReview(c *gin.Context) {
 		msg = "delete review succeed"
 		errorRet = 0
 		httpStatus = http.StatusOK
-		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, 15*60)
+		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, common.GlobalConfig.Jwt.Expires)
 	} else {
 		msg = errmsg
 		userToken = ""
@@ -137,7 +137,7 @@ func listReviews(c *gin.Context) {
 			reviews = append(reviews, r)
 		}
 		httpStatus = http.StatusOK
-		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, 15*60)
+		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, common.GlobalConfig.Jwt.Expires)
 	} else {
 		msg = errmsg
 		userToken = ""

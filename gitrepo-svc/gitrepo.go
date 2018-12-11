@@ -190,7 +190,7 @@ func listGitRepos(c *gin.Context) {
 		msg = "list gitrepos succeed"
 		errorRet = 0
 		httpStatus = http.StatusOK
-		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, 15*60)
+		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, common.GlobalConfig.Jwt.Expires)
 	} else {
 		msg = errmsg
 		userToken = ""
@@ -249,7 +249,7 @@ func searchGitRepos(c *gin.Context) {
 			msg = "search gitrepos succeed"
 			errorRet = 0
 			httpStatus = http.StatusOK
-			userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, 15*60)
+			userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, common.GlobalConfig.Jwt.Expires)
 		} else {
 			msg = errmsg
 			userToken = ""
@@ -310,7 +310,7 @@ func getGitRepo(c *gin.Context) {
 						msg = "get gitrepo reviews succeed"
 						errorRet = 0
 						httpStatus = http.StatusOK
-						userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, 15*60)
+						userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, common.GlobalConfig.Jwt.Expires)
 					}
 				}
 			}

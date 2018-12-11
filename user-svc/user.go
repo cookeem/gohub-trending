@@ -38,7 +38,7 @@ func createUser(c *gin.Context) {
 		uid, errmsg = dbcommon.CreateUser(username, password)
 	}
 	if errmsg == "" {
-		userToken, _ = common.CreateTokenString(username, uid, common.GlobalConfig.Jwt.Secret, 15*60)
+		userToken, _ = common.CreateTokenString(username, uid, common.GlobalConfig.Jwt.Secret, common.GlobalConfig.Jwt.Expires)
 		msg = "create user succeed"
 		errorRet = 0
 		httpStatus = http.StatusOK
@@ -79,7 +79,7 @@ func loginUser(c *gin.Context) {
 		uid, errmsg = dbcommon.LoginUser(username, password)
 	}
 	if errmsg == "" {
-		userToken, _ = common.CreateTokenString(username, uid, common.GlobalConfig.Jwt.Secret, 15*60)
+		userToken, _ = common.CreateTokenString(username, uid, common.GlobalConfig.Jwt.Secret, common.GlobalConfig.Jwt.Expires)
 		msg = "login succeed"
 		errorRet = 0
 		httpStatus = http.StatusOK
@@ -143,7 +143,7 @@ func getUser(c *gin.Context) {
 		msg = "get login user info succeed"
 		errorRet = 0
 		httpStatus = http.StatusOK
-		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, 15*60)
+		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, common.GlobalConfig.Jwt.Expires)
 	} else {
 		msg = errmsg
 		userToken = ""
@@ -196,7 +196,7 @@ func updateUser(c *gin.Context) {
 		msg = "update password succeed"
 		errorRet = 0
 		httpStatus = http.StatusOK
-		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, 15*60)
+		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, common.GlobalConfig.Jwt.Expires)
 	} else {
 		msg = errmsg
 		userToken = ""
