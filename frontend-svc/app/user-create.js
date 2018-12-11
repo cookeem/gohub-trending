@@ -28,53 +28,55 @@ const styles = theme => ({
   },
 });
 
-function UserCreateForm(props) {
-  const { classes } = props;
 
-  return (
-    <FormGroup row>
-      <FormControl className={classes.margin} fullWidth={true}>
-        <Grid container spacing={16} alignItems="flex-end" justify="center">
-          <Grid item>
-            <AccountCircle />
+class UserCreateForm extends React.Component {
+  render() {
+    const { classes } = this.props;
+    return (
+      <FormGroup row>
+        <FormControl className={classes.margin} fullWidth={true}>
+          <Grid container spacing={16} alignItems="flex-end" justify="center">
+            <Grid item>
+              <AccountCircle />
+            </Grid>
+            <Grid item xs={10}>
+              <TextField id="username" label="Input your username" fullWidth={true}/>
+            </Grid>
           </Grid>
-          <Grid item xs={10}>
-            <TextField id="username" label="Input your username" fullWidth={true}/>
+          <Grid container spacing={16} alignItems="flex-end" justify="center">
+            <Grid item>
+              <VpnKey />
+            </Grid>
+            <Grid item xs={10}>
+              <TextField id="password" type="password" label="Input your password" fullWidth={true} autoComplete="current-password"/>
+            </Grid>
           </Grid>
-        </Grid>
-        <Grid container spacing={16} alignItems="flex-end" justify="center">
-          <Grid item>
-            <VpnKey />
+          <Grid container spacing={16} alignItems="flex-end" justify="center">
+            <Grid item>
+              <VpnKey />
+            </Grid>
+            <Grid item xs={10}>
+              <TextField id="repassword" type="password" label="Repeat your password" fullWidth={true} autoComplete="current-password"/>
+            </Grid>
           </Grid>
-          <Grid item xs={10}>
-            <TextField id="password" type="password" label="Input your password" fullWidth={true} autoComplete="current-password"/>
+          <Grid container spacing={8} alignItems="flex-end" justify="center" style={{height: 80}}>
+            <Grid item xs={6}>
+              <Button variant="contained" color="primary">
+              <div style={{padding: "5px"}}>Sign Up</div>
+                <GroupAdd/>
+              </Button>
+            </Grid>
+            <Grid item xs={6}>
+              <Button variant="contained" color="secondary" href="/#/user-login">
+                <div style={{padding: "5px"}}>Sign In</div>
+                <Face/>
+              </Button>
+            </Grid>  
           </Grid>
-        </Grid>
-        <Grid container spacing={16} alignItems="flex-end" justify="center">
-          <Grid item>
-            <VpnKey />
-          </Grid>
-          <Grid item xs={10}>
-            <TextField id="repassword" type="password" label="Repeat your password" fullWidth={true} autoComplete="current-password"/>
-          </Grid>
-        </Grid>
-        <Grid container spacing={8} alignItems="flex-end" justify="center" style={{height: 80}}>
-          <Grid item xs={6}>
-            <Button variant="contained" color="primary">
-            <div style={{padding: "5px"}}>Sign Up</div>
-              <GroupAdd/>
-            </Button>
-          </Grid>
-          <Grid item xs={6}>
-            <Button variant="contained" color="secondary">
-              <div style={{padding: "5px"}}>Sign In</div>
-              <Face/>
-            </Button>
-          </Grid>  
-        </Grid>
-      </FormControl>
-    </FormGroup>
-  );
+        </FormControl>
+      </FormGroup>
+    )
+  }
 }
 
 UserCreateForm.propTypes = {
