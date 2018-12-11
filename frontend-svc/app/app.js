@@ -8,7 +8,7 @@ import lightBlue from '@material-ui/core/colors/lightBlue';
 import Grid from '@material-ui/core/Grid';
 
 // 非default export 必须包含{}
-import { store } from './redux/store/store';
+import { store } from './redux/store';
 import { TopBarConnect } from './components/topbar';
 import { SideBarConnect } from './components/sidebar';
 import { LoadingView } from './components/loading';

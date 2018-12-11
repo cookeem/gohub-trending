@@ -1,4 +1,4 @@
-import { actionShowSideBar, actionShowComment, actionShowDelete, actionShowLoading } from './action/action';
+import { actionShowSideBar, actionShowComment, actionShowDelete, actionShowLoading } from './action';
 
 //把redux的state输出到component的props
 export const mapStateToProps = (state) => {

@@ -9,8 +9,8 @@ const stateInitUI = {
 
 const stateInitLogin = {
   uid: 0,
-  username: "unknown",
-  userToken: "N/A",
+  username: "",
+  userToken: "",
 };
 
 const stateInitData = {
@@ -48,12 +48,8 @@ export const ui = (state = stateInitUI, action) => {
 export const login = (state = stateInitLogin, action) => {
   switch (action.type) {
     case 'LOGIN':
-      state.uid = action.uid;
-      state.username = action.username;
-      state.userToken = action.userToken;
-      console.log("state:", state);
       return Object.assign({}, state, {
-        uid: action.showSideBar,
+        uid: action.uid,
         username: action.username,
         userToken: action.userToken,
       });
