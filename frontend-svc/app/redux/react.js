@@ -1,4 +1,4 @@
-import { actionShowSideBar, actionShowComment, actionShowDelete } from './action/action';
+import { actionShowSideBar, actionShowComment, actionShowDelete, actionShowLoading } from './action/action';
 
 //把redux的state输出到component的props
 export const mapStateToProps = (state) => {
@@ -35,6 +35,14 @@ export const mapDispatchToProps = (dispatch) => {
     onHideDelete: (e) => {
       // e.preventDefault();
       dispatch(actionShowDelete(false));
+    },
+    onShowLoading: (e) => {
+      // e.preventDefault();
+      dispatch(actionShowLoading(true));
+    },
+    onHideLoading: (e) => {
+      // e.preventDefault();
+      dispatch(actionShowLoading(false));
     },
   }
 };

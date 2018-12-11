@@ -9,6 +9,7 @@ import (
 	"gohub-trending/common"
 	"gohub-trending/dbcommon"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -31,8 +32,13 @@ func main() {
 		log.Fatal("database connect error:", err.Error())
 		return
 	}
+	log.Println("[INFO] database initial succeeded")
 	router := gin.New()
-	router.Use(common.IstioHeadersForward(), gin.Recovery(), gin.Logger())
+
+	// new cors middleware
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
+	router.Use(common.IstioHeadersForward(), gin.Recovery(), gin.Logger(), cors.New(config))
 
 	router.Any("/users/*subpath", ReverseProxy(fmt.Sprintf("%v:%v", common.GlobalConfig.Users.Host, common.GlobalConfig.Users.Port)))
 	router.Any("/gitrepos/*subpath", ReverseProxy(fmt.Sprintf("%v:%v", common.GlobalConfig.GitRepos.Host, common.GlobalConfig.GitRepos.Port)))

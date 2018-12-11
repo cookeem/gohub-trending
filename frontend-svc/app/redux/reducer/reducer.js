@@ -4,6 +4,7 @@ const stateInitUI = {
   showSideBar: false,
   showComment: false,
   showDelete: false,
+  showLoading: false,
 };
 
 const stateInitLogin = {
@@ -34,6 +35,10 @@ export const ui = (state = stateInitUI, action) => {
     case 'SHOW_DELETE':
       return Object.assign({}, state, {
         showDelete: action.showDelete,
+      });
+    case 'SHOW_LOADING':
+      return Object.assign({}, state, {
+        showLoading: action.showLoading,
       });
     default:
       return state;

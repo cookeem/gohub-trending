@@ -20,6 +20,7 @@ go get -u -v github.com/jinzhu/gorm/dialects/mysql
 go get -u -v gopkg.in/yaml.v2
 go get -u -v github.com/gin-gonic/gin
 go get -u -v github.com/dgrijalva/jwt-go
+go get -u -v github.com/gin-contrib/cors
 
 go build user-svc/user.go && ./user
 go build gitrepo-svc/gitrepo.go && ./gitrepo

@@ -20,6 +20,13 @@ export const actionShowDelete = (showDelete) => (
   }
 );
 
+export const actionShowLoading = (showLoading) => (
+  {
+    type: 'SHOW_LOADING',
+    showLoading: showLoading,
+  }
+);
+
 export const actionLogin = (uid, username, userToken) => (
   {
     type: 'LOGIN',
