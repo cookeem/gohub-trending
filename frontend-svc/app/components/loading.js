@@ -58,4 +58,4 @@ CircularDeterminate.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(CircularDeterminate);
+export const LoadingView = withStyles(styles)(CircularDeterminate);

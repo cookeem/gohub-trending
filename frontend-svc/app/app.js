@@ -11,9 +11,10 @@ import Grid from '@material-ui/core/Grid';
 import { store } from './redux/store/store';
 import { TopBarConnect } from './components/topbar';
 import { SideBarConnect } from './components/sidebar';
+import { LoadingView } from './components/loading';
 import { CommentDialogConnect, DeleteDialogConnect, ErrorDialog, SuccessTips } from './components/dialog';
 import { GitRepoViewView } from './gitrepo-view';
-import { UserCreateView, UserLoginView, UserLogoutView, UserUpdateView, GitRepoSearchView, GitRepoListView, LoadingView } from './components/router'
+import { UserCreateView, UserLoginView, UserLogoutView, UserUpdateView, GitRepoSearchView, GitRepoListView } from './components/router'
 
 import './css/style.css';
 
@@ -47,6 +48,7 @@ const App = () => {
           <DeleteDialogConnect />
           <ErrorDialog />
           <SuccessTips />
+          <LoadingView />
           <Grid container spacing={24} className={styles.main} style={{padding: "20px"}}>
             <Grid item xs={12}>
               <React.Suspense fallback={<div>Now loading...</div>}>
@@ -58,8 +60,7 @@ const App = () => {
                   <Route path="/gitrepo-search" component={GitRepoSearchView}/>
                   <Route path="/gitrepo-list" component={GitRepoListView}/>
                   <Route path="/gitrepo-view" component={GitRepoViewView}/>
-                  <Route path="/loading" component={LoadingView}/>
-                  <Redirect to="/loading"/>
+                  <Redirect to="/gitrepo-view"/>
                 </Switch>
               </React.Suspense>
             </Grid>

@@ -1,5 +1,4 @@
 import React from 'react';
-import Loading from './loading';
 import { UserLogin } from '../user-login';
 import { UserCreate } from '../user-create';
 import { UserUpdate } from '../user-update';
@@ -28,10 +27,6 @@ export const GitRepoSearchView = () => (
 
 export const GitRepoListView = () => (
   <GitRepoList />
-);
-
-export const LoadingView = () => (
-  <Loading />
 );
 
 import jwtDecode from 'jwt-decode';
