@@ -35,10 +35,14 @@ func main() {
 	log.Println("[INFO] database initial succeeded")
 	router := gin.New()
 
-	// new cors middleware
-	config := cors.DefaultConfig()
-	config.AllowAllOrigins = true
-	router.Use(common.IstioHeadersForward(), gin.Recovery(), gin.Logger(), cors.New(config))
+	if common.GlobalConfig.Backend.CorsAllow {
+		// new cors middleware
+		config := cors.DefaultConfig()
+		config.AllowAllOrigins = true
+		router.Use(common.IstioHeadersForward(), gin.Recovery(), gin.Logger(), cors.New(config))
+	} else {
+		router.Use(common.IstioHeadersForward(), gin.Recovery(), gin.Logger())
+	}
 
 	router.NoRoute(func(c *gin.Context) {
 		c.JSON(404, gin.H{"error": 1, "msg": "404 page not found"})

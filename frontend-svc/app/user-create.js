@@ -71,7 +71,7 @@ class UserCreateForm extends React.Component {
                 <div style={{padding: "5px"}}>Sign In</div>
                 <Face/>
               </Button>
-            </Grid>  
+            </Grid>
           </Grid>
         </FormControl>
       </FormGroup>
@@ -95,7 +95,7 @@ function UserCreatePage(props) {
           <Paper className={classes.paper}>
             <Typography variant="h5" color="inherit" align="center" className={classes.barText}>
               User Sign Up
-            </Typography> 
+            </Typography>
             <Grid container spacing={24} justify="center">
               <Grid item xs={6}>
                 <UserCreateFormStyle />
@@ -119,4 +119,4 @@ export const UserCreate = () => {
     <UserCreatePageStyle />
   )
 };
-        
+

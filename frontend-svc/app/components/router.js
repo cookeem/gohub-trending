@@ -56,18 +56,18 @@ axios({
   url:'http://localhost:3000/users/',
   method:'get',
   timeout: 5000,
-}).then(function (response) {
+}).then((response) => {
   // response = checkStatus(response);
   console.log('fetch github api succeeded!');
   console.log(response.data);
   console.log(response.headers);
-}).catch(function (error) {
+}).catch((error) => {
   console.log('fetch github api failed!');
   // console.log(response.data);
   // console.log(response.headers);
   console.log(error)
   console.log(error.response);
-}).then(function () {
+}).then(() => {
   // always executed
   console.log('always show fetch github api!');
 });

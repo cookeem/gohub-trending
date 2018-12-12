@@ -60,7 +60,7 @@ const App = () => {
                   <Route path="/gitrepo-search" component={GitRepoSearchView}/>
                   <Route path="/gitrepo-list" component={GitRepoListView}/>
                   <Route path="/gitrepo-view" component={GitRepoViewView}/>
-                  <Redirect to="/gitrepo-view"/>
+                  <Redirect to="/user-login"/>
                 </Switch>
               </React.Suspense>
             </Grid>

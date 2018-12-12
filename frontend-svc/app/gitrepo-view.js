@@ -170,9 +170,7 @@ GitRepoViewForm.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-const GitRepoViewFormStyle = withStyles(styles)(GitRepoViewForm);
-
-const GitRepoViewFormConnect = connect(mapStateToProps, mapDispatchToProps)(GitRepoViewFormStyle);
+const GitRepoViewFormConnect = connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(GitRepoViewForm));
 
 function GitRepoViewPage(props) {
   const { classes } = props;

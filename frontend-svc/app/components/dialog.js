@@ -116,10 +116,10 @@ export class ErrorDialog extends React.Component {
           aria-describedby="alert-dialog-slide-description"
         >
           <DialogTitle id="alert-dialog-slide-title">
-            Error Message!
+            <div style={{color: '#FF0000'}}>Error!</div>
           </DialogTitle>
           <DialogContent>
-            <DialogContentText id="alert-dialog-slide-description">
+            <DialogContentText id="alert-dialog-slide-description" style={{color: '#FF0000'}}>
               error message here.
             </DialogContentText>
           </DialogContent>

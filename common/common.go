@@ -28,7 +28,8 @@ type AppConfig struct {
 		Expires int    `yaml:"expires"`
 	} `yaml:"jwt"`
 	Backend struct {
-		Port int `yaml:"port"`
+		Port      int  `yaml:"port"`
+		CorsAllow bool `yaml:"corsAllow"`
 	} `yaml:"backend"`
 	Users struct {
 		Host string `yaml:"host"`

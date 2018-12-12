@@ -14,6 +14,10 @@ import Button from '@material-ui/core/Button';
 import Face from '@material-ui/icons/Face';
 import GroupAdd from '@material-ui/icons/GroupAdd';
 
+import { mapDispatchToProps, mapStateToProps } from './redux/react';
+import { connect } from 'react-redux';
+import axios from 'axios';
+
 const styles = theme => ({
   root: {
     flexGrow: 1,
@@ -30,6 +34,75 @@ const styles = theme => ({
 });
 
 class UserLoginForm extends React.Component {
+  state = {
+    username: "",
+    password: "",
+    usernamePrompt: "",
+    passwordPrompt: "",
+  };
+
+  handleChange = event => {
+    this.setState({ [event.target.id]: event.target.value });
+  };
+
+  handleSubmit = event => {
+    //注意，this.setState是异步操作
+    var usernamePrompt = "";
+    if (this.state.username == "") {
+      usernamePrompt = "username can not be empty";
+      console.log(this.state);
+    } else if (this.state.username.length < 3 ) {
+      usernamePrompt = "username must more than 2 characters";
+    } else if (this.state.username.length > 12) {
+      usernamePrompt = "username must less than 13 characters";
+    } else {
+      usernamePrompt = "";
+    }
+    var passwordPrompt = "";
+    if (this.state.password == "") {
+      passwordPrompt = "password can not be empty";
+    } else if (this.state.password.length < 6 ) {
+      passwordPrompt = "password must more than 5 characters";
+    } else if (this.state.password.length > 20) {
+      passwordPrompt = "password must less than 21 characters";
+    } else {
+      passwordPrompt = "";
+    }
+    this.setState({ usernamePrompt: usernamePrompt });
+    this.setState({ passwordPrompt: passwordPrompt });
+    if (usernamePrompt == "" && passwordPrompt == "") {
+      console.log("user input correct");
+      this.props.onShowLoading(event);
+      axios({
+        url:'https://api.github.com/search/repositories?q=topic:kubernetes',
+        // url:'http://localhost:3000/users/',
+        method:'get',
+        timeout: 5000,
+      }).then((response) => {
+        // response = checkStatus(response);
+        console.log('fetch github api succeeded!');
+        console.log(response.data);
+        console.log(response.headers);
+        this.props.onShowComment(event);
+      }).catch((error) => {
+        console.log('fetch github api failed!');
+        // console.log(response.data);
+        // console.log(response.headers);
+        console.log(error)
+        console.log(error.response);
+        this.props.onShowDelete(event);
+      }).then(() => {
+        // always executed
+        console.log('always show fetch github api!');
+        this.props.onHideLoading(event);
+      });
+    } else {
+      this.props.onHideLoading(event);
+    }
+    console.log('###', this.state);
+
+  };
+
   render() {
     const { classes } = this.props;
     return (
@@ -40,7 +113,7 @@ class UserLoginForm extends React.Component {
               <AccountCircle />
             </Grid>
             <Grid item xs={10}>
-              <TextField id="username" label="Input your username" fullWidth={true}/>
+              <TextField id="username" onChange={this.handleChange} error={this.state.usernamePrompt != ""} helperText={this.state.usernamePrompt} autoFocus label="Input your username" fullWidth={true}/>
             </Grid>
           </Grid>
           <Grid container spacing={16} alignItems="flex-end" justify="center">
@@ -48,7 +121,7 @@ class UserLoginForm extends React.Component {
               <VpnKey />
             </Grid>
             <Grid item xs={10}>
-              <TextField id="password" type="password" label="Input your password" fullWidth={true} autoComplete="current-password"/>
+              <TextField id="password" onChange={this.handleChange} error={this.state.passwordPrompt != ""} helperText={this.state.passwordPrompt} type="password" label="Input your password" fullWidth={true} autoComplete="current-password"/>
             </Grid>
           </Grid>
           <Grid container spacing={8} alignItems="flex-end" justify="flex-start">
@@ -61,7 +134,7 @@ class UserLoginForm extends React.Component {
           </Grid>
           <Grid container spacing={8} alignItems="flex-end" justify="center" style={{height: 80}}>
             <Grid item xs={6}>
-              <Button variant="contained" color="secondary">
+              <Button id="signin" variant="contained" color="secondary" onClick={this.handleSubmit}>
                 <div style={{padding: "5px"}}>Sign In</div>
                 <Face/>
               </Button>
@@ -79,12 +152,11 @@ class UserLoginForm extends React.Component {
   }
 }
 
-
 UserLoginForm.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-const UserLoginFormStyle = withStyles(styles)(UserLoginForm);
+const UserLoginFormConnect = connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(UserLoginForm));
 
 function UserLoginPage(props) {
   const { classes } = props;
@@ -99,7 +171,7 @@ function UserLoginPage(props) {
             </Typography> 
             <Grid container spacing={24} justify="center">
               <Grid item xs={6}>
-                <UserLoginFormStyle />
+                <UserLoginFormConnect />
               </Grid>
             </Grid>
           </Paper>
@@ -120,4 +192,4 @@ export const UserLogin = () => {
     <UserLoginPageStyle />
   )
 };
-        
+
