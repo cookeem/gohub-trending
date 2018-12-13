@@ -73,27 +73,29 @@ class UserLoginForm extends React.Component {
     if (usernamePrompt == "" && passwordPrompt == "") {
       console.log("user input correct");
       this.props.onShowLoading(event);
+      var bodyFormData = new FormData();
+      bodyFormData.append('username', this.state.username);
+      bodyFormData.append('password', this.state.password);
       axios({
-        url:'https://api.github.com/search/repositories?q=topic:kubernetes',
-        // url:'http://localhost:3000/users/',
-        method:'get',
+        // url: 'https://api.github.com/search/repositories?q=topic:kubernetes',
+        url: 'http://localhost:3000/users/login',
+        method: 'post',
+        data: bodyFormData,
+        config: { headers: {'Content-Type': 'multipart/form-data' }},
         timeout: 5000,
       }).then((response) => {
-        // response = checkStatus(response);
-        console.log('fetch github api succeeded!');
+        console.log('succeeded!');
         console.log(response.data);
         console.log(response.headers);
         this.props.onShowComment(event);
       }).catch((error) => {
-        console.log('fetch github api failed!');
-        // console.log(response.data);
-        // console.log(response.headers);
+        console.log('failed!');
         console.log(error)
         console.log(error.response);
         this.props.onShowDelete(event);
       }).then(() => {
         // always executed
-        console.log('always show fetch github api!');
+        console.log('done!');
         this.props.onHideLoading(event);
       });
     } else {

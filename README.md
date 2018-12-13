@@ -22,10 +22,10 @@ go get -u -v github.com/gin-gonic/gin
 go get -u -v github.com/dgrijalva/jwt-go
 go get -u -v github.com/gin-contrib/cors
 
+go build backend-svc/backend.go && ./backend
 go build user-svc/user.go && ./user
 go build gitrepo-svc/gitrepo.go && ./gitrepo
 go build review-svc/review.go && ./review
-go build backend-svc/backend.go && ./backend
 ```
 
 ## 接口说明
