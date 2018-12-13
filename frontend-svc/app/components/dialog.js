@@ -13,12 +13,20 @@ import { mapDispatchToProps, mapStateToProps } from '../redux/react';
 import { connect } from 'react-redux';
 
 class CommentDialog extends React.Component {
+  onShowComment = () => {
+    this.props.onComment(true)
+  }
+
+  onHideComment = () => {
+    this.props.onComment(false)
+  }
+
   render() {
     return (
       <div>
         <Dialog
           open={this.props.ui.showComment}
-          onClose={this.props.onHideComment}
+          onClose={this.onHideComment}
           aria-labelledby="form-dialog-title"
         >
           <DialogTitle id="comment">Comment</DialogTitle>
@@ -38,10 +46,10 @@ class CommentDialog extends React.Component {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.props.onHideComment} color="secondary">
+            <Button onClick={this.onHideComment} color="secondary">
               Comment
             </Button>
-            <Button onClick={this.props.onHideComment} color="secondary">
+            <Button onClick={this.onHideComment} color="secondary">
               Cancel
             </Button>
           </DialogActions>
@@ -52,12 +60,20 @@ class CommentDialog extends React.Component {
 }
 
 class DeleteDialog extends React.Component {
+  onShowDelete = () => {
+    this.props.onDelete(true)
+  }
+
+  onHideDelete = () => {
+    this.props.onDelete(false)
+  }
+
   render() {
     return (
       <div>
         <Dialog
           open={this.props.ui.showDelete}
-          onClose={this.props.onHideDelete}
+          onClose={this.onHideDelete}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
@@ -68,10 +84,10 @@ class DeleteDialog extends React.Component {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.props.onHideDelete} color="secondary">
+            <Button onClick={this.onHideDelete} color="secondary">
               Delete
             </Button>
-            <Button onClick={this.props.onHideDelete} color="secondary" autoFocus>
+            <Button onClick={this.onHideDelete} color="secondary" autoFocus>
               Cancel
             </Button>
           </DialogActions>
@@ -80,9 +96,6 @@ class DeleteDialog extends React.Component {
     );
   }
 }
-
-export const CommentDialogConnect = connect(mapStateToProps, mapDispatchToProps)(CommentDialog);
-export const DeleteDialogConnect = connect(mapStateToProps, mapDispatchToProps)(DeleteDialog);
 
 function TransitionUp(props) {
   return <Slide {...props} direction="up" />;
@@ -104,14 +117,16 @@ export class ErrorDialog extends React.Component {
   render() {
     return (
       <div>
-        <Button variant="outlined" color="secondary" onClick={this.handleClickOpen}>
+        {/* <Button variant="outlined" color="secondary" onClick={this.handleClickOpen}>
           error dialog
-        </Button>
+        </Button> */}
         <Dialog
+          // open={this.props.ui.showDelete}
+          // onClose={this.props.onHideDelete}
           open={this.state.open}
+          onClose={this.handleClose}
           TransitionComponent={TransitionUp}
           keepMounted
-          onClose={this.handleClose}
           aria-labelledby="alert-dialog-slide-title"
           aria-describedby="alert-dialog-slide-description"
         >
@@ -151,12 +166,14 @@ export class SuccessTips extends React.Component {
   render() {
     return (
       <div>
-        <Button onClick={this.handleClick(TransitionUp)}>success message</Button>
+        {/* <Button onClick={this.handleClick(TransitionUp)}>success message</Button> */}
         <Snackbar
+          // open={this.props.ui.showDelete}
+          // onClose={this.props.onHideDelete}
           open={this.state.open}
           onClose={this.handleClose}
           autoHideDuration={1500}
-          TransitionComponent={this.state.Transition}
+          TransitionComponent={TransitionUp}
           ContentProps={{
             'aria-describedby': 'message-id',
           }}
@@ -166,3 +183,9 @@ export class SuccessTips extends React.Component {
     );
   }
 }
+
+export const CommentDialogConnect = connect(mapStateToProps, mapDispatchToProps)(CommentDialog);
+export const DeleteDialogConnect = connect(mapStateToProps, mapDispatchToProps)(DeleteDialog);
+export const ErrorDialogConnect = connect(mapStateToProps, mapDispatchToProps)(ErrorDialog);
+export const SuccessTipsConnect = connect(mapStateToProps, mapDispatchToProps)(SuccessTips);
+

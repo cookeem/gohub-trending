@@ -72,14 +72,14 @@ class UserLoginForm extends React.Component {
     this.setState({ passwordPrompt: passwordPrompt });
     if (usernamePrompt == "" && passwordPrompt == "") {
       console.log("user input correct");
-      this.props.onShowLoading(event);
+      this.props.onLoading(true);
       var bodyFormData = new FormData();
       bodyFormData.append('username', this.state.username);
       bodyFormData.append('password', this.state.password);
       axios({
-        // url: 'https://api.github.com/search/repositories?q=topic:kubernetes',
-        url: 'http://localhost:3000/users/login',
-        method: 'post',
+        url: 'https://api.github.com/search/repositories?q=topic:kubernetes',
+        // url: 'http://localhost:3000/users/login',
+        method: 'get',
         data: bodyFormData,
         config: { headers: {'Content-Type': 'multipart/form-data' }},
         timeout: 5000,
@@ -92,14 +92,12 @@ class UserLoginForm extends React.Component {
         console.log('failed!');
         console.log(error)
         console.log(error.response);
-        this.props.onShowDelete(event);
+        this.props.onDelete(true);
       }).then(() => {
         // always executed
         console.log('done!');
-        this.props.onHideLoading(event);
+        this.props.onLoading(false);
       });
-    } else {
-      this.props.onHideLoading(event);
     }
     console.log('###', this.state);
 

@@ -42,6 +42,22 @@ const styles = theme => ({
 });
 
 class GitRepoViewForm extends React.Component {
+  onShowComment = () => {
+    this.props.onComment(true)
+  }
+
+  onHideComment = () => {
+    this.props.onComment(false)
+  }
+
+  onShowDelete = () => {
+    this.props.onDelete(true)
+  }
+
+  onHideDelete = () => {
+    this.props.onDelete(false)
+  }
+
   render() {
     console.log(this.props.login.username);
     const { classes } = this.props;
@@ -67,6 +83,7 @@ class GitRepoViewForm extends React.Component {
       { rid: 2, username: "haijian", content: "this is a comment", created_at: "2012-12-12 10:10:10", },
       { rid: 3, username: "faith", content: "this is a comment", created_at: "2012-12-12 10:10:10", },
     ];
+
     return (
       <div className={classes.root}>
         <Grid key={gitrepo.gid} container spacing={8} alignItems="flex-end" justify="flex-start">
@@ -132,7 +149,7 @@ class GitRepoViewForm extends React.Component {
                 />
               </CardContent>
               <CardActions>
-                <Button size="small" variant="contained" color="secondary" className={classes.pos} onClick={this.props.onShowComment}>
+                <Button size="small" variant="contained" color="secondary" className={classes.pos} onClick={this.onShowComment}>
                   <AddCircle />
                   Comments
                 </Button>
@@ -153,8 +170,8 @@ class GitRepoViewForm extends React.Component {
                   </Typography>
                   <Typography component="p">
                     {review.created_at}
-                    <Button size="small" variant="contained" style={{marginLeft: 20, backgroundColor: red[500], color: "#FFF"}} onClick={this.props.onShowDelete}>Delete</Button>
-                    <Button size="small" variant="contained" style={{marginLeft: 20, backgroundColor: red[500], color: "#FFF"}} onClick={this.props.onShowDelete}>Error</Button>
+                    <Button size="small" variant="contained" style={{marginLeft: 20, backgroundColor: red[500], color: "#FFF"}} onClick={this.onShowDelete}>Delete</Button>
+                    <Button size="small" variant="contained" style={{marginLeft: 20, backgroundColor: red[500], color: "#FFF"}} onClick={this.onShowDelete}>Error</Button>
                   </Typography>
                 </CardContent>
               </Card>

@@ -12,7 +12,7 @@ import { store } from './redux/store';
 import { TopBarConnect } from './components/topbar';
 import { SideBarConnect } from './components/sidebar';
 import { LoadingView } from './components/loading';
-import { CommentDialogConnect, DeleteDialogConnect, ErrorDialog, SuccessTips } from './components/dialog';
+import { CommentDialogConnect, DeleteDialogConnect, ErrorDialogConnect, SuccessTipsConnect } from './components/dialog';
 import { GitRepoViewView } from './gitrepo-view';
 import { UserCreateView, UserLoginView, UserLogoutView, UserUpdateView, GitRepoSearchView, GitRepoListView } from './components/router'
 
@@ -46,8 +46,8 @@ const App = () => {
           <SideBarConnect />
           <CommentDialogConnect />
           <DeleteDialogConnect />
-          <ErrorDialog />
-          <SuccessTips />
+          <ErrorDialogConnect />
+          <SuccessTipsConnect />
           <LoadingView />
           <Grid container spacing={24} className={styles.main} style={{padding: "20px"}}>
             <Grid item xs={12}>

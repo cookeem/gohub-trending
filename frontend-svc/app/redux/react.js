@@ -12,37 +12,21 @@ export const mapStateToProps = (state) => {
 //把component的事件映射到dispatch，可以返回一系列函数
 export const mapDispatchToProps = (dispatch) => {
   return {
-    onShowSideBar: (e) => {
+    onSideBar: (show) => {
       // e.preventDefault();
-      dispatch(actionShowSideBar(true));
+      dispatch(actionShowSideBar(show));
     },
-    onHideSideBar: (e) => {
+    onComment: (show) => {
       // e.preventDefault();
-      dispatch(actionShowSideBar(false));
+      dispatch(actionShowComment(show));
     },
-    onShowComment: (e) => {
+    onDelete: (show) => {
       // e.preventDefault();
-      dispatch(actionShowComment(true));
+      dispatch(actionShowDelete(show));
     },
-    onHideComment: (e) => {
+    onLoading: (show) => {
       // e.preventDefault();
-      dispatch(actionShowComment(false));
-    },
-    onShowDelete: (e) => {
-      // e.preventDefault();
-      dispatch(actionShowDelete(true));
-    },
-    onHideDelete: (e) => {
-      // e.preventDefault();
-      dispatch(actionShowDelete(false));
-    },
-    onShowLoading: (e) => {
-      // e.preventDefault();
-      dispatch(actionShowLoading(true));
-    },
-    onHideLoading: (e) => {
-      // e.preventDefault();
-      dispatch(actionShowLoading(false));
+      dispatch(actionShowLoading(show));
     },
   }
 };

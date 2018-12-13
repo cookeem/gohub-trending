@@ -24,6 +24,14 @@ const styles = {
 };
 
 class SideBar extends React.Component {
+  onShowSideBar = () => {
+    this.props.onSideBar(true)
+  }
+
+  onHideSideBar = () => {
+    this.props.onSideBar(false)
+  }
+
   render() {
     const { classes } = this.props;
     const menuList1 = [
@@ -83,14 +91,14 @@ class SideBar extends React.Component {
       <div>
         <SwipeableDrawer
           open={this.props.ui.showSideBar}
-          onClose={this.props.onHideSideBar}
-          onOpen={this.props.onShowSideBar}
+          onClose={this.onHideSideBar}
+          onOpen={this.onShowSideBar}
         >
           <div
             tabIndex={0}
             role="button"
-            onClick={this.props.onHideSideBar}
-            onKeyDown={this.props.onHideSideBar}
+            onClick={this.onHideSideBar}
+            onKeyDown={this.onHideSideBar}
           >
             {sideList}
           </div>

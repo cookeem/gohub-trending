@@ -32,29 +32,39 @@ const styles = {
   },
 };
 
-function TopBar(props) {
-  const { classes } = props;
-  return (
-    <div className={classes.root}>
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton onClick={props.onShowSideBar} className={classes.menuButton} color="inherit" aria-label="Menu">
-            <MenuIcon />
-          </IconButton>
-          <Grid container className={classes.topBar} alignContent="center" alignItems="center">
-            <Grid item xs={5} align="right">
-              <Avatar alt="Natacha" src={GithubIcon} align="center"/>
+class TopBar extends React.Component {
+  onShowSideBar = () => {
+    this.props.onSideBar(true)
+  }
+
+  onHideSideBar = () => {
+    this.props.onSideBar(false)
+  }
+
+  render() {
+    const { classes } = this.props;
+    return (
+      <div className={classes.root}>
+        <AppBar position="static">
+          <Toolbar>
+            <IconButton onClick={this.onShowSideBar} className={classes.menuButton} color="inherit" aria-label="Menu">
+              <MenuIcon />
+            </IconButton>
+            <Grid container className={classes.topBar} alignContent="center" alignItems="center">
+              <Grid item xs={5} align="right">
+                <Avatar alt="Natacha" src={GithubIcon} align="center"/>
+              </Grid>
+              <Grid item xs={7}>
+                <Typography variant="h6" color="inherit" align="left" className={classes.barText}>
+                  Github Trending Go - {this.props.login.username}
+                </Typography>  
+              </Grid>
             </Grid>
-            <Grid item xs={7}>
-              <Typography variant="h6" color="inherit" align="left" className={classes.barText}>
-                Github Trending Go - {props.login.username}
-              </Typography>  
-            </Grid>
-          </Grid>
-        </Toolbar>
-      </AppBar>
-    </div>
-  );
+          </Toolbar>
+        </AppBar>
+      </div>
+    )
+  }
 }
 
 TopBar.propTypes = {
