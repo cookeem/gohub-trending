@@ -113,6 +113,7 @@ func VerifyTokenString(tokenStr string, secretStr string) (claims *UserToken) {
 
 func IstioHeadersForward() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		c.Header("Access-Control-Expose-Headers", "X-User-Token")
 		istioHeaders := []string{
 			"x-request-id",
 			"x-b3-traceid",

@@ -27,12 +27,12 @@ export const actionShowLoading = (showLoading) => (
   }
 );
 
-export const actionLogin = (uid, username, userToken) => (
+export const actionLogin = (login) => (
   {
     type: 'LOGIN',
-    uid: uid,
-    username: username,
-    userToken: userToken,
+    uid: login.uid,
+    username: login.username,
+    userToken: login.userToken,
   }
 );
 

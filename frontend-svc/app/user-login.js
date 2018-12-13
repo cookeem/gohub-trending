@@ -17,6 +17,7 @@ import GroupAdd from '@material-ui/icons/GroupAdd';
 import { mapDispatchToProps, mapStateToProps } from './redux/react';
 import { connect } from 'react-redux';
 import axios from 'axios';
+import { getLoginInfo } from './components/functions';
 
 const styles = theme => ({
   root: {
@@ -45,7 +46,7 @@ class UserLoginForm extends React.Component {
     this.setState({ [event.target.id]: event.target.value });
   };
 
-  handleSubmit = event => {
+  handleSubmit = () => {
     //注意，this.setState是异步操作
     var usernamePrompt = "";
     if (this.state.username == "") {
@@ -77,17 +78,20 @@ class UserLoginForm extends React.Component {
       bodyFormData.append('username', this.state.username);
       bodyFormData.append('password', this.state.password);
       axios({
-        url: 'https://api.github.com/search/repositories?q=topic:kubernetes',
-        // url: 'http://localhost:3000/users/login',
-        method: 'get',
+        // url: 'https://api.github.com/search/repositories?q=topic:kubernetes',
+        // method: 'get',
+        url: 'http://localhost:3000/users/login',
+        method: 'post',
         data: bodyFormData,
         config: { headers: {'Content-Type': 'multipart/form-data' }},
         timeout: 5000,
       }).then((response) => {
         console.log('succeeded!');
-        console.log(response.data);
-        console.log(response.headers);
-        this.props.onShowComment(event);
+        console.log(response);
+        console.log(response.headers['x-user-token']);
+        let login = getLoginInfo(response.headers['x-user-token']);
+        this.props.onLogin(login);
+        this.props.onComment(true);
       }).catch((error) => {
         console.log('failed!');
         console.log(error)

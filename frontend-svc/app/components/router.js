@@ -41,16 +41,6 @@ try {
   console.log(e);
 }
 
-function checkStatus(response) {
-  if (response.status >= 200 && response.status < 300) {
-    return response
-  } else {
-    var error = new Error(response.statusText)
-    error.response = response
-    throw error
-  }
-}
-
 axios({
   // url:'https://api.github.com/search/repositories?q=topic:kubernetes',
   url:'http://localhost:3000/users/',
