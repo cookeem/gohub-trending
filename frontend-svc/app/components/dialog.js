@@ -102,29 +102,20 @@ function TransitionUp(props) {
 }
 
 export class ErrorDialog extends React.Component {
-  state = {
-    open: false,
-  };
-
-  handleClickOpen = () => {
-    this.setState({ open: true });
-  };
-
-  handleClose = () => {
-    this.setState({ open: false });
-  };
+  onHideMsg = () => {
+    let msg = {
+      error: 0,
+      msg: "",
+    };
+    this.props.onMsg(msg);
+  }
 
   render() {
     return (
       <div>
-        {/* <Button variant="outlined" color="secondary" onClick={this.handleClickOpen}>
-          error dialog
-        </Button> */}
         <Dialog
-          // open={this.props.ui.showDelete}
-          // onClose={this.props.onHideDelete}
-          open={this.state.open}
-          onClose={this.handleClose}
+          open={this.props.msg.error != 0 && this.props.msg.msg != ""}
+          onClose={this.onHideMsg}
           TransitionComponent={TransitionUp}
           keepMounted
           aria-labelledby="alert-dialog-slide-title"
@@ -135,11 +126,11 @@ export class ErrorDialog extends React.Component {
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-slide-description" style={{color: '#FF0000'}}>
-              error message here.
+              {this.props.msg.msg}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose} color="secondary">
+            <Button onClick={this.onHideMsg} color="secondary">
               Get It!
             </Button>
           </DialogActions>
@@ -150,34 +141,27 @@ export class ErrorDialog extends React.Component {
 }
 
 export class SuccessTips extends React.Component {
-  state = {
-    open: false,
-    Transition: null,
-  };
-
-  handleClick = Transition => () => {
-    this.setState({ open: true, Transition });
-  };
-
-  handleClose = () => {
-    this.setState({ open: false });
-  };
+  onHideMsg = () => {
+    let msg = {
+      error: 0,
+      msg: "",
+    };
+    this.props.onMsg(msg);
+  }
 
   render() {
     return (
       <div>
         {/* <Button onClick={this.handleClick(TransitionUp)}>success message</Button> */}
         <Snackbar
-          // open={this.props.ui.showDelete}
-          // onClose={this.props.onHideDelete}
-          open={this.state.open}
-          onClose={this.handleClose}
+          open={this.props.msg.error == 0 && this.props.msg.msg != ""}
+          onClose={this.onHideMsg}
           autoHideDuration={1500}
           TransitionComponent={TransitionUp}
           ContentProps={{
             'aria-describedby': 'message-id',
           }}
-          message={<span id="message-id">I love snacks</span>}
+          message={this.props.msg.msg}
         />
       </div>
     );

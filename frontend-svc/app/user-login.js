@@ -72,34 +72,45 @@ class UserLoginForm extends React.Component {
     this.setState({ usernamePrompt: usernamePrompt });
     this.setState({ passwordPrompt: passwordPrompt });
     if (usernamePrompt == "" && passwordPrompt == "") {
-      console.log("user input correct");
       this.props.onLoading(true);
       var bodyFormData = new FormData();
       bodyFormData.append('username', this.state.username);
       bodyFormData.append('password', this.state.password);
       axios({
-        // url: 'https://api.github.com/search/repositories?q=topic:kubernetes',
-        // method: 'get',
         url: 'http://localhost:3000/users/login',
         method: 'post',
         data: bodyFormData,
         config: { headers: {'Content-Type': 'multipart/form-data' }},
         timeout: 5000,
       }).then((response) => {
-        console.log('succeeded!');
-        console.log(response);
-        console.log(response.headers['x-user-token']);
         let login = getLoginInfo(response.headers['x-user-token']);
         this.props.onLogin(login);
-        this.props.onComment(true);
+        let msg = {
+          error: response.data.error,
+          msg: response.data.msg,
+        };
+        this.props.onMsg(msg);
       }).catch((error) => {
-        console.log('failed!');
-        console.log(error)
-        console.log(error.response);
-        this.props.onDelete(true);
+        let login = {
+          uid: 0,
+          username: "",
+          userToken: "",
+        };
+        this.props.onLogin(login);
+        if (error.response.status == 403) {
+          let msg = {
+            error: error.response.data.error,
+            msg: error.response.data.msg,
+          };
+          this.props.onMsg(msg);
+        } else {
+          let msg = {
+            error: 1,
+            msg: String(error),
+          };
+          this.props.onMsg(msg);
+        }
       }).then(() => {
-        // always executed
-        console.log('done!');
         this.props.onLoading(false);
       });
     }
@@ -128,7 +139,7 @@ class UserLoginForm extends React.Component {
               <TextField id="password" onChange={this.handleChange} error={this.state.passwordPrompt != ""} helperText={this.state.passwordPrompt} type="password" label="Input your password" fullWidth={true} autoComplete="current-password"/>
             </Grid>
           </Grid>
-          <Grid container spacing={8} alignItems="flex-end" justify="flex-start">
+          <Grid container spacing={9} alignItems="flex-end" justify="flex-start">
             <Grid item xs={12}>
               <Checkbox
                 value="checkedB"
@@ -136,7 +147,7 @@ class UserLoginForm extends React.Component {
               /> Remember me
             </Grid>
           </Grid>
-          <Grid container spacing={8} alignItems="flex-end" justify="center" style={{height: 80}}>
+          <Grid container spacing={9} alignItems="flex-end" justify="center" style={{height: 80}}>
             <Grid item xs={6}>
               <Button id="signin" variant="contained" color="secondary" onClick={this.handleSubmit}>
                 <div style={{padding: "5px"}}>Sign In</div>

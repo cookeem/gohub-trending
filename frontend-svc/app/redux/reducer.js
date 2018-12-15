@@ -7,21 +7,6 @@ const stateInitUI = {
   showLoading: false,
 };
 
-const stateInitLogin = {
-  uid: 0,
-  username: "",
-  userToken: "",
-};
-
-const stateInitData = {
-  error: 0,
-  msg: "",
-  gitrepos: [],
-  languages: [],
-  gitrepo: {},
-  reviews: [],
-};
-
 export const ui = (state = stateInitUI, action) => {
   switch (action.type) {
     case 'SHOW_SIDEBAR':
@@ -45,6 +30,12 @@ export const ui = (state = stateInitUI, action) => {
   }
 }
 
+const stateInitLogin = {
+  uid: 0,
+  username: "",
+  userToken: "",
+};
+
 export const login = (state = stateInitLogin, action) => {
   switch (action.type) {
     case 'LOGIN':
@@ -58,7 +49,84 @@ export const login = (state = stateInitLogin, action) => {
   }
 }
 
+const stateInitMsg = {
+  error: 0,
+  msg: "",
+};
+
+export const msg = (state = stateInitMsg, action) => {
+  switch (action.type) {
+    case 'MSG':
+      return Object.assign({}, state, {
+        error: action.error,
+        msg: action.msg,
+      });
+    default:
+      return state;
+  }
+}
+
+const stateInitGitRepos = {
+  gitrepos: [],
+};
+
+export const gitrepos = (state = stateInitGitRepos, action) => {
+  switch (action.type) {
+    case 'GIT_REPOS':
+      return Object.assign({}, state, {
+        gitrepos: action.gitrepos,
+      });
+    default:
+      return state;
+  }
+}
+
+const stateInitLanguages = {
+  languages: [],
+};
+
+export const languages = (state = stateInitLanguages, action) => {
+  switch (action.type) {
+    case 'LANGUAGES':
+      return Object.assign({}, state, {
+        languages: action.languages,
+      });
+    default:
+      return state;
+  }
+}
+
+const stateInitGitRepo = {
+  gitrepo: {},
+};
+
+export const gitrepo = (state = stateInitGitRepo, action) => {
+  switch (action.type) {
+    case 'GIT_REPO':
+      return Object.assign({}, state, {
+        gitrepo: action.gitrepo,
+      });
+    default:
+      return state;
+  }
+}
+
+const stateInitReviews = {
+  reviews: [],
+};
+
+export const reviews = (state = stateInitReviews, action) => {
+  switch (action.type) {
+    case 'REVIEWS':
+      return Object.assign({}, state, {
+        reviews: action.reviews,
+      });
+    default:
+      return state;
+  }
+}
+
 export const reducerRoot = combineReducers({
-  ui, login
+  ui, login, msg, gitrepos, languages, gitrepo, reviews
 });
 

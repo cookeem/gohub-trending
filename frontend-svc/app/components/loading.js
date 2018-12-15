@@ -49,7 +49,7 @@ class CircularDeterminate extends React.Component {
                   variant="determinate"
                   value={this.state.completed}
                   color="secondary"
-                  size={120}
+                  size={80}
                 />
                 <Typography variant="h6" color="inherit" align="center">
                   ... Loading ...

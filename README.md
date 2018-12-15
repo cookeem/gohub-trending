@@ -42,7 +42,6 @@ header: x-user-token // jwt token
 {
     error: 0,       // 0: 成功，1: 失败
     msg: "返回提示"  // 返回提示
-    uid: 1,         // 失败返回0
 }
 ```
 
@@ -56,7 +55,6 @@ header: x-user-token // jwt token
 {
     error: 0,       // 0: 成功，1: 失败
     msg: "返回提示"  // 返回提示
-    uid: 1,         // 失败返回0
 }
 ```
 
@@ -81,8 +79,6 @@ header: x-user-token // jwt token
 {
     error: 0,       // 0: 成功，1: 失败
     msg: "返回提示"  // 返回提示
-    username: "",
-    uid: 0,
 }
 ```
 

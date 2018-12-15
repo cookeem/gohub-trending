@@ -48,7 +48,6 @@ func createUser(c *gin.Context) {
 	data := map[string]interface{}{
 		"error": errorRet,
 		"msg":   msg,
-		"uid":   uid,
 	}
 	c.Header("x-user-token", userToken)
 	c.JSON(httpStatus, data)
@@ -89,7 +88,6 @@ func loginUser(c *gin.Context) {
 	data := map[string]interface{}{
 		"error": errorRet,
 		"msg":   msg,
-		"uid":   uid,
 	}
 	c.Header("x-user-token", userToken)
 	c.JSON(httpStatus, data)
@@ -149,10 +147,8 @@ func getUser(c *gin.Context) {
 		userToken = ""
 	}
 	data := map[string]interface{}{
-		"error":    errorRet,
-		"msg":      msg,
-		"username": user.Username,
-		"uid":      user.Uid,
+		"error": errorRet,
+		"msg":   msg,
 	}
 	c.Header("x-user-token", userToken)
 	c.JSON(httpStatus, data)

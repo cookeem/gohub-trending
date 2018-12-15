@@ -1,11 +1,15 @@
-import { actionShowSideBar, actionShowComment, actionShowDelete, actionShowLoading, actionLogin } from './action';
+import { actionShowSideBar, actionShowComment, actionShowDelete, actionShowLoading, actionLogin, actionMsg, actionGitRepos, actionLanguages, actionGitRepo, actionReviews } from './action';
 
 //把redux的state输出到component的props
 export const mapStateToProps = (state) => {
   return {
     ui: state.ui,
     login: state.login,
-    data: state.data,
+    msg: state.msg,
+    gitrepos: state.gitrepos,
+    languages: state.languages,
+    gitrepo: state.gitrepo,
+    reviews: state.reviews,
   }
 };
   
@@ -26,6 +30,21 @@ export const mapDispatchToProps = (dispatch) => {
     },
     onLogin: (login) => {
       dispatch(actionLogin(login));
+    },
+    onMsg: (msg) => {
+      dispatch(actionMsg(msg));
+    },
+    onGitRepos: (gitrepos) => {
+      dispatch(actionGitRepos(gitrepos));
+    },
+    onLanguages: (languages) => {
+      dispatch(actionLanguages(languages));
+    },
+    onGitRepo: (gitrepo) => {
+      dispatch(actionGitRepo(gitrepo));
+    },
+    onReviews: (reviews) => {
+      dispatch(actionReviews(reviews));
     },
   }
 };

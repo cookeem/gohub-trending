@@ -36,3 +36,38 @@ export const actionLogin = (login) => (
   }
 );
 
+export const actionMsg = (msg) => (
+  {
+    type: 'MSG',
+    error: msg.error,
+    msg: msg.msg,
+  }
+);
+
+export const actionGitRepos = (gitrepos) => (
+  {
+    type: 'GIT_REPOS',
+    gitrepos: gitrepos,
+  }
+);
+
+export const actionLanguages = (languages) => (
+  {
+    type: 'LANGUAGES',
+    languages: languages,
+  }
+);
+
+export const actionGitRepo = (gitrepo) => (
+  {
+    type: 'GIT_REPO',
+    gitrepo: gitrepo,
+  }
+);
+
+export const actionReviews = (reviews) => (
+  {
+    type: 'REVIEWS',
+    reviews: reviews,
+  }
+);
