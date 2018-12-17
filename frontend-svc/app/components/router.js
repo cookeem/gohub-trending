@@ -5,8 +5,6 @@ import { UserUpdate } from '../user-update';
 import { GitRepoList } from '../gitrepo-list';
 import { GitRepoSearch } from '../gitrepo-search';
 
-import axios from 'axios';
-
 export const UserLoginView = () => (
   <UserLogin />
 );
@@ -31,33 +29,3 @@ export const GitRepoListView = () => (
   <GitRepoList />
 );
 
-import jwtDecode from 'jwt-decode';
-
-var token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNvb2tlZW0iLCJ1aWQiOjEsImV4cCI6MTU0NDE2NTcyMiwiaWF0IjoxNTQ0MTY0ODIyLCJpc3MiOiJnaXRyZXBvIn0.8LEyAl7liykbs9kQG_VCtvEo-6TTpWAzmmEBINbUzdU';
-try {
-  var output = jwtDecode(token);
-  console.log(output);
-} catch(e) {
-  console.log(e);
-}
-
-axios({
-  // url:'https://api.github.com/search/repositories?q=topic:kubernetes',
-  url:'http://localhost:3000/users/',
-  method:'get',
-  timeout: 5000,
-}).then((response) => {
-  // response = checkStatus(response);
-  console.log('fetch github api succeeded!');
-  console.log(response.data);
-  console.log(response.headers);
-}).catch((error) => {
-  console.log('fetch github api failed!');
-  // console.log(response.data);
-  // console.log(response.headers);
-  console.log(error)
-  console.log(error.response);
-}).then(() => {
-  // always executed
-  console.log('always show fetch github api!');
-});

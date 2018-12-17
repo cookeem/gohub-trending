@@ -32,10 +32,10 @@ go build review-svc/review.go && ./review
 
 ### user-svc 接口说明
 
-#### create: 注册用户 (POST /users)
+#### create: 注册用户 (POST /users/)
 ```
 request:
-username, password, password_repeat
+username, password, repassword
 ======
 response:
 header: x-user-token // jwt token
@@ -70,7 +70,7 @@ header: x-user-token // 清除x-user-token
 }
 ```
 
-#### get: 修改用户信息时获取用户信息 (GET /users)
+#### get: 修改用户信息时获取用户信息 (GET /users/)
 ```
 request: header x-user-token
 ===
@@ -82,10 +82,10 @@ header: x-user-token // jwt token
 }
 ```
 
-#### update: 更新用户信息 (PUT /users)
+#### update: 更新用户信息 (PUT /users/)
 ```
 request: header x-user-token
-password_old, password, password_repeat
+oldpassword, password, repassword
 ===
 response:
 header: x-user-token // jwt token
@@ -98,7 +98,7 @@ header: x-user-token // jwt token
 
 ### review-svc 接口说明
 
-#### create: 发表gitrepo点评 (POST /reviews)
+#### create: 发表gitrepo点评 (POST /reviews/)
 ```
 request: header x-user-token
 gid, content
@@ -112,7 +112,7 @@ header: x-user-token // jwt token
 }
 ```
 
-#### delete: 删除gitrepo点评 (DELETE /reviews)
+#### delete: 删除gitrepo点评 (DELETE /reviews/)
 ```
 request: header x-user-token
 rid
@@ -125,7 +125,7 @@ header: x-user-token // jwt token
 }
 ```
 
-#### list: 获取gitrepo的点评列表 (GET /reviews)
+#### list: 获取gitrepo的点评列表 (GET /reviews/)
 ```
 request: header x-user-token
 gid
@@ -150,7 +150,7 @@ header: x-user-token // jwt token
 
 ### gitrepo-svc 接口说明
 
-#### list: 获取gitrepo列表 (PUT /gitrepos)
+#### list: 获取gitrepo列表 (PUT /gitrepos/)
 ```
 request: header x-user-token
 language, page, per_page
@@ -179,7 +179,7 @@ header: x-user-token // jwt token
 }
 ```
 
-#### search: 搜索gitrepo列表，从github拉取信息 (POST /gitrepos)
+#### search: 搜索gitrepo列表，从github拉取信息 (POST /gitrepos/)
 ```
 request: header x-user-token
 topics, page, per_page

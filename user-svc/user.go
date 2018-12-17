@@ -13,7 +13,7 @@ import (
 func createUser(c *gin.Context) {
 	username := c.DefaultPostForm("username", "")
 	password := c.DefaultPostForm("password", "")
-	passwordRepeat := c.DefaultPostForm("password_repeat", "")
+	repassword := c.DefaultPostForm("repassword", "")
 
 	errmsg := ""
 	errorRet := 1
@@ -31,7 +31,7 @@ func createUser(c *gin.Context) {
 		errmsg = "please input password"
 	} else if len(password) < 6 || len(password) > 20 {
 		errmsg = "password should greater then 6 and less then 20 characters"
-	} else if password != passwordRepeat {
+	} else if password != repassword {
 		errmsg = "repeact password should be the same as password"
 	} else {
 		password = common.GetSHA(password)
@@ -155,9 +155,9 @@ func getUser(c *gin.Context) {
 }
 
 func updateUser(c *gin.Context) {
-	passwordOld := c.DefaultPostForm("password_old", "")
+	oldpassword := c.DefaultPostForm("oldpassword", "")
 	password := c.DefaultPostForm("password", "")
-	passwordRepeat := c.DefaultPostForm("password_repeat", "")
+	repassword := c.DefaultPostForm("repassword", "")
 
 	errmsg := ""
 	errorRet := 1
@@ -171,20 +171,20 @@ func updateUser(c *gin.Context) {
 	if ut.Uid == 0 {
 		errmsg = "user not login yet"
 	} else {
-		if len(passwordOld) == 0 {
+		if len(oldpassword) == 0 {
 			errmsg = "please input old password"
 		} else if len(password) == 0 {
 			errmsg = "please input password"
-		} else if len(passwordOld) < 6 || len(passwordOld) > 20 {
+		} else if len(oldpassword) < 6 || len(oldpassword) > 20 {
 			errmsg = "old password should greater then 6 and less then 20 characters"
 		} else if len(password) < 6 || len(password) > 20 {
 			errmsg = "password should greater then 6 and less then 20 characters"
-		} else if password != passwordRepeat {
+		} else if password != repassword {
 			errmsg = "repeact password should be the same as password"
 		} else {
 			password = common.GetSHA(password)
-			passwordOld = common.GetSHA(passwordOld)
-			errmsg = dbcommon.UpdateUser(user.Uid, password, passwordOld)
+			oldpassword = common.GetSHA(oldpassword)
+			errmsg = dbcommon.UpdateUser(user.Uid, password, oldpassword)
 		}
 	}
 
