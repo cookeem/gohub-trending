@@ -122,7 +122,13 @@ class UserCreateForm extends React.Component {
         };
         cookies.remove('user-token');
         this.props.onLogin(login);
-        if (error.response.status == 403) {
+        if (!error.response) {
+          let msg = {
+            error: 1,
+            msg: "Error: Network Error",
+          };
+          this.props.onMsg(msg);
+        } else if (error.response.status == 403) {
           let msg = {
             error: error.response.data.error,
             msg: error.response.data.msg,

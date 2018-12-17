@@ -4,6 +4,7 @@ import { UserCreate } from '../user-create';
 import { UserUpdate } from '../user-update';
 import { GitRepoList } from '../gitrepo-list';
 import { GitRepoSearch } from '../gitrepo-search';
+import { UserLogout } from '../user-logout';
 
 export const UserLoginView = () => (
   <UserLogin />
@@ -14,7 +15,7 @@ export const UserCreateView = () => (
 );
 
 export const UserLogoutView = () => (
-  <div>user-logout</div>
+  <UserLogout />
 );
 
 export const UserUpdateView = () => (

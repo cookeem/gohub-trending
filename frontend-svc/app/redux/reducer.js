@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 
-const stateInitUI = {
+export const stateInitUI = {
   showSideBar: false,
   showComment: false,
   showDelete: false,
@@ -30,7 +30,7 @@ export const ui = (state = stateInitUI, action) => {
   }
 }
 
-const stateInitLogin = {
+export const stateInitLogin = {
   uid: 0,
   username: "",
   userToken: "",
@@ -49,7 +49,7 @@ export const login = (state = stateInitLogin, action) => {
   }
 }
 
-const stateInitMsg = {
+export const stateInitMsg = {
   error: 0,
   msg: "",
 };
@@ -66,7 +66,7 @@ export const msg = (state = stateInitMsg, action) => {
   }
 }
 
-const stateInitGitRepos = {
+export const stateInitGitRepos = {
   gitrepos: [],
 };
 
@@ -81,7 +81,7 @@ export const gitrepos = (state = stateInitGitRepos, action) => {
   }
 }
 
-const stateInitLanguages = {
+export const stateInitLanguages = {
   languages: [],
 };
 
@@ -96,7 +96,7 @@ export const languages = (state = stateInitLanguages, action) => {
   }
 }
 
-const stateInitGitRepo = {
+export const stateInitGitRepo = {
   gitrepo: {},
 };
 
@@ -111,7 +111,7 @@ export const gitrepo = (state = stateInitGitRepo, action) => {
   }
 }
 
-const stateInitReviews = {
+export const stateInitReviews = {
   reviews: [],
 };
 
