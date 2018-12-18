@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import Cookies from 'universal-cookie';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -6,13 +7,15 @@ import Chip from '@material-ui/core/Chip';
 import Stars from '@material-ui/icons/Stars';
 import AddCircle from '@material-ui/icons/AddCircle';
 import ControlPoint from '@material-ui/icons/ControlPoint';
-
-
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+
+import { mapDispatchToProps, mapStateToProps } from './redux/react';
+import { connect } from 'react-redux';
+import { serviceQuery } from './components/functions';
 
 const styles = theme => ({
   root: {
@@ -35,94 +38,108 @@ const styles = theme => ({
   },
 });
 
-function GitRepoListForm(props) {
-  const { classes } = props;
+class GitRepoListForm extends React.Component {
+  constructor(props) {
+    super(props);
+    const cookies = new Cookies();
+    this.props.onLoading(true);
+    const userToken = cookies.get('user-token');
+    var bodyFormData = new FormData();
+    // bodyFormData.append('language', this.state.language);
+    const axiosConfig = {
+      url: 'http://localhost:3000/gitrepos/',
+      method: 'put',
+      data: bodyFormData,
+      headers: {'x-user-token': userToken, },
+      config: { headers: {'Content-Type': 'multipart/form-data' }},
+      timeout: 5000,
+    };
+    const axiosSuccess = (obj, response) => {
+      obj.onGitRepos(response.data.gitrepos);
+      obj.onLanguages(response.data.languages);
+    };
+    serviceQuery(this.props, axiosConfig, axiosSuccess);
+  }
 
-  const languages = [
-    { name: "Java", color: "primary", },
-    { name: "Scala", color: "secondary", },
-    { name: "Groovy", color: "default", },
-    { name: "Jenkinsfile", color: "default", },
-    { name: "Ruby", color: "default", },
-    { name: "Python", color: "default", },
-    { name: "SQL", color: "default", },
-    { name: "Javascript", color: "default", },
-    { name: "JupyterNotebook", color: "default", },
-  ];
-
-  const gitrepos = [
-    { gid: 1, full_name: "cookeem/kubeadm-ha", description: "Kubernetes high availiability deploy based on kubeadm (English/中文 for v1.11.x/v1.9.x/v1.7.x/v1.6.x)", language: "JupyterNotebook", stargazers_count: 5000, reviews_count: 1000, forks_count: 2000, },
-    { gid: 2, full_name: "cookeem/gohub-trending", description: "Kubernetes high availiability deploy based on kubeadm (English/中文 for v1.11.x/v1.9.x/v1.7.x/v1.6.x)", language: "JupyterNotebook", stargazers_count: 5000, reviews_count: 1000, forks_count: 2000, },
-    { gid: 3, full_name: "cookeem/CookIM", description: "Kubernetes high availiability deploy based on kubeadm (English/中文 for v1.11.x/v1.9.x/v1.7.x/v1.6.x)", language: "JupyterNotebook", stargazers_count: 5000, reviews_count: 1000, forks_count: 2000, },
-    { gid: 4, full_name: "cookeem/kubernetes-zookeeper-cluster", description: "Kubernetes high availiability deploy based on kubeadm (English/中文 for v1.11.x/v1.9.x/v1.7.x/v1.6.x)", language: "JupyterNotebook", stargazers_count: 5000, reviews_count: 1000, forks_count: 2000, },
-  ];
-  return (
-    <div className={classes.root}>
-      <Grid container spacing={8} alignItems="flex-end" justify="flex-start">
-        <Grid item xs={12}>
-          {languages.map((language, _) => (
-            <Fragment key={language.name}>
-              { (language.color == 'secondary') ? (
-                <Chip label={language.name} className={classes.chip} color={language.color} style={{color: '#FFF'}}/>
-              ) : (
-                <Chip label={language.name} className={classes.chip} color={language.color}/>
-              ) }
-            </Fragment>
-          ))}
-        </Grid>
-      </Grid> 
-      {gitrepos.map((gitrepo, _) => (
-        <Grid key={gitrepo.gid} container spacing={8} alignItems="flex-end" justify="flex-start">
-          <Grid item xs={12}>
-            <Card className={classes.card}>
-              <CardContent>
-                <Typography variant="h5" component="h2">
-                  {gitrepo.full_name}
-                </Typography>
-                <Chip label={gitrepo.language} className={classes.chip} color="primary"/>
-                <Chip
-                  icon={<Stars />}
-                  label={"stars "+gitrepo.stargazers_count}
-                  className={classes.chip}
-                  color="secondary"
-                  style={{color: "#FFF"}}
-                />
-                <Chip
-                  icon={<AddCircle />}
-                  label={"comments "+gitrepo.reviews_count}
-                  className={classes.chip}
-                  color="default"
-                />
-                <Chip
-                  icon={<ControlPoint />}
-                  label={"forks "+gitrepo.forks_count}
-                  className={classes.chip}
-                  color="default"
-                />
-
-                <Typography className={classes.pos} color="textSecondary">
-                  {gitrepo.description}
-                </Typography>
-                <Typography component="p">
-                  <a href="#">https://github/{gitrepo.full_name}</a>
-                </Typography>
-              </CardContent>
-              <CardActions>
-                <Button size="small" variant="contained" color="primary" className={classes.pos}>Comments</Button>
-              </CardActions>
-            </Card>
-          </Grid>
-        </Grid>  
-      ))}
-    </div>
-  );
+  render() {
+    const { classes } = this.props;
+  
+    return (
+      <Fragment>
+        {
+          (!this.props.ui.showLoading) ? (
+            <div className={classes.root}>
+              <Grid container spacing={8} alignItems="flex-end" justify="flex-start">
+                <Grid item xs={12}>
+                  {this.props.languages.languages.map((language, _) => (
+                    <Fragment key={language.language}>
+                      { (language.color == 'secondary') ? (
+                        <Chip label={language.language + " / " + language.repos_count} className={classes.chip} color={language.color} style={{color: '#FFF'}}/>
+                      ) : (
+                        <Chip label={language.language + " / " + language.repos_count} className={classes.chip} color={language.color}/>
+                      ) }
+                    </Fragment>
+                  ))}
+                </Grid>
+              </Grid> 
+              {this.props.gitrepos.gitrepos.map((gitrepo, _) => (
+                <Grid key={gitrepo.gid} container spacing={8} alignItems="flex-end" justify="flex-start">
+                  <Grid item xs={12}>
+                    <Card className={classes.card}>
+                      <CardContent>
+                        <Typography variant="h5" component="h2">
+                          {gitrepo.full_name}
+                        </Typography>
+                        <Chip label={gitrepo.language} className={classes.chip} color="primary"/>
+                        <Chip
+                          icon={<Stars />}
+                          label={"stars "+gitrepo.stargazers_count}
+                          className={classes.chip}
+                          color="secondary"
+                          style={{color: "#FFF"}}
+                        />
+                        <Chip
+                          icon={<AddCircle />}
+                          label={"comments "+gitrepo.reviews_count}
+                          className={classes.chip}
+                          color="default"
+                        />
+                        <Chip
+                          icon={<ControlPoint />}
+                          label={"forks "+gitrepo.forks_count}
+                          className={classes.chip}
+                          color="default"
+                        />
+      
+                        <Typography className={classes.pos} color="textSecondary">
+                          {gitrepo.description}
+                        </Typography>
+                        <Typography component="p">
+                          <a href={gitrepo.html_url}>{gitrepo.html_url}</a>
+                        </Typography>
+                      </CardContent>
+                      <CardActions>
+                        <Button size="small" variant="contained" color="primary" className={classes.pos}>Comments</Button>
+                      </CardActions>
+                    </Card>
+                  </Grid>
+                </Grid>  
+              ))}
+            </div>
+          ) : (
+            null
+          )
+        }
+      </Fragment>
+    )
+  }
 }
 
 GitRepoListForm.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-const GitRepoListFormStyle = withStyles(styles)(GitRepoListForm);
+const GitRepoListFormConnect = connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withStyles(styles)(GitRepoListForm)));
 
 function GitRepoListPage(props) {
     const { classes } = props;
@@ -131,7 +148,7 @@ function GitRepoListPage(props) {
       <div className={classes.root}>
         <Grid container spacing={24} justify="center" style={{height: 60}}>
           <Grid item xs={10}>
-            <GitRepoListFormStyle />
+            <GitRepoListFormConnect />
           </Grid>
         </Grid>
       </div>

@@ -67,7 +67,7 @@ class TopBar extends React.Component {
               </Grid>
               <Grid item xs={7}>
                 <Typography variant="h6" color="inherit" align="left" className={classes.barText}>
-                  Github Trending Go - {this.props.login.username}
+                  Github Trending Go {(this.props.login.username != "") ? ( <> - {this.props.login.username}</> ) : ( null )}
                 </Typography>  
               </Grid>
             </Grid>

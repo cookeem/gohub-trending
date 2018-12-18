@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react';
-import Cookies from 'universal-cookie';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -16,8 +15,7 @@ import GroupAdd from '@material-ui/icons/GroupAdd';
 
 import { mapDispatchToProps, mapStateToProps } from './redux/react';
 import { connect } from 'react-redux';
-import axios from 'axios';
-import { getLoginInfo } from './components/functions';
+import { serviceQuery } from './components/functions';
 
 const styles = theme => ({
   root: {
@@ -50,7 +48,6 @@ class UserCreateForm extends React.Component {
   };
 
   handleSubmit = () => {
-    const cookies = new Cookies();
     //注意，this.setState是异步操作
     var usernamePrompt = "";
     if (this.state.username == "") {
@@ -94,56 +91,18 @@ class UserCreateForm extends React.Component {
       bodyFormData.append('username', this.state.username);
       bodyFormData.append('password', this.state.password);
       bodyFormData.append('repassword', this.state.repassword);
-      axios({
+
+      const axiosConfig = {
         url: 'http://localhost:3000/users/',
         method: 'post',
         data: bodyFormData,
         config: { headers: {'Content-Type': 'multipart/form-data' }},
         timeout: 5000,
-      }).then((response) => {
-        let login = getLoginInfo(response.headers['x-user-token']);
-        this.props.onLogin(login);
-        let msg = {
-          error: response.data.error,
-          msg: response.data.msg,
-        };
-        this.props.onMsg(msg);
-        var maxAge = 60;
-        if (this.state.remember != "") {
-          maxAge = 15 * 60;
-        }
-        cookies.set('user-token', login.userToken, { path: '/', maxAge: maxAge, });
+      };
+      const axiosSuccess = (obj, response) => {
         window.location.href = "/#/gitrepo-list";
-      }).catch((error) => {
-        let login = {
-          uid: 0,
-          username: "",
-          userToken: "",
-        };
-        cookies.remove('user-token');
-        this.props.onLogin(login);
-        if (!error.response) {
-          let msg = {
-            error: 1,
-            msg: "Error: Network Error",
-          };
-          this.props.onMsg(msg);
-        } else if (error.response.status == 403) {
-          let msg = {
-            error: error.response.data.error,
-            msg: error.response.data.msg,
-          };
-          this.props.onMsg(msg);
-        } else {
-          let msg = {
-            error: 1,
-            msg: String(error),
-          };
-          this.props.onMsg(msg);
-        }
-      }).then(() => {
-        this.props.onLoading(false);
-      });
+      };
+      serviceQuery(this.props, axiosConfig, axiosSuccess);
     }
     console.log('###', this.state);
   };

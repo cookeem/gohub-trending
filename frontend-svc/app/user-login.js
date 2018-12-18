@@ -1,5 +1,4 @@
 import React, { Fragment } from 'react';
-import Cookies from 'universal-cookie';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -9,7 +8,6 @@ import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import VpnKey from '@material-ui/icons/VpnKey';
-import Checkbox from '@material-ui/core/Checkbox';
 import FormGroup from '@material-ui/core/FormGroup';
 import Button from '@material-ui/core/Button';
 import Face from '@material-ui/icons/Face';
@@ -17,8 +15,7 @@ import GroupAdd from '@material-ui/icons/GroupAdd';
 
 import { mapDispatchToProps, mapStateToProps } from './redux/react';
 import { connect } from 'react-redux';
-import axios from 'axios';
-import { getLoginInfo } from './components/functions';
+import { serviceQuery } from './components/functions';
 
 const styles = theme => ({
   root: {
@@ -41,19 +38,13 @@ class UserLoginForm extends React.Component {
     password: "",
     usernamePrompt: "",
     passwordPrompt: "",
-    remember: true,
   };
 
   handleChange = event => {
     this.setState({ [event.target.id]: event.target.value });
   };
 
-  handleCheck = event => {
-    this.setState({ [event.target.id]: event.target.checked });
-  };
-
   handleSubmit = () => {
-    const cookies = new Cookies();
     //注意，this.setState是异步操作
     var usernamePrompt = "";
     if (this.state.username == "") {
@@ -83,56 +74,18 @@ class UserLoginForm extends React.Component {
       var bodyFormData = new FormData();
       bodyFormData.append('username', this.state.username);
       bodyFormData.append('password', this.state.password);
-      axios({
+
+      const axiosConfig = {
         url: 'http://localhost:3000/users/login',
         method: 'post',
         data: bodyFormData,
         config: { headers: {'Content-Type': 'multipart/form-data' }},
         timeout: 5000,
-      }).then((response) => {
-        let login = getLoginInfo(response.headers['x-user-token']);
-        this.props.onLogin(login);
-        let msg = {
-          error: response.data.error,
-          msg: response.data.msg,
-        };
-        this.props.onMsg(msg);
-        var maxAge = 60;
-        if (this.state.remember) {
-          maxAge = 15 * 60;
-        }
-        cookies.set('user-token', login.userToken, { path: '/', maxAge: maxAge, });
+      };
+      const axiosSuccess = (obj, response) => {
         window.location.href = "/#/gitrepo-list";
-      }).catch((error) => {
-        let login = {
-          uid: 0,
-          username: "",
-          userToken: "",
-        };
-        cookies.remove('user-token');
-        this.props.onLogin(login);
-        if (!error.response) {
-          let msg = {
-            error: 1,
-            msg: "Error: Network Error",
-          };
-          this.props.onMsg(msg);
-        } else if (error.response.status == 403) {
-          let msg = {
-            error: error.response.data.error,
-            msg: error.response.data.msg,
-          };
-          this.props.onMsg(msg);
-        } else {
-          let msg = {
-            error: 1,
-            msg: String(error),
-          };
-          this.props.onMsg(msg);
-        }
-      }).then(() => {
-        this.props.onLoading(false);
-      });
+      };
+      serviceQuery(this.props, axiosConfig, axiosSuccess);
     }
     console.log('###', this.state);
   };
@@ -159,16 +112,6 @@ class UserLoginForm extends React.Component {
                   </Grid>
                   <Grid item xs={10}>
                     <TextField id="password" onChange={this.handleChange} error={this.state.passwordPrompt != ""} helperText={this.state.passwordPrompt} type="password" label="Input your password" fullWidth={true} autoComplete="current-password"/>
-                  </Grid>
-                </Grid>
-                <Grid container spacing={8} alignItems="flex-end" justify="flex-start">
-                  <Grid item xs={12}>
-                    <Checkbox
-                      onChange={this.handleCheck}
-                      id="remember"
-                      color="primary"
-                      checked={this.state.remember}
-                    /> Remember user token for 15 minutes
                   </Grid>
                 </Grid>
                 <Grid container spacing={8} alignItems="flex-end" justify="center" style={{height: 80}}>

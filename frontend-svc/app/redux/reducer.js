@@ -74,7 +74,7 @@ export const gitrepos = (state = stateInitGitRepos, action) => {
   switch (action.type) {
     case 'GIT_REPOS':
       return Object.assign({}, state, {
-        gitrepos: action.gitrepos,
+        gitrepos: action.gitrepos
       });
     default:
       return state;
@@ -89,7 +89,7 @@ export const languages = (state = stateInitLanguages, action) => {
   switch (action.type) {
     case 'LANGUAGES':
       return Object.assign({}, state, {
-        languages: action.languages,
+        languages: action.languages
       });
     default:
       return state;
@@ -104,7 +104,7 @@ export const gitrepo = (state = stateInitGitRepo, action) => {
   switch (action.type) {
     case 'GIT_REPO':
       return Object.assign({}, state, {
-        gitrepo: action.gitrepo,
+        gitrepo: action.gitrepo
       });
     default:
       return state;
@@ -119,7 +119,7 @@ export const reviews = (state = stateInitReviews, action) => {
   switch (action.type) {
     case 'REVIEWS':
       return Object.assign({}, state, {
-        reviews: action.reviews,
+        reviews: action.reviews
       });
     default:
       return state;

@@ -6,7 +6,7 @@ import { mapDispatchToProps, mapStateToProps } from './redux/react';
 import { connect } from 'react-redux';
 import axios from 'axios';
 
-import { stateInitLogin, stateInitGitRepos, stateInitLanguages, stateInitGitRepo, stateInitReviews} from './redux/reducer';
+import { stateInitLogin } from './redux/reducer';
 
 class UserLogoutForm extends React.Component {
   constructor(props) {
@@ -50,10 +50,10 @@ class UserLogoutForm extends React.Component {
       cookies.remove('user-token');
 
       this.props.onLogin(stateInitLogin);
-      this.props.onGitRepos(stateInitGitRepos);
-      this.props.onLanguages(stateInitLanguages);
-      this.props.onGitRepo(stateInitGitRepo);
-      this.props.onReviews(stateInitReviews);
+      this.props.onGitRepos([]);
+      this.props.onLanguages([]);
+      this.props.onGitRepo({});
+      this.props.onReviews([]);
 
       this.props.onLoading(false);
     });

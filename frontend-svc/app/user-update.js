@@ -14,8 +14,7 @@ import Autorenew from '@material-ui/icons/Autorenew';
 
 import { mapDispatchToProps, mapStateToProps } from './redux/react';
 import { connect } from 'react-redux';
-import axios from 'axios';
-import { getLoginInfo } from './components/functions';
+import { serviceQuery } from './components/functions';
 
 const styles = theme => ({
   root: {
@@ -33,6 +32,26 @@ const styles = theme => ({
 });
 
 export default class UserUpdateForm extends React.Component {
+  constructor(props) {
+    super(props);
+    const cookies = new Cookies();
+    this.props.onLoading(true);
+    const userToken = cookies.get('user-token');
+    var bodyFormData = new FormData();
+    bodyFormData.append('username', this.state.username);
+    bodyFormData.append('password', this.state.password);
+
+    const axiosConfig = {
+      url: 'http://localhost:3000/users/',
+      method: 'get',
+      headers: {'x-user-token': userToken, },
+      timeout: 5000,
+    };
+    const axiosSuccess = (obj, response) => {
+    };
+    serviceQuery(this.props, axiosConfig, axiosSuccess);
+  }
+
   state = {
     oldpassword: "",
     password: "",
@@ -91,51 +110,18 @@ export default class UserUpdateForm extends React.Component {
       bodyFormData.append('password', this.state.password);
       bodyFormData.append('repassword', this.state.repassword);
       const userToken = cookies.get('user-token');
-      axios({
+
+      const axiosConfig = {
         url: 'http://localhost:3000/users/',
         method: 'put',
         data: bodyFormData,
         headers: {'x-user-token': userToken, },
         config: { headers: {'Content-Type': 'multipart/form-data' }},
         timeout: 5000,
-      }).then((response) => {
-        let login = getLoginInfo(response.headers['x-user-token']);
-        this.props.onLogin(login);
-        console.log("login:", login);
-        let msg = {
-          error: response.data.error,
-          msg: response.data.msg,
-        };
-        this.props.onMsg(msg);
-        var maxAge = 60;
-        if (this.state.remember != "") {
-          maxAge = 15 * 60;
-        }
-        cookies.set('user-token', login.userToken, { path: '/', maxAge: maxAge, });
-        window.location.href = "/#/user-update";
-      }).catch((error) => {
-        if (!error.response) {
-          let msg = {
-            error: 1,
-            msg: "Error: Network Error",
-          };
-          this.props.onMsg(msg);
-        } else if (error.response.status == 403) {
-          let msg = {
-            error: error.response.data.error,
-            msg: error.response.data.msg,
-          };
-          this.props.onMsg(msg);
-        } else {
-          let msg = {
-            error: 1,
-            msg: String(error),
-          };
-          this.props.onMsg(msg);
-        }
-      }).then(() => {
-        this.props.onLoading(false);
-      });
+      };
+      const axiosSuccess = (obj, response) => {
+      };
+      serviceQuery(this.props, axiosConfig, axiosSuccess);
     }
     console.log('###', this.state);
   };
