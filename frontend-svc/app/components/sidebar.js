@@ -48,7 +48,7 @@ class SideBar extends React.Component {
       { text: "Account", icon: (<InsertEmoticon />), url: "/user-update" },
       { text: "List Repo", icon: (<InsertEmoticon />), url: "/gitrepo-list" },
       { text: "Search Repo", icon: (<InsertEmoticon />), url: "/gitrepo-search" },
-      { text: "Github Repo", icon: (<InsertEmoticon />), url: "/gitrepo-view" },
+      { text: "Github Repo", icon: (<InsertEmoticon />), url: "/gitrepo-view/1" },
     ]
     const sideList = (
       <div className={classes.list}>

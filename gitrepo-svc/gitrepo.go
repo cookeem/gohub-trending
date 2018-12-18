@@ -15,12 +15,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func queryContent(url string, headers map[string]string) (bytearr []byte, err error) {
+func queryContent(urlStr string, headers map[string]string) (bytearr []byte, err error) {
 	timeout := time.Duration(10 * time.Second)
 	client := http.Client{
 		Timeout: timeout,
 	}
-	req, _ := http.NewRequest("GET", url, nil)
+	req, _ := http.NewRequest("GET", urlStr, nil)
 	for k, v := range headers {
 		req.Header.Set(k, v)
 	}
@@ -50,8 +50,8 @@ func createRequestURL(params map[string]string) string {
 		querys = append(querys, fmt.Sprintf("%v=%v", k, v))
 	}
 	queryString := strings.Join(querys, "&")
-	url := fmt.Sprintf("https://api.github.com/search/repositories?%v", queryString)
-	return url
+	urlStr := fmt.Sprintf("https://api.github.com/search/repositories?%v", queryString)
+	return urlStr
 }
 
 func requestSearchGitRepos(topics string, perPage int, page int) (gitrepos []dbcommon.GitRepo, languages []dbcommon.GitLanguage, errmsg string) {
@@ -75,8 +75,8 @@ func requestSearchGitRepos(topics string, perPage int, page int) (gitrepos []dbc
 		"page":     strconv.Itoa(page),
 		"q":        q,
 	}
-	url := createRequestURL(mapQuerys)
-	bodyBytes, err := queryContent(url, map[string]string{})
+	urlStr := createRequestURL(mapQuerys)
+	bodyBytes, err := queryContent(urlStr, map[string]string{})
 	if err != nil {
 		errmsg = err.Error()
 		return gitrepos, languages, errmsg
