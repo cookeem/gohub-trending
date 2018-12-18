@@ -39,6 +39,8 @@ func main() {
 		// new cors middleware
 		config := cors.DefaultConfig()
 		config.AllowAllOrigins = true
+		config.ExposeHeaders = []string{"x-user-token"}
+		config.AllowHeaders = []string{"x-user-token"}
 		router.Use(common.IstioHeadersForward(), gin.Recovery(), gin.Logger(), cors.New(config))
 	} else {
 		router.Use(common.IstioHeadersForward(), gin.Recovery(), gin.Logger())
