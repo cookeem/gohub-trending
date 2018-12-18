@@ -11,7 +11,6 @@ import Grid from '@material-ui/core/Grid';
 import { store } from './redux/store';
 import { TopBarConnect } from './components/topbar';
 import { SideBarConnect } from './components/sidebar';
-import { LoadingView } from './components/loading';
 import { CommentDialogConnect, DeleteDialogConnect, ErrorDialogConnect, SuccessTipsConnect } from './components/dialog';
 import { GitRepoViewView } from './gitrepo-view';
 import { UserCreateView, UserLoginView, UserLogoutView, UserUpdateView, GitRepoSearchView, GitRepoListView } from './components/router'
@@ -48,7 +47,6 @@ const App = () => {
           <DeleteDialogConnect />
           <ErrorDialogConnect />
           <SuccessTipsConnect />
-          <LoadingView />
           <Grid container spacing={24} className={styles.main} style={{padding: "20px"}}>
             <Grid item xs={12}>
               <React.Suspense fallback={<div>Now loading...</div>}>

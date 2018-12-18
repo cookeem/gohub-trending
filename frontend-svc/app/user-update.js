@@ -15,6 +15,7 @@ import Autorenew from '@material-ui/icons/Autorenew';
 import { mapDispatchToProps, mapStateToProps } from './redux/react';
 import { connect } from 'react-redux';
 import { serviceQuery } from './components/functions';
+import { LoadingView } from './components/loading';
 
 const styles = theme => ({
   root: {
@@ -169,7 +170,7 @@ export default class UserUpdateForm extends React.Component {
               </FormControl>
             </FormGroup>
           ) : (
-            null
+            <LoadingView />
           )
         }
       </Fragment>

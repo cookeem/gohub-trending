@@ -16,6 +16,7 @@ import Typography from '@material-ui/core/Typography';
 import { mapDispatchToProps, mapStateToProps } from './redux/react';
 import { connect } from 'react-redux';
 import { serviceQuery } from './components/functions';
+import { LoadingView } from './components/loading';
 
 const styles = theme => ({
   root: {
@@ -41,11 +42,22 @@ const styles = theme => ({
 class GitRepoListForm extends React.Component {
   constructor(props) {
     super(props);
+    this.listGitRepos();
+  }
+
+  state = {
+    language: "",
+    page: 1,
+    showLoadMore: true,
+  };
+
+  listGitRepos = () => {
     const cookies = new Cookies();
     this.props.onLoading(true);
     const userToken = cookies.get('user-token');
     var bodyFormData = new FormData();
-    // bodyFormData.append('language', this.state.language);
+    bodyFormData.append('language', this.state.language);
+    bodyFormData.append('page', this.state.page);
     const axiosConfig = {
       url: 'http://localhost:3000/gitrepos/',
       method: 'put',
@@ -55,81 +67,125 @@ class GitRepoListForm extends React.Component {
       timeout: 5000,
     };
     const axiosSuccess = (obj, response) => {
+      if (response.data.gitrepos.length == 0) {
+        this.setState({showLoadMore: false});
+      }
       obj.onGitRepos(response.data.gitrepos);
       obj.onLanguages(response.data.languages);
     };
     serviceQuery(this.props, axiosConfig, axiosSuccess);
-  }
+  };
+
+  loadMore = () => {
+    const page = this.state.page + 1;
+    this.setState({page: page});
+    const cookies = new Cookies();
+    this.props.onLoading(true);
+    const userToken = cookies.get('user-token');
+    var bodyFormData = new FormData();
+    bodyFormData.append('language', this.state.language);
+    bodyFormData.append('page', page);
+    const axiosConfig = {
+      url: 'http://localhost:3000/gitrepos/',
+      method: 'put',
+      data: bodyFormData,
+      headers: {'x-user-token': userToken, },
+      config: { headers: {'Content-Type': 'multipart/form-data' }},
+      timeout: 5000,
+    };
+    const axiosSuccess = (obj, response) => {
+      if (response.data.gitrepos.length == 0) {
+        this.setState({showLoadMore: false});
+      }
+      var gitreposOld = obj.gitrepos;
+      var gitrepos = gitreposOld.gitrepos.concat(response.data.gitrepos);
+      console.log("###", gitrepos);
+      obj.onGitRepos(gitrepos);
+      obj.onLanguages(response.data.languages);
+    };
+    serviceQuery(this.props, axiosConfig, axiosSuccess);
+  };
 
   render() {
     const { classes } = this.props;
-  
+
     return (
       <Fragment>
-        {
-          (!this.props.ui.showLoading) ? (
-            <div className={classes.root}>
-              <Grid container spacing={8} alignItems="flex-end" justify="flex-start">
+        <div className={classes.root}>
+          <Fragment>
+            <Grid container spacing={8} alignItems="flex-end" justify="flex-start">
+              <Grid item xs={12}>
+                {this.props.languages.languages.map((language, _) => (
+                  <Fragment key={language.language}>
+                    { (language.color == 'secondary') ? (
+                      <Chip label={language.language + " (" + language.repos_count + ")"} className={classes.chip} color={language.color} style={{color: '#FFF'}}/>
+                    ) : (
+                      <Chip label={language.language + " (" + language.repos_count + ")"} className={classes.chip} color={language.color}/>
+                    ) }
+                  </Fragment>
+                ))}
+              </Grid>
+            </Grid>
+            {this.props.gitrepos.gitrepos.map((gitrepo, _) => (
+              <Grid key={gitrepo.gid} container spacing={8} alignItems="flex-end" justify="flex-start">
                 <Grid item xs={12}>
-                  {this.props.languages.languages.map((language, _) => (
-                    <Fragment key={language.language}>
-                      { (language.color == 'secondary') ? (
-                        <Chip label={language.language + " / " + language.repos_count} className={classes.chip} color={language.color} style={{color: '#FFF'}}/>
-                      ) : (
-                        <Chip label={language.language + " / " + language.repos_count} className={classes.chip} color={language.color}/>
-                      ) }
-                    </Fragment>
-                  ))}
+                  <Card className={classes.card}>
+                    <CardContent>
+                      <Typography variant="h5" component="h2">
+                        {gitrepo.full_name}
+                      </Typography>
+                      <Chip label={gitrepo.language} className={classes.chip} color="primary"/>
+                      <Chip
+                        icon={<Stars />}
+                        label={"stars "+gitrepo.stargazers_count}
+                        className={classes.chip}
+                        color="secondary"
+                        style={{color: "#FFF"}}
+                      />
+                      <Chip
+                        icon={<AddCircle />}
+                        label={"comments "+gitrepo.reviews_count}
+                        className={classes.chip}
+                        color="default"
+                      />
+                      <Chip
+                        icon={<ControlPoint />}
+                        label={"forks "+gitrepo.forks_count}
+                        className={classes.chip}
+                        color="default"
+                      />
+
+                      <Typography className={classes.pos} color="textSecondary">
+                        {gitrepo.description}
+                      </Typography>
+                      <Typography component="p">
+                        <a href={gitrepo.html_url}>{gitrepo.html_url}</a>
+                      </Typography>
+                    </CardContent>
+                    <CardActions>
+                      <Button size="small" variant="contained" color="primary" className={classes.pos}>Comments</Button>
+                    </CardActions>
+                  </Card>
                 </Grid>
-              </Grid> 
-              {this.props.gitrepos.gitrepos.map((gitrepo, _) => (
-                <Grid key={gitrepo.gid} container spacing={8} alignItems="flex-end" justify="flex-start">
-                  <Grid item xs={12}>
-                    <Card className={classes.card}>
-                      <CardContent>
-                        <Typography variant="h5" component="h2">
-                          {gitrepo.full_name}
-                        </Typography>
-                        <Chip label={gitrepo.language} className={classes.chip} color="primary"/>
-                        <Chip
-                          icon={<Stars />}
-                          label={"stars "+gitrepo.stargazers_count}
-                          className={classes.chip}
-                          color="secondary"
-                          style={{color: "#FFF"}}
-                        />
-                        <Chip
-                          icon={<AddCircle />}
-                          label={"comments "+gitrepo.reviews_count}
-                          className={classes.chip}
-                          color="default"
-                        />
-                        <Chip
-                          icon={<ControlPoint />}
-                          label={"forks "+gitrepo.forks_count}
-                          className={classes.chip}
-                          color="default"
-                        />
-      
-                        <Typography className={classes.pos} color="textSecondary">
-                          {gitrepo.description}
-                        </Typography>
-                        <Typography component="p">
-                          <a href={gitrepo.html_url}>{gitrepo.html_url}</a>
-                        </Typography>
-                      </CardContent>
-                      <CardActions>
-                        <Button size="small" variant="contained" color="primary" className={classes.pos}>Comments</Button>
-                      </CardActions>
-                    </Card>
+              </Grid>
+            ))}
+            {
+              (this.props.ui.showLoading) ? (
+                <LoadingView />
+              ) : (
+                (this.state.showLoadMore) ? (
+                  <Grid container spacing={8}>
+                    <Grid item xs={12} style={{textAlign: "center"}}>
+                      <Chip label="... load more ..." className={classes.chip} onClick={this.loadMore}/>
+                    </Grid>
                   </Grid>
-                </Grid>  
-              ))}
-            </div>
-          ) : (
-            null
-          )
-        }
+                ) : (
+                  null
+                )
+              ) 
+            }
+          </Fragment>
+        </div>
       </Fragment>
     )
   }
@@ -143,7 +199,7 @@ const GitRepoListFormConnect = connect(mapStateToProps, mapDispatchToProps)(with
 
 function GitRepoListPage(props) {
     const { classes } = props;
-  
+
     return (
       <div className={classes.root}>
         <Grid container spacing={24} justify="center" style={{height: 60}}>
@@ -154,17 +210,17 @@ function GitRepoListPage(props) {
       </div>
     );
   }
-  
+
   GitRepoListPage.propTypes = {
     classes: PropTypes.object.isRequired,
   };
-  
+
   const GitRepoListPageStyle = withStyles(styles)(GitRepoListPage);
-  
+
   export const GitRepoList = () => {
     return (
       <GitRepoListPageStyle />
     )
   };
-          
-  
+
+

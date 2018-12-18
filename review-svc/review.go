@@ -121,7 +121,11 @@ func listReviews(c *gin.Context) {
 	}
 
 	if errmsg == "" {
-		msg = "list reviews succeed"
+		if len(reviewsObj) == 0 {
+			msg = "no more reviews"
+		} else {
+			msg = "list reviews succeed"
+		}
 		errorRet = 0
 		for review, user := range reviewsObj {
 			r := make(map[string]interface{})

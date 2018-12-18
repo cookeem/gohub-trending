@@ -186,7 +186,11 @@ func listGitRepos(c *gin.Context) {
 	}
 
 	if errmsg == "" {
-		msg = "list gitrepos succeed"
+		if len(gitrepos) == 0 {
+			msg = "no more gitrepos"
+		} else {
+			msg = "list gitrepos succeed"
+		}
 		errorRet = 0
 		httpStatus = http.StatusOK
 		userToken, _ = common.CreateTokenString(ut.Username, ut.Uid, common.GlobalConfig.Jwt.Secret, common.GlobalConfig.Jwt.Expires)
@@ -244,7 +248,11 @@ func searchGitRepos(c *gin.Context) {
 		}
 
 		if errmsg == "" {
-			msg = "search gitrepos succeed"
+			if len(gitrepos) == 0 {
+				msg = "no more gitrepos"
+			} else {
+				msg = "search gitrepos succeed"
+			}
 			errorRet = 0
 			httpStatus = http.StatusOK
 			userToken, _ = common.CreateTokenString(ut.Username, ut.Uid, common.GlobalConfig.Jwt.Secret, common.GlobalConfig.Jwt.Expires)
