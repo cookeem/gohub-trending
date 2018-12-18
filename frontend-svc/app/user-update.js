@@ -114,13 +114,6 @@ export default class UserUpdateForm extends React.Component {
         cookies.set('user-token', login.userToken, { path: '/', maxAge: maxAge, });
         window.location.href = "/#/user-update";
       }).catch((error) => {
-        // let login = {
-        //   uid: 0,
-        //   username: "",
-        //   userToken: "",
-        // };
-        // cookies.remove('user-token');
-        // this.props.onLogin(login);
         if (!error.response) {
           let msg = {
             error: 1,

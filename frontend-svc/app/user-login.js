@@ -41,11 +41,15 @@ class UserLoginForm extends React.Component {
     password: "",
     usernamePrompt: "",
     passwordPrompt: "",
-    remember: "",
+    remember: true,
   };
 
   handleChange = event => {
     this.setState({ [event.target.id]: event.target.value });
+  };
+
+  handleCheck = event => {
+    this.setState({ [event.target.id]: event.target.checked });
   };
 
   handleSubmit = () => {
@@ -94,7 +98,7 @@ class UserLoginForm extends React.Component {
         };
         this.props.onMsg(msg);
         var maxAge = 60;
-        if (this.state.remember != "") {
+        if (this.state.remember) {
           maxAge = 15 * 60;
         }
         cookies.set('user-token', login.userToken, { path: '/', maxAge: maxAge, });
@@ -160,11 +164,10 @@ class UserLoginForm extends React.Component {
                 <Grid container spacing={8} alignItems="flex-end" justify="flex-start">
                   <Grid item xs={12}>
                     <Checkbox
-                      onChange={this.handleChange}
+                      onChange={this.handleCheck}
                       id="remember"
-                      value="remember"
                       color="primary"
-                      checked
+                      checked={this.state.remember}
                     /> Remember user token for 15 minutes
                   </Grid>
                 </Grid>
