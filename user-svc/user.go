@@ -162,7 +162,6 @@ func updateUser(c *gin.Context) {
 	errmsg := ""
 	errorRet := 1
 	msg := ""
-	user := dbcommon.User{}
 
 	userToken := c.Request.Header.Get("x-user-token")
 	httpStatus := http.StatusForbidden
@@ -184,7 +183,7 @@ func updateUser(c *gin.Context) {
 		} else {
 			password = common.GetSHA(password)
 			oldpassword = common.GetSHA(oldpassword)
-			errmsg = dbcommon.UpdateUser(user.Uid, password, oldpassword)
+			errmsg = dbcommon.UpdateUser(ut.Uid, password, oldpassword)
 		}
 	}
 
@@ -192,7 +191,7 @@ func updateUser(c *gin.Context) {
 		msg = "update password succeed"
 		errorRet = 0
 		httpStatus = http.StatusOK
-		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, common.GlobalConfig.Jwt.Expires)
+		userToken, _ = common.CreateTokenString(ut.Username, ut.Uid, common.GlobalConfig.Jwt.Secret, common.GlobalConfig.Jwt.Expires)
 	} else {
 		msg = errmsg
 		userToken = ""

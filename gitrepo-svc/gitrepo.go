@@ -172,7 +172,6 @@ func listGitRepos(c *gin.Context) {
 	errmsg := ""
 	errorRet := 1
 	msg := ""
-	user := dbcommon.User{}
 	gitrepos := make([]dbcommon.GitRepo, 0)
 	languages := make([]dbcommon.GitLanguage, 0)
 
@@ -190,7 +189,7 @@ func listGitRepos(c *gin.Context) {
 		msg = "list gitrepos succeed"
 		errorRet = 0
 		httpStatus = http.StatusOK
-		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, common.GlobalConfig.Jwt.Expires)
+		userToken, _ = common.CreateTokenString(ut.Username, ut.Uid, common.GlobalConfig.Jwt.Secret, common.GlobalConfig.Jwt.Expires)
 	} else {
 		msg = errmsg
 		userToken = ""
@@ -228,7 +227,6 @@ func searchGitRepos(c *gin.Context) {
 	errmsg := ""
 	errorRet := 1
 	msg := ""
-	user := dbcommon.User{}
 	gitrepos := make([]dbcommon.GitRepo, 0)
 	languages := make([]dbcommon.GitLanguage, 0)
 
@@ -249,7 +247,7 @@ func searchGitRepos(c *gin.Context) {
 			msg = "search gitrepos succeed"
 			errorRet = 0
 			httpStatus = http.StatusOK
-			userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, common.GlobalConfig.Jwt.Expires)
+			userToken, _ = common.CreateTokenString(ut.Username, ut.Uid, common.GlobalConfig.Jwt.Secret, common.GlobalConfig.Jwt.Expires)
 		} else {
 			msg = errmsg
 			userToken = ""
@@ -272,7 +270,6 @@ func getGitRepo(c *gin.Context) {
 	errmsg := ""
 	errorRet := 1
 	msg := ""
-	user := dbcommon.User{}
 	gitrepo := dbcommon.GitRepo{}
 	reviews := make([]interface{}, 0)
 
@@ -310,7 +307,7 @@ func getGitRepo(c *gin.Context) {
 						msg = "get gitrepo reviews succeed"
 						errorRet = 0
 						httpStatus = http.StatusOK
-						userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, common.GlobalConfig.Jwt.Expires)
+						userToken, _ = common.CreateTokenString(ut.Username, ut.Uid, common.GlobalConfig.Jwt.Secret, common.GlobalConfig.Jwt.Expires)
 					}
 				}
 			}

@@ -19,7 +19,6 @@ func createReview(c *gin.Context) {
 	errorRet := 1
 	msg := ""
 	rid := 0
-	user := dbcommon.User{}
 
 	userToken := c.Request.Header.Get("x-user-token")
 	httpStatus := http.StatusForbidden
@@ -44,7 +43,7 @@ func createReview(c *gin.Context) {
 		msg = "new review succeed"
 		errorRet = 0
 		httpStatus = http.StatusOK
-		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, common.GlobalConfig.Jwt.Expires)
+		userToken, _ = common.CreateTokenString(ut.Username, ut.Uid, common.GlobalConfig.Jwt.Secret, common.GlobalConfig.Jwt.Expires)
 	} else {
 		msg = errmsg
 		userToken = ""
@@ -64,7 +63,6 @@ func deleteReview(c *gin.Context) {
 	errmsg := ""
 	errorRet := 1
 	msg := ""
-	user := dbcommon.User{}
 
 	userToken := c.Request.Header.Get("x-user-token")
 	httpStatus := http.StatusForbidden
@@ -85,7 +83,7 @@ func deleteReview(c *gin.Context) {
 		msg = "delete review succeed"
 		errorRet = 0
 		httpStatus = http.StatusOK
-		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, common.GlobalConfig.Jwt.Expires)
+		userToken, _ = common.CreateTokenString(ut.Username, ut.Uid, common.GlobalConfig.Jwt.Secret, common.GlobalConfig.Jwt.Expires)
 	} else {
 		msg = errmsg
 		userToken = ""
@@ -104,7 +102,6 @@ func listReviews(c *gin.Context) {
 	errmsg := ""
 	errorRet := 1
 	msg := ""
-	user := dbcommon.User{}
 	reviews := make([]map[string]interface{}, 0)
 	var reviewsObj map[dbcommon.Review]dbcommon.User
 
@@ -137,7 +134,7 @@ func listReviews(c *gin.Context) {
 			reviews = append(reviews, r)
 		}
 		httpStatus = http.StatusOK
-		userToken, _ = common.CreateTokenString(user.Username, user.Uid, common.GlobalConfig.Jwt.Secret, common.GlobalConfig.Jwt.Expires)
+		userToken, _ = common.CreateTokenString(ut.Username, ut.Uid, common.GlobalConfig.Jwt.Secret, common.GlobalConfig.Jwt.Expires)
 	} else {
 		msg = errmsg
 		userToken = ""

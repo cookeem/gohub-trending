@@ -1,4 +1,5 @@
 import React from 'react';
+import Cookies from 'universal-cookie';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -13,6 +14,8 @@ import GithubIcon from '../images/github.png';
 
 import { mapDispatchToProps, mapStateToProps } from '../redux/react';
 import { connect } from 'react-redux';
+
+import { getLoginInfo } from './functions';
 
 const styles = {
   root: {
@@ -33,6 +36,14 @@ const styles = {
 };
 
 class TopBar extends React.Component {
+  constructor(props) {
+    super(props);
+    const cookies = new Cookies();
+    const userToken = cookies.get('user-token');
+    let login = getLoginInfo(userToken);
+    this.props.onLogin(login);
+  }
+  
   onShowSideBar = () => {
     this.props.onSideBar(true)
   }
