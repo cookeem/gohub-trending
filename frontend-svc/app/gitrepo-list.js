@@ -42,22 +42,22 @@ const styles = theme => ({
 class GitRepoListForm extends React.Component {
   constructor(props) {
     super(props);
-    this.listGitRepos();
+    this.listGitRepos("", 0);
   }
 
   state = {
     language: "",
-    page: 1,
+    page: 0,
     showLoadMore: true,
   };
 
-  listGitRepos = () => {
+  listGitRepos = (language, page) => {
     const cookies = new Cookies();
     this.props.onLoading(true);
     const userToken = cookies.get('user-token');
     var bodyFormData = new FormData();
-    bodyFormData.append('language', this.state.language);
-    bodyFormData.append('page', this.state.page);
+    bodyFormData.append('language', language);
+    bodyFormData.append('page', page + 1);
     const axiosConfig = {
       url: 'http://localhost:3000/gitrepos/',
       method: 'put',
@@ -70,15 +70,22 @@ class GitRepoListForm extends React.Component {
       if (response.data.gitrepos.length == 0) {
         this.setState({showLoadMore: false});
       }
+      this.setState({page: page + 1});
       obj.onGitRepos(response.data.gitrepos);
       obj.onLanguages(response.data.languages);
     };
     serviceQuery(this.props, axiosConfig, axiosSuccess);
+
   };
+
+  listGitReposLanguage = (language) => {
+    const page = 0;
+    this.listGitRepos(language, page);
+    this.setState({language: language});
+  }
 
   loadMore = () => {
     const page = this.state.page + 1;
-    this.setState({page: page});
     const cookies = new Cookies();
     this.props.onLoading(true);
     const userToken = cookies.get('user-token');
@@ -97,9 +104,9 @@ class GitRepoListForm extends React.Component {
       if (response.data.gitrepos.length == 0) {
         this.setState({showLoadMore: false});
       }
+      this.setState({page: this.state.page + 1});
       var gitreposOld = obj.gitrepos;
       var gitrepos = gitreposOld.gitrepos.concat(response.data.gitrepos);
-      console.log("###", gitrepos);
       obj.onGitRepos(gitrepos);
       obj.onLanguages(response.data.languages);
     };
@@ -115,12 +122,13 @@ class GitRepoListForm extends React.Component {
           <Fragment>
             <Grid container spacing={8} alignItems="flex-end" justify="flex-start">
               <Grid item xs={12}>
+              <Chip onClick={() => this.listGitReposLanguage("")} label="All" className={classes.chip} color="primary" />
                 {this.props.languages.languages.map((language, _) => (
                   <Fragment key={language.language}>
-                    { (language.color == 'secondary') ? (
-                      <Chip label={language.language + " (" + language.repos_count + ")"} className={classes.chip} color={language.color} style={{color: '#FFF'}}/>
+                    { (language.language == this.state.language) ? (
+                      <Chip label={language.language + " (" + language.repos_count + ")"} className={classes.chip} color="secondary" style={{color: '#FFF'}}/>
                     ) : (
-                      <Chip label={language.language + " (" + language.repos_count + ")"} className={classes.chip} color={language.color}/>
+                      <Chip onClick={() => this.listGitReposLanguage(language.language)} label={language.language + " (" + language.repos_count + ")"} className={classes.chip}/>
                     ) }
                   </Fragment>
                 ))}

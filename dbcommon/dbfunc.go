@@ -202,7 +202,7 @@ func ListGitRepos(language string, page int, perPage int) (gitrepos []GitRepo, l
 	if language != "" {
 		grWhere.Language = language
 	}
-	if err := db.Where(&grWhere).Offset(perPage*(page-1)).Limit(perPage).Find(&gitrepos).Order("stargazers_count", true).Error; err != nil {
+	if err := db.Where(&grWhere).Order("stargazers_count DESC", true).Offset(perPage * (page - 1)).Limit(perPage).Find(&gitrepos).Error; err != nil {
 		errmsg = "select gitrepos error"
 		return gitrepos, languages, errmsg
 	} else if err = db.Find(&languages).Order("repos_count desc").Error; err != nil {
