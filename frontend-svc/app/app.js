@@ -11,7 +11,7 @@ import Grid from '@material-ui/core/Grid';
 import { store } from './redux/store';
 import { TopBarConnect } from './components/topbar';
 import { SideBarConnect } from './components/sidebar';
-import { CommentDialogConnect, DeleteDialogConnect, ErrorDialogConnect, SuccessTipsConnect } from './components/dialog';
+import { ErrorDialogConnect, SuccessTipsConnect } from './components/dialog';
 import { GitRepoViewView } from './gitrepo-view';
 import { UserCreateView, UserLoginView, UserLogoutView, UserUpdateView, GitRepoSearchView, GitRepoListView } from './components/router'
 
@@ -43,8 +43,6 @@ const App = () => {
         <MuiThemeProvider theme={theme}>
           <TopBarConnect />
           <SideBarConnect />
-          <CommentDialogConnect />
-          <DeleteDialogConnect />
           <ErrorDialogConnect />
           <SuccessTipsConnect />
           <Grid container spacing={24} className={styles.main} style={{padding: "20px"}}>
@@ -58,7 +56,7 @@ const App = () => {
                   <Route path="/gitrepo-search" component={GitRepoSearchView}/>
                   <Route path="/gitrepo-list" component={GitRepoListView}/>
                   <Route path="/gitrepo-view/:gid" component={GitRepoViewView}/>
-                  <Redirect to="/user-create"/>
+                  <Redirect to="/user-login"/>
                 </Switch>
               </React.Suspense>
             </Grid>

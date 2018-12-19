@@ -25,6 +25,7 @@ func createReview(c *gin.Context) {
 
 	ut := common.VerifyTokenString(userToken, common.GlobalConfig.Jwt.Secret)
 	if ut.Uid == 0 {
+		errorRet = 2
 		errmsg = "user not login yet"
 	} else {
 		if len(content) == 0 {
@@ -69,6 +70,7 @@ func deleteReview(c *gin.Context) {
 
 	ut := common.VerifyTokenString(userToken, common.GlobalConfig.Jwt.Secret)
 	if ut.Uid == 0 {
+		errorRet = 2
 		errmsg = "user not login yet"
 	} else {
 		rid, err := strconv.Atoi(ridStr)
@@ -110,6 +112,7 @@ func listReviews(c *gin.Context) {
 
 	ut := common.VerifyTokenString(userToken, common.GlobalConfig.Jwt.Secret)
 	if ut.Uid == 0 {
+		errorRet = 2
 		errmsg = "user not login yet"
 	} else {
 		gid, err := strconv.Atoi(gidStr)

@@ -6,20 +6,6 @@ export const actionShowSideBar = (showSideBar) => (
   }
 );
 
-export const actionShowComment = (showComment) => (
-  {
-    type: 'SHOW_COMMENT',
-    showComment: showComment,
-  }
-);
-
-export const actionShowDelete = (showDelete) => (
-  {
-    type: 'SHOW_DELETE',
-    showDelete: showDelete,
-  }
-);
-
 export const actionShowLoading = (showLoading) => (
   {
     type: 'SHOW_LOADING',

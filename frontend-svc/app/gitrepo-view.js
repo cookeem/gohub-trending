@@ -1,4 +1,5 @@
 import React from 'react';
+import Cookies from 'universal-cookie';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
@@ -6,19 +7,24 @@ import Chip from '@material-ui/core/Chip';
 import Stars from '@material-ui/icons/Stars';
 import AddCircle from '@material-ui/icons/AddCircle';
 import ControlPoint from '@material-ui/icons/ControlPoint';
-
-
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-
+import TextField from '@material-ui/core/TextField';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
 import red from '@material-ui/core/colors/red';
 import grey from '@material-ui/core/colors/grey';
 
 import { mapDispatchToProps, mapStateToProps } from './redux/react';
 import { connect } from 'react-redux';
+import { serviceQuery } from './components/functions';
+import { LoadingView } from './components/loading';
 
 const styles = theme => ({
   root: {
@@ -42,122 +48,214 @@ const styles = theme => ({
 });
 
 class GitRepoViewForm extends React.Component {
-  onShowComment = () => {
-    this.props.onComment(true)
+  constructor(props) {
+    super(props);
+    this.getGitRepo(props.gid);
   }
 
-  onHideComment = () => {
-    this.props.onComment(false)
+  state = {
+    showComment: false,
+    showDelete: false,
+    content: "",
+  };
+
+  getGitRepo = (gid) => {
+    const cookies = new Cookies();
+    this.props.onLoading(true);
+    const userToken = cookies.get('user-token');
+    const axiosConfig = {
+      url: 'http://localhost:3000/gitrepos/' + gid,
+      method: 'get',
+      headers: {'x-user-token': userToken, },
+      timeout: 5000,
+    };
+    const axiosSuccess = (obj, response) => {
+      obj.onGitRepo(response.data.gitrepo);
+      obj.onReviews(response.data.reviews);
+    };
+    const axiosFail = (obj, response) => {
+      window.location.href = "/#/gitrepo-list";
+    };
+    serviceQuery(this.props, axiosConfig, axiosSuccess, axiosFail);
+  };
+
+  createReview = (gid, content) => {
+    const cookies = new Cookies();
+    this.props.onLoading(true);
+    const userToken = cookies.get('user-token');
+    var bodyFormData = new FormData();
+    bodyFormData.append('gid', gid);
+    bodyFormData.append('content', content);
+    const axiosConfig = {
+      url: 'http://localhost:3000/reviews/',
+      method: 'post',
+      data: bodyFormData,
+      headers: {'x-user-token': userToken, },
+      config: { headers: {'Content-Type': 'multipart/form-data' }},
+      timeout: 5000,
+    };
+    const axiosSuccess = (obj, response) => {
+      this.getGitRepo(this.props.gid);
+      this.props.onGitRepo({});
+      this.props.onReviews([]);
+      this.onShowComment(false);
+      // window.location.reload();
+    };
+    const axiosFail = (obj, response) => {
+    };
+    serviceQuery(this.props, axiosConfig, axiosSuccess, axiosFail);
+  };
+
+  onShowComment = (show) => {
+    this.setState({showComment: show});
   }
 
-  onShowDelete = () => {
-    this.props.onDelete(true)
+  onShowDelete = (show) => {
+    this.setState({showDelete: show});
   }
 
-  onHideDelete = () => {
-    this.props.onDelete(false)
-  }
+  handleChange = event => {
+    this.setState({ [event.target.id]: event.target.value });
+  };
 
   render() {
-    console.log(this.props.login.username);
     const { classes } = this.props;
 
-    const gitrepo = { 
-      gid: 1, 
-      full_name: "cookeem/kubeadm-ha", 
-      description: "Kubernetes high availiability deploy based on kubeadm (English/中文 for v1.11.x/v1.9.x/v1.7.x/v1.6.x)", 
-      language: "JupyterNotebook", 
-      stargazers_count: 5000, 
-      reviews_count: 1000, 
-      forks_count: 2000, 
-      watchers_count: 11,
-      open_issues_count: 10,
-      html_url: "https://github.com/cookeem/kubeadm-ha",
-      created_at: "2018-10-26 12:00:00",
-      updated_at: "2018-11-26 12:00:00",
-      pushed_at: "2018-12-26 12:00:00",
-    };
-  
-    const reviews = [
-      { rid: 1, username: "cookeem", content: "this is a comment", created_at: "2012-12-12 10:10:10", },
-      { rid: 2, username: "haijian", content: "this is a comment", created_at: "2012-12-12 10:10:10", },
-      { rid: 3, username: "faith", content: "this is a comment", created_at: "2012-12-12 10:10:10", },
-    ];
+    console.log(this.state);
 
     return (
       <div className={classes.root}>
-        <Grid key={gitrepo.gid} container spacing={8} alignItems="flex-end" justify="flex-start">
-          <Grid item xs={12}>
-            <Card className={classes.card}>
-              <CardContent>
-                <Typography variant="h5" component="h2">
-                  {gitrepo.full_name}
-                </Typography>
-                <Chip label={gitrepo.language} className={classes.chip} color="primary"/>
-                <Chip
-                  icon={<Stars />}
-                  label={"stars "+gitrepo.stargazers_count}
-                  className={classes.chip}
-                  color="secondary"
-                  style={{color: "#FFF"}}
-                />
-                <Chip
-                  icon={<AddCircle />}
-                  label={"comments "+gitrepo.reviews_count}
-                  className={classes.chip}
-                  color="default"
-                />
-                <Chip
-                  icon={<ControlPoint />}
-                  label={"forks "+gitrepo.forks_count}
-                  className={classes.chip}
-                  color="default"
-                />
-                <Chip
-                  label={"watchers "+gitrepo.watchers_count}
-                  className={classes.chip}
-                  color="default"
-                />
-                <Chip
-                  label={"issues "+gitrepo.open_issues_count}
-                  className={classes.chip}
-                  color="default"
-                />
-  
-                <Typography className={classes.pos} color="textSecondary">
-                  {gitrepo.description}
-                </Typography>
-                <Typography component="p">
-                  <a href="#">{gitrepo.html_url}</a>
-                </Typography>
-  
-  
-                <Chip
-                  label={"created at: "+gitrepo.created_at}
-                  className={classes.chip}
-                  color="default"
-                />
-                <Chip
-                  label={"updated at: "+gitrepo.updated_at}
-                  className={classes.chip}
-                  color="default"
-                />
-                <Chip
-                  label={"pushed at: "+gitrepo.pushed_at}
-                  className={classes.chip}
-                  color="default"
-                />
-              </CardContent>
-              <CardActions>
-                <Button size="small" variant="contained" color="secondary" className={classes.pos} onClick={this.onShowComment}>
-                  <AddCircle />
-                  Comments
-                </Button>
-              </CardActions>
-            </Card>
-          </Grid>
-        </Grid>  
-        {reviews.map((review, _) => (
+        <Dialog
+          style={{zIndex: 100}}
+          open={this.state.showComment}
+          onClose={() => this.onShowComment(false)}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogTitle id="comment">Comment</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Please left your github repository comment here
+            </DialogContentText>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="content"
+              label="Comment"
+              multiline
+              rows={3}
+              rowsMax={6}
+              fullWidth
+              onChange={this.handleChange}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => this.createReview(this.props.gid, this.state.content)} color="secondary">
+              Comment
+            </Button>
+            <Button onClick={() => this.onShowComment(false)} color="secondary">
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          open={this.state.showDelete}
+          onClose={() => this.onShowDelete(false)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">Do you want to delete this comment?</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Comment can not recover after delete, are you sure want to delete?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.onHideDelete} color="secondary">
+              Delete
+            </Button>
+            <Button onClick={() => this.onShowDelete(false)} color="secondary" autoFocus>
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {
+          (this.props.ui.showLoading) ? (
+            <LoadingView />
+          ) : (
+            <Grid key={this.props.gitrepo.gitrepo.gid} container spacing={8} alignItems="flex-end" justify="flex-start">
+              <Grid item xs={12}>
+                <Card className={classes.card}>
+                  <CardContent>
+                    <Typography variant="h5" component="h2">
+                      {this.props.gitrepo.gitrepo.full_name}
+                    </Typography>
+                    <Chip label={this.props.gitrepo.gitrepo.language} className={classes.chip} color="primary"/>
+                    <Chip
+                      icon={<Stars />}
+                      label={"stars "+this.props.gitrepo.gitrepo.stargazers_count}
+                      className={classes.chip}
+                      color="secondary"
+                      style={{color: "#FFF"}}
+                    />
+                    <Chip
+                      icon={<AddCircle />}
+                      label={"comments "+this.props.gitrepo.gitrepo.reviews_count}
+                      className={classes.chip}
+                      color="default"
+                    />
+                    <Chip
+                      icon={<ControlPoint />}
+                      label={"forks "+this.props.gitrepo.gitrepo.forks_count}
+                      className={classes.chip}
+                      color="default"
+                    />
+                    <Chip
+                      label={"watchers "+this.props.gitrepo.gitrepo.watchers_count}
+                      className={classes.chip}
+                      color="default"
+                    />
+                    <Chip
+                      label={"issues "+this.props.gitrepo.gitrepo.open_issues_count}
+                      className={classes.chip}
+                      color="default"
+                    />
+                    <Typography className={classes.pos} color="textSecondary">
+                      {this.props.gitrepo.gitrepo.description}
+                    </Typography>
+                    <Typography component="p">
+                      <a href="#">{this.props.gitrepo.gitrepo.html_url}</a>
+                    </Typography>
+      
+      
+                    <Chip
+                      label={"created at: "+this.props.gitrepo.gitrepo.created_at}
+                      className={classes.chip}
+                      color="default"
+                    />
+                    <Chip
+                      label={"updated at: "+this.props.gitrepo.gitrepo.updated_at}
+                      className={classes.chip}
+                      color="default"
+                    />
+                    <Chip
+                      label={"pushed at: "+this.props.gitrepo.gitrepo.pushed_at}
+                      className={classes.chip}
+                      color="default"
+                    />
+                  </CardContent>
+                  <CardActions>
+                    <Button size="small" variant="contained" color="secondary" className={classes.pos} style={{color: "#FFF"}} onClick={() => this.onShowComment(true)}>
+                      <AddCircle />
+                      Comments
+                    </Button>
+                  </CardActions>
+                </Card>
+              </Grid>
+            </Grid>  
+          )
+        }
+        {this.props.reviews.reviews.map((review, _) => (
           <Grid key={review.rid} container spacing={8} alignItems="flex-end" justify="flex-start">
             <Grid item xs={12}>
               <Card className={classes.card} style={{backgroundColor: grey[100]}}>
@@ -171,7 +269,6 @@ class GitRepoViewForm extends React.Component {
                   <Typography component="p">
                     {review.created_at}
                     <Button size="small" variant="contained" style={{marginLeft: 20, backgroundColor: red[500], color: "#FFF"}} onClick={this.onShowDelete}>Delete</Button>
-                    <Button size="small" variant="contained" style={{marginLeft: 20, backgroundColor: red[500], color: "#FFF"}} onClick={this.onShowDelete}>Error</Button>
                   </Typography>
                 </CardContent>
               </Card>
@@ -196,7 +293,7 @@ function GitRepoViewPage(props) {
     <div className={classes.root}>
       <Grid container spacing={24} justify="center" style={{height: 60}}>
         <Grid item xs={10}>
-          <GitRepoViewFormConnect />
+          <GitRepoViewFormConnect gid={props.gid}/>
         </Grid>
       </Grid>
     </div>
@@ -209,12 +306,12 @@ GitRepoViewPage.propTypes = {
 
 const GitRepoViewPageStyle = withStyles(styles)(GitRepoViewPage);
 
-export class GitRepoViewView extends React.Component {
-  render() {
-    return (
-      <GitRepoViewPageStyle />
-    )
-  };
+//需要传递match参数，不能使用React.Component
+export const GitRepoViewView = (props) => {
+  return (
+    <GitRepoViewPageStyle
+      gid={props.match.params.gid}
+      {...props}
+    />
+  );
 }
-        
-

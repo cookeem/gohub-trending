@@ -1,4 +1,4 @@
-import { actionShowSideBar, actionShowComment, actionShowDelete, actionShowLoading, actionLogin, actionMsg, actionGitRepos, actionLanguages, actionGitRepo, actionReviews } from './action';
+import { actionShowSideBar, actionShowLoading, actionLogin, actionMsg, actionGitRepos, actionLanguages, actionGitRepo, actionReviews } from './action';
 
 //把redux的state输出到component的props
 export const mapStateToProps = (state) => {
@@ -18,12 +18,6 @@ export const mapDispatchToProps = (dispatch) => {
   return {
     onSideBar: (show) => {
       dispatch(actionShowSideBar(show));
-    },
-    onComment: (show) => {
-      dispatch(actionShowComment(show));
-    },
-    onDelete: (show) => {
-      dispatch(actionShowDelete(show));
     },
     onLoading: (show) => {
       dispatch(actionShowLoading(show));

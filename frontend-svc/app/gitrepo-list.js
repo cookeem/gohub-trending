@@ -76,7 +76,9 @@ class GitRepoListForm extends React.Component {
       obj.onGitRepos(response.data.gitrepos);
       obj.onLanguages(response.data.languages);
     };
-    serviceQuery(this.props, axiosConfig, axiosSuccess);
+    const axiosFail = (obj, response) => {
+    };
+    serviceQuery(this.props, axiosConfig, axiosSuccess, axiosFail);
   };
 
   listGitReposLanguage = (language) => {
@@ -113,7 +115,9 @@ class GitRepoListForm extends React.Component {
       obj.onGitRepos(gitrepos);
       obj.onLanguages(response.data.languages);
     };
-    serviceQuery(this.props, axiosConfig, axiosSuccess);
+    const axiosFail = (obj, response) => {
+    };
+    serviceQuery(this.props, axiosConfig, axiosSuccess, axiosFail);
   };
 
   render() {
@@ -143,7 +147,7 @@ class GitRepoListForm extends React.Component {
                   <Card className={classes.card}>
                     <CardContent>
                       <Typography variant="h5" component="h2">
-                        {gitrepo.full_name}
+                        <a href={"/#/gitrepo-view/"+gitrepo.gid} style={{color: "#000"}}>{gitrepo.full_name}</a>
                       </Typography>
                       { gitrepo.language != "" && (
                         <Chip label={gitrepo.language} className={classes.chip} color="primary"/>

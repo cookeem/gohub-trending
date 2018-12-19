@@ -175,7 +175,7 @@ func ListReviews(gid int) (reviews map[Review]User, errmsg string) {
 	defer db.Close()
 
 	var rs []Review
-	if err := db.Order("rid desc").Where(&Review{Gid: gid}).Find(&rs).Error; err != nil {
+	if err := db.Where(&Review{Gid: gid}).Order("rid desc").Find(&rs).Error; err != nil {
 		errmsg = "select rs error"
 		return reviews, errmsg
 	} else {

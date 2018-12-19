@@ -103,7 +103,9 @@ class UserCreateForm extends React.Component {
       const axiosSuccess = (obj, response) => {
         window.location.href = "/#/gitrepo-list";
       };
-      serviceQuery(this.props, axiosConfig, axiosSuccess);
+      const axiosFail = (obj, response) => {
+      };
+      serviceQuery(this.props, axiosConfig, axiosSuccess, axiosFail);
     }
     console.log('###', this.state);
   };

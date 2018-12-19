@@ -103,6 +103,7 @@ func logoutUser(c *gin.Context) {
 
 	ut := common.VerifyTokenString(userToken, common.GlobalConfig.Jwt.Secret)
 	if ut.Uid == 0 {
+		errorRet = 2
 		errmsg = "user not login yet"
 	}
 
@@ -132,6 +133,7 @@ func getUser(c *gin.Context) {
 
 	ut := common.VerifyTokenString(userToken, common.GlobalConfig.Jwt.Secret)
 	if ut.Uid == 0 {
+		errorRet = 2
 		errmsg = "user not login yet"
 	} else {
 		user, errmsg = dbcommon.GetUser(ut.Uid)
@@ -168,6 +170,7 @@ func updateUser(c *gin.Context) {
 
 	ut := common.VerifyTokenString(userToken, common.GlobalConfig.Jwt.Secret)
 	if ut.Uid == 0 {
+		errorRet = 2
 		errmsg = "user not login yet"
 	} else {
 		if len(oldpassword) == 0 {

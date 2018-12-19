@@ -20,7 +20,7 @@ export const getLoginInfo = (token) => {
   return login;
 };
 
-export const serviceQuery = (obj, axiosConfig, axiosSuccess) => {
+export const serviceQuery = (obj, axiosConfig, axiosSuccess, axiosFail) => {
   axios(axiosConfig).then((response) => {
     let login = getLoginInfo(response.headers['x-user-token']);
     obj.onLogin(login);
@@ -45,6 +45,11 @@ export const serviceQuery = (obj, axiosConfig, axiosSuccess) => {
         msg: error.response.data.msg,
       };
       obj.onMsg(msg);
+      if (error.response.data.error == 2) {
+        window.location.href = "/#/user-login";
+      }
+      console.log('#############', error.response);
+      axiosFail(obj, error.response);
     } else {
       let msg = {
         error: 1,

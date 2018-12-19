@@ -185,6 +185,7 @@ func listGitRepos(c *gin.Context) {
 
 	ut := common.VerifyTokenString(userToken, common.GlobalConfig.Jwt.Secret)
 	if ut.Uid == 0 {
+		errorRet = 2
 		errmsg = "user not login yet"
 	} else {
 		gitrepos, languages, errmsg = dbcommon.ListGitRepos(language, page, perPage)
@@ -247,6 +248,7 @@ func searchGitRepos(c *gin.Context) {
 	} else {
 		ut := common.VerifyTokenString(userToken, common.GlobalConfig.Jwt.Secret)
 		if ut.Uid == 0 {
+			errorRet = 2
 			errmsg = "user not login yet"
 		} else {
 			gitrepos, languages, errmsg = requestSearchGitRepos(topics, perPage, page)
@@ -292,9 +294,11 @@ func getGitRepo(c *gin.Context) {
 	gid, err := strconv.Atoi(gidStr)
 	if err != nil {
 		errmsg = "gitrepo id incorrect"
+		msg = errmsg
 	} else {
 		ut := common.VerifyTokenString(userToken, common.GlobalConfig.Jwt.Secret)
 		if ut.Uid == 0 {
+			errorRet = 2
 			errmsg = "user not login yet"
 		} else {
 			gitrepo, errmsg = dbcommon.GetGitRepo(gid)

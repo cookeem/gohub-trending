@@ -81,7 +81,9 @@ class GitRepoSearchForm extends React.Component {
       obj.onGitRepos(response.data.gitrepos);
       // obj.onLanguages(response.data.languages);
     };
-    serviceQuery(this.props, axiosConfig, axiosSuccess);
+    const axiosFail = (obj, response) => {
+    };
+    serviceQuery(this.props, axiosConfig, axiosSuccess, axiosFail);
   };
 
   listMore = () => {
@@ -111,12 +113,13 @@ class GitRepoSearchForm extends React.Component {
       obj.onGitRepos(gitrepos);
       // obj.onLanguages(response.data.languages);
     };
-    serviceQuery(this.props, axiosConfig, axiosSuccess);
+    const axiosFail = (obj, response) => {
+    };
+    serviceQuery(this.props, axiosConfig, axiosSuccess, axiosFail);
   };
 
   handleChange = event => {
     this.setState({ [event.target.id]: event.target.value });
-    console.log(this.state);
   };
 
   searchGitRepos = (topics, page, per_page) => {
@@ -143,7 +146,9 @@ class GitRepoSearchForm extends React.Component {
       obj.onGitRepos(response.data.gitrepos);
       // obj.onLanguages(response.data.languages);
     };
-    serviceQuery(this.props, axiosConfig, axiosSuccess);
+    const axiosFail = (obj, response) => {
+    };
+    serviceQuery(this.props, axiosConfig, axiosSuccess, axiosFail);
   };
 
   searchGitReposTopics = (topics) => {
@@ -183,7 +188,9 @@ class GitRepoSearchForm extends React.Component {
       obj.onGitRepos(gitrepos);
       // obj.onLanguages(response.data.languages);
     };
-    serviceQuery(this.props, axiosConfig, axiosSuccess);
+    const axiosFail = (obj, response) => {
+    };
+    serviceQuery(this.props, axiosConfig, axiosSuccess, axiosFail);
   };
 
   loadMore = () => {
@@ -216,7 +223,7 @@ class GitRepoSearchForm extends React.Component {
               <Card className={classes.card}>
                 <CardContent>
                   <Typography variant="h5" component="h2">
-                    {gitrepo.full_name}
+                  <a href={"/#/gitrepo-view/"+gitrepo.gid} style={{color: "#000"}}>{gitrepo.full_name}</a>
                   </Typography>
                   { gitrepo.language != "" && (
                     <Chip label={gitrepo.language} className={classes.chip} color="primary"/>

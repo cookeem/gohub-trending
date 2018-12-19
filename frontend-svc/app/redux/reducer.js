@@ -2,8 +2,6 @@ import { combineReducers } from 'redux';
 
 export const stateInitUI = {
   showSideBar: false,
-  showComment: false,
-  showDelete: false,
   showLoading: false,
 };
 
@@ -12,14 +10,6 @@ export const ui = (state = stateInitUI, action) => {
     case 'SHOW_SIDEBAR':
       return Object.assign({}, state, {
         showSideBar: action.showSideBar,
-      });
-    case 'SHOW_COMMENT':
-      return Object.assign({}, state, {
-        showComment: action.showComment,
-      });
-    case 'SHOW_DELETE':
-      return Object.assign({}, state, {
-        showDelete: action.showDelete,
       });
     case 'SHOW_LOADING':
       return Object.assign({}, state, {
