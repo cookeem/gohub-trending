@@ -145,7 +145,9 @@ class GitRepoListForm extends React.Component {
                       <Typography variant="h5" component="h2">
                         {gitrepo.full_name}
                       </Typography>
-                      <Chip label={gitrepo.language} className={classes.chip} color="primary"/>
+                      { gitrepo.language != "" && (
+                        <Chip label={gitrepo.language} className={classes.chip} color="primary"/>
+                      )}
                       <Chip
                         icon={<Stars />}
                         label={"stars "+gitrepo.stargazers_count}

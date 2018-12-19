@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"strconv"
 	"strings"
 	"time"
@@ -51,6 +52,7 @@ func createRequestURL(params map[string]string) string {
 	}
 	queryString := strings.Join(querys, "&")
 	urlStr := fmt.Sprintf("https://api.github.com/search/repositories?%v", queryString)
+	println(urlStr)
 	return urlStr
 }
 
@@ -59,8 +61,10 @@ func requestSearchGitRepos(topics string, perPage int, page int) (gitrepos []dbc
 	gitrepos = make([]dbcommon.GitRepo, 0)
 	for _, s := range strings.Split(topics, " ") {
 		s = strings.Trim(s, " ")
+		u := &url.URL{Path: s}
+		s = u.String()
 		if s != "" {
-			ts = append(ts, "topic:"+s)
+			ts = append(ts, s)
 		}
 	}
 	q := strings.Join(ts, "+")
@@ -70,6 +74,7 @@ func requestSearchGitRepos(topics string, perPage int, page int) (gitrepos []dbc
 	if page <= 0 {
 		page = 1
 	}
+
 	mapQuerys := map[string]string{
 		"per_page": strconv.Itoa(perPage),
 		"page":     strconv.Itoa(page),

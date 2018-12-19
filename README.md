@@ -26,6 +26,7 @@ go build backend-svc/backend.go && ./backend
 go build user-svc/user.go && ./user
 go build gitrepo-svc/gitrepo.go && ./gitrepo
 go build review-svc/review.go && ./review
+
 ```
 
 ## 接口说明
