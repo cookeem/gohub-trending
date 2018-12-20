@@ -57,6 +57,8 @@ class GitRepoViewForm extends React.Component {
     showComment: false,
     showDelete: false,
     content: "",
+    contentPrompt: "",
+    ridDelete: 0,
   };
 
   getGitRepo = (gid) => {
@@ -80,25 +82,61 @@ class GitRepoViewForm extends React.Component {
   };
 
   createReview = (gid, content) => {
+    var contentPrompt = "";
+    if (this.state.content == "") {
+      contentPrompt = "content can not be empty";
+    } else if (this.state.content.length < 3) {
+      contentPrompt = "content must more than 2 characters";
+    }
+    this.setState({ contentPrompt: contentPrompt });
+
+    if (contentPrompt == "") {
+      const cookies = new Cookies();
+      this.props.onLoading(true);
+      const userToken = cookies.get('user-token');
+      var bodyFormData = new FormData();
+      bodyFormData.append('gid', gid);
+      bodyFormData.append('content', content);
+      const axiosConfig = {
+        url: 'http://localhost:3000/reviews/',
+        method: 'post',
+        data: bodyFormData,
+        headers: {'x-user-token': userToken, },
+        config: { headers: {'Content-Type': 'multipart/form-data' }},
+        timeout: 5000,
+      };
+      const axiosSuccess = (obj, response) => {
+        this.props.onGitRepo({});
+        this.props.onReviews([]);
+        this.getGitRepo(this.props.gid);
+        this.onShowComment(false);
+        // window.location.reload();
+      };
+      const axiosFail = (obj, response) => {
+      };
+      serviceQuery(this.props, axiosConfig, axiosSuccess, axiosFail);
+    }
+  };
+
+  deleteReview = (rid) => {
     const cookies = new Cookies();
     this.props.onLoading(true);
     const userToken = cookies.get('user-token');
     var bodyFormData = new FormData();
-    bodyFormData.append('gid', gid);
-    bodyFormData.append('content', content);
+    bodyFormData.append('rid', rid);
     const axiosConfig = {
       url: 'http://localhost:3000/reviews/',
-      method: 'post',
+      method: 'delete',
       data: bodyFormData,
       headers: {'x-user-token': userToken, },
       config: { headers: {'Content-Type': 'multipart/form-data' }},
       timeout: 5000,
     };
     const axiosSuccess = (obj, response) => {
-      this.getGitRepo(this.props.gid);
       this.props.onGitRepo({});
       this.props.onReviews([]);
-      this.onShowComment(false);
+      this.getGitRepo(this.props.gid);
+      this.onShowDelete(false, 0);
       // window.location.reload();
     };
     const axiosFail = (obj, response) => {
@@ -110,8 +148,11 @@ class GitRepoViewForm extends React.Component {
     this.setState({showComment: show});
   }
 
-  onShowDelete = (show) => {
-    this.setState({showDelete: show});
+  onShowDelete = (show, ridDelete) => {
+    this.setState({
+      ridDelete: ridDelete,
+      showDelete: show,
+    });
   }
 
   handleChange = event => {
@@ -144,6 +185,8 @@ class GitRepoViewForm extends React.Component {
               rowsMax={6}
               fullWidth
               onChange={this.handleChange}
+              error={this.state.contentPrompt != ""}
+              helperText={this.state.contentPrompt} 
             />
           </DialogContent>
           <DialogActions>
@@ -156,8 +199,9 @@ class GitRepoViewForm extends React.Component {
           </DialogActions>
         </Dialog>
         <Dialog
+          style={{zIndex: 100}}
           open={this.state.showDelete}
-          onClose={() => this.onShowDelete(false)}
+          onClose={() => this.onShowDelete(false, 0)}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
@@ -168,10 +212,10 @@ class GitRepoViewForm extends React.Component {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.onHideDelete} color="secondary">
+            <Button onClick={() => this.deleteReview(this.state.ridDelete)} color="secondary" style={{color: "#FF0000"}}>
               Delete
             </Button>
-            <Button onClick={() => this.onShowDelete(false)} color="secondary" autoFocus>
+            <Button onClick={() => this.onShowDelete(false, 0)} color="secondary" autoFocus>
               Cancel
             </Button>
           </DialogActions>
@@ -264,10 +308,14 @@ class GitRepoViewForm extends React.Component {
                   <Typography className={classes.pos} color="textSecondary">
                     {review.content}
                   </Typography>
-                  <Typography component="p">
-                    {review.created_at}
-                    <Button size="small" variant="contained" style={{marginLeft: 20, backgroundColor: red[500], color: "#FFF"}} onClick={this.onShowDelete}>Delete</Button>
-                  </Typography>
+                  { review.uid == this.props.login.uid && (
+                    <Typography component="p">
+                      {review.created_at}
+                      <Button size="small" variant="contained" style={{marginLeft: 20, backgroundColor: red[500], color: "#FFF"}} onClick={() => this.onShowDelete(true, review.rid)}>
+                        Delete
+                      </Button>
+                    </Typography>
+                  )}
                 </CardContent>
               </Card>
             </Grid>

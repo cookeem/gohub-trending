@@ -1,8 +1,6 @@
 package dbcommon
 
 import (
-	"fmt"
-
 	"gohub-trending/common"
 
 	"github.com/jinzhu/gorm"
@@ -153,13 +151,16 @@ func DeleteReview(uid int, rid int) (errmsg string) {
 		errmsg = "review not exists"
 	} else {
 		var gitrepo GitRepo
-		fmt.Println(r.Uid, uid)
-		if r.Uid != uid {
-			errmsg = "not privilege to delete this review"
-		} else if err = db.Delete(&r).Error; err != nil {
-			errmsg = "review delete error"
+		if db.Where(&GitRepo{Gid: r.Gid}).First(&gitrepo).RecordNotFound() {
+			errmsg = "gitrepo not exists"
 		} else {
-			db.Model(&gitrepo).Update(GitRepo{ReviewsCount: gitrepo.ReviewsCount - 1})
+			if r.Uid != uid {
+				errmsg = "not privilege to delete this review"
+			} else if err = db.Delete(&r).Error; err != nil {
+				errmsg = "review delete error"
+			} else {
+				db.Model(&gitrepo).Update(GitRepo{ReviewsCount: gitrepo.ReviewsCount - 1})
+			}
 		}
 	}
 	return errmsg
