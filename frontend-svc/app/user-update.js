@@ -128,7 +128,6 @@ export default class UserUpdateForm extends React.Component {
       };
       serviceQuery(this.props, axiosConfig, axiosSuccess, axiosFail);
     }
-    console.log('###', this.state);
   };
 
   render() {

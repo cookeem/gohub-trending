@@ -3,6 +3,6 @@ import { reducerRoot }  from './reducer' ;
 
 export const store=createStore(reducerRoot);
 
-store.subscribe(() =>
-	console.log("# store.state: ", store.getState())
-);
+store.subscribe(() => {
+  // console.log("# store.state: ", store.getState())
+});

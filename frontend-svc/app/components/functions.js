@@ -15,7 +15,7 @@ export const getLoginInfo = (token) => {
     login.userToken = token;
     login.exp = data.exp;
   } catch(e) {
-    console.log("user not login yet");
+    // console.log("user not login yet");
   }
   return login;
 };
@@ -48,7 +48,7 @@ export const serviceQuery = (obj, axiosConfig, axiosSuccess, axiosFail) => {
       if (error.response.data.error == 2) {
         window.location.href = "/#/user-login";
       }
-      console.log('#############', error.response);
+      // console.log(error.response);
       axiosFail(obj, error.response);
     } else {
       let msg = {

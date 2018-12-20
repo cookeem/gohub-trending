@@ -50,7 +50,6 @@ class UserLoginForm extends React.Component {
     var usernamePrompt = "";
     if (this.state.username == "") {
       usernamePrompt = "username can not be empty";
-      console.log(this.state);
     } else if (this.state.username.length < 3 ) {
       usernamePrompt = "username must more than 2 characters";
     } else if (this.state.username.length > 12) {
@@ -90,7 +89,6 @@ class UserLoginForm extends React.Component {
       };
       serviceQuery(this.props, axiosConfig, axiosSuccess, axiosFail);
     }
-    console.log('###', this.state);
   };
 
   render() {

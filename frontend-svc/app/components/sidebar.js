@@ -10,7 +10,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import ExitToApp from '@material-ui/icons/ExitToApp';
 import Whatshot from '@material-ui/icons/Whatshot';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import InsertEmoticon from '@material-ui/icons/InsertEmoticon';
+import Search from '@material-ui/icons/Search';
 
 import { Link } from 'react-router-dom';
 
@@ -36,7 +36,7 @@ class SideBar extends React.Component {
     const { classes } = this.props;
     const menuList1 = [
       { text: "List Repo", icon: (<Whatshot />), url: "/gitrepo-list" },
-      { text: "Search Repo", icon: (<InsertEmoticon />), url: "/gitrepo-search" },
+      { text: "Search Repo", icon: (<Search />), url: "/gitrepo-search" },
       { text: "Account", icon: (<AccountCircle />), url: "/user-update" },
     ]
     const menuList2 = [

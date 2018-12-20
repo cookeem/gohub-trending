@@ -232,7 +232,9 @@ class GitRepoViewForm extends React.Component {
                     <Typography variant="h5" component="h2">
                       {this.props.gitrepo.gitrepo.full_name}
                     </Typography>
-                    <Chip label={this.props.gitrepo.gitrepo.language} className={classes.chip} color="primary"/>
+                    { this.props.gitrepo.gitrepo.language != "" && (
+                      <Chip label={this.props.gitrepo.gitrepo.language} className={classes.chip} color="primary"/>
+                    )}
                     <Chip
                       icon={<Stars />}
                       label={"stars "+this.props.gitrepo.gitrepo.stargazers_count}
