@@ -164,7 +164,7 @@ export default class UserUpdateForm extends React.Component {
                 </Grid>
                 <Grid container spacing={8} alignItems="flex-end" justify="center" style={{height: 80}}>
                   <Grid item xs={6}>
-                    <Button variant="contained" color="secondary" onClick={this.handleSubmit}>
+                    <Button variant="contained" color="secondary" onClick={this.handleSubmit} style={{color: "#FFF"}}>
                       <div style={{padding: "5px"}}>Change Password</div>
                       <Autorenew/>
                     </Button>
