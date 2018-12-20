@@ -52,7 +52,6 @@ func createRequestURL(params map[string]string) string {
 	}
 	queryString := strings.Join(querys, "&")
 	urlStr := fmt.Sprintf("https://api.github.com/search/repositories?%v", queryString)
-	println(urlStr)
 	return urlStr
 }
 

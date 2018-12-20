@@ -16,7 +16,7 @@ class UserLogoutForm extends React.Component {
 
     this.props.onLoading(true);
     axios({
-      url: this.props.ui.uri+'/users/logout',
+      url: this.props.ui.uri+'/users/logout/',
       method: 'post',
       headers: {'x-user-token': userToken, },
       timeout: 5000,

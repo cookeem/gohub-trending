@@ -76,7 +76,7 @@ class UserLoginForm extends React.Component {
       bodyFormData.append('password', this.state.password);
 
       const axiosConfig = {
-        url: this.props.ui.uri+'/users/login',
+        url: this.props.ui.uri+'/users/login/',
         method: 'post',
         data: bodyFormData,
         config: { headers: {'Content-Type': 'multipart/form-data' }},
