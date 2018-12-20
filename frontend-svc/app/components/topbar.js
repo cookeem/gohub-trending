@@ -58,9 +58,13 @@ class TopBar extends React.Component {
       <div className={classes.root}>
         <AppBar position="static">
           <Toolbar>
-            <IconButton onClick={this.onShowSideBar} className={classes.menuButton} color="inherit" aria-label="Menu">
-              <MenuIcon />
-            </IconButton>
+            {
+              this.props.login.uid > 0 && (
+                <IconButton onClick={this.onShowSideBar} className={classes.menuButton} color="inherit" aria-label="Menu">
+                  <MenuIcon />
+                </IconButton>
+              )
+            }
             <Grid container className={classes.topBar} alignContent="center" alignItems="center">
               <Grid item xs={5} align="right">
                 <Avatar alt="Natacha" src={GithubIcon} align="center"/>

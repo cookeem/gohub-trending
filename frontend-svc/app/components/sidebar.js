@@ -36,19 +36,11 @@ class SideBar extends React.Component {
     const { classes } = this.props;
     const menuList1 = [
       { text: "List Repo", icon: (<Whatshot />), url: "/gitrepo-list" },
+      { text: "Search Repo", icon: (<InsertEmoticon />), url: "/gitrepo-search" },
       { text: "Account", icon: (<AccountCircle />), url: "/user-update" },
     ]
     const menuList2 = [
       { text: "Sign Out", icon: (<ExitToApp />), url: "/user-logout" },
-    ]
-    const menuList3 = [
-      { text: "Sign In", icon: (<InsertEmoticon />), url: "/user-login" },
-      { text: "Sign Up", icon: (<InsertEmoticon />), url: "/user-create" },
-      { text: "Sign Out", icon: (<InsertEmoticon />), url: "/user-logout" },
-      { text: "Account", icon: (<InsertEmoticon />), url: "/user-update" },
-      { text: "List Repo", icon: (<InsertEmoticon />), url: "/gitrepo-list" },
-      { text: "Search Repo", icon: (<InsertEmoticon />), url: "/gitrepo-search" },
-      { text: "Github Repo", icon: (<InsertEmoticon />), url: "/gitrepo-view/1" },
     ]
     const sideList = (
       <div className={classes.list}>
@@ -74,16 +66,6 @@ class SideBar extends React.Component {
         ))}
         </List>
         <Divider />
-        <List>
-        {menuList3.map((menu, _) => (
-          <Link to={menu.url} key={menu.text}>
-            <ListItem button>
-              <ListItemIcon>{menu.icon}</ListItemIcon>
-              <ListItemText primary={menu.text} />
-            </ListItem>
-          </Link>
-        ))}
-        </List>
       </div>
     );
 
