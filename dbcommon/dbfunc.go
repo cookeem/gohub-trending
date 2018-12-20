@@ -165,8 +165,8 @@ func DeleteReview(uid int, rid int) (errmsg string) {
 	return errmsg
 }
 
-func ListReviews(gid int) (reviews map[Review]User, errmsg string) {
-	reviews = make(map[Review]User)
+func ListReviews(gid int) (reviews []ReviewOutput, errmsg string) {
+	reviews = make([]ReviewOutput, 0)
 	db, err := gorm.Open("mysql", common.ConnStr)
 	if err != nil {
 		errmsg = "database connect error"
@@ -182,7 +182,10 @@ func ListReviews(gid int) (reviews map[Review]User, errmsg string) {
 		for _, r := range rs {
 			var u User
 			db.Where(&User{Uid: r.Uid}).First(&u)
-			reviews[r] = u
+			reviewOutput := ReviewOutput{}
+			reviewOutput.Review = r
+			reviewOutput.User = u
+			reviews = append(reviews, reviewOutput)
 		}
 	}
 	return reviews, errmsg

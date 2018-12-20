@@ -105,7 +105,7 @@ func listReviews(c *gin.Context) {
 	errorRet := 1
 	msg := ""
 	reviews := make([]map[string]interface{}, 0)
-	var reviewsObj map[dbcommon.Review]dbcommon.User
+	reviewsObj := make([]dbcommon.ReviewOutput, 0)
 
 	userToken := c.Request.Header.Get("x-user-token")
 	httpStatus := http.StatusForbidden
@@ -130,14 +130,14 @@ func listReviews(c *gin.Context) {
 			msg = "list reviews succeed"
 		}
 		errorRet = 0
-		for review, user := range reviewsObj {
+		for _, reviewOutput := range reviewsObj {
 			r := make(map[string]interface{})
-			r["rid"] = review.Rid
-			r["gid"] = review.Gid
-			r["uid"] = review.Uid
-			r["username"] = user.Username
-			r["content"] = review.Content
-			r["created_at"] = review.CreatedAt
+			r["rid"] = reviewOutput.Review.Rid
+			r["gid"] = reviewOutput.Review.Gid
+			r["uid"] = reviewOutput.Review.Uid
+			r["username"] = reviewOutput.User.Username
+			r["content"] = reviewOutput.Review.Content
+			r["created_at"] = reviewOutput.Review.CreatedAt
 			reviews = append(reviews, r)
 		}
 		httpStatus = http.StatusOK

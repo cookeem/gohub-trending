@@ -23,6 +23,11 @@ type Review struct {
 	UpdatedAt time.Time
 }
 
+type ReviewOutput struct {
+	Review Review
+	User   User
+}
+
 type GitRepo struct {
 	Gid             int       `gorm:"PRIMARY_KEY;AUTO_INCREMENT;" json:"gid"`
 	FullName        string    `gorm:"type:varchar(100);PRIMARY_KEY;unique_index;not null;default:''" json:"full_name"`
