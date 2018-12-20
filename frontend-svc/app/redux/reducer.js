@@ -3,6 +3,7 @@ import { combineReducers } from 'redux';
 export const stateInitUI = {
   showSideBar: false,
   showLoading: false,
+  uri: 'http://localhost:3000',
 };
 
 export const ui = (state = stateInitUI, action) => {

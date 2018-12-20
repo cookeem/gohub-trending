@@ -66,7 +66,7 @@ class GitRepoViewForm extends React.Component {
     this.props.onLoading(true);
     const userToken = cookies.get('user-token');
     const axiosConfig = {
-      url: 'http://localhost:3000/gitrepos/' + gid,
+      url: this.props.ui.uri+'/gitrepos/' + gid,
       method: 'get',
       headers: {'x-user-token': userToken, },
       timeout: 5000,
@@ -98,7 +98,7 @@ class GitRepoViewForm extends React.Component {
       bodyFormData.append('gid', gid);
       bodyFormData.append('content', content);
       const axiosConfig = {
-        url: 'http://localhost:3000/reviews/',
+        url: this.props.ui.uri+'/reviews/',
         method: 'post',
         data: bodyFormData,
         headers: {'x-user-token': userToken, },
@@ -125,7 +125,7 @@ class GitRepoViewForm extends React.Component {
     var bodyFormData = new FormData();
     bodyFormData.append('rid', rid);
     const axiosConfig = {
-      url: 'http://localhost:3000/reviews/',
+      url: this.props.ui.uri+'/reviews/',
       method: 'delete',
       data: bodyFormData,
       headers: {'x-user-token': userToken, },

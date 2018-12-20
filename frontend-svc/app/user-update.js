@@ -43,7 +43,7 @@ export default class UserUpdateForm extends React.Component {
     bodyFormData.append('password', this.state.password);
 
     const axiosConfig = {
-      url: 'http://localhost:3000/users/',
+      url: this.props.ui.uri+'/users/',
       method: 'get',
       headers: {'x-user-token': userToken, },
       timeout: 5000,
@@ -115,7 +115,7 @@ export default class UserUpdateForm extends React.Component {
       const userToken = cookies.get('user-token');
 
       const axiosConfig = {
-        url: 'http://localhost:3000/users/',
+        url: this.props.ui.uri+'/users/',
         method: 'put',
         data: bodyFormData,
         headers: {'x-user-token': userToken, },

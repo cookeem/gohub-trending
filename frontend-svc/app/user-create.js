@@ -93,7 +93,7 @@ class UserCreateForm extends React.Component {
       bodyFormData.append('repassword', this.state.repassword);
 
       const axiosConfig = {
-        url: 'http://localhost:3000/users/',
+        url: this.props.ui.uri+'/users/',
         method: 'post',
         data: bodyFormData,
         config: { headers: {'Content-Type': 'multipart/form-data' }},

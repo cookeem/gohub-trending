@@ -66,7 +66,7 @@ class GitRepoSearchForm extends React.Component {
     bodyFormData.append('page', page + 1);
     bodyFormData.append('per_page', per_page);
     const axiosConfig = {
-      url: 'http://localhost:3000/gitrepos/',
+      url: this.props.ui.uri+'/gitrepos/',
       method: 'put',
       data: bodyFormData,
       headers: {'x-user-token': userToken, },
@@ -96,7 +96,7 @@ class GitRepoSearchForm extends React.Component {
     bodyFormData.append('page', page);
     bodyFormData.append('per_page', this.state.per_page);
     const axiosConfig = {
-      url: 'http://localhost:3000/gitrepos/',
+      url: this.props.ui.uri+'/gitrepos/',
       method: 'put',
       data: bodyFormData,
       headers: {'x-user-token': userToken, },
@@ -131,7 +131,7 @@ class GitRepoSearchForm extends React.Component {
     bodyFormData.append('page', page + 1);
     bodyFormData.append('per_page', per_page);
     const axiosConfig = {
-      url: 'http://localhost:3000/gitrepos/',
+      url: this.props.ui.uri+'/gitrepos/',
       method: 'post',
       data: bodyFormData,
       headers: {'x-user-token': userToken, },
@@ -171,7 +171,7 @@ class GitRepoSearchForm extends React.Component {
     bodyFormData.append('page', page);
     bodyFormData.append('per_page', this.state.per_page);
     const axiosConfig = {
-      url: 'http://localhost:3000/gitrepos/',
+      url: this.props.ui.uri+'/gitrepos/',
       method: 'post',
       data: bodyFormData,
       headers: {'x-user-token': userToken, },
