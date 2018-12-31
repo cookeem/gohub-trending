@@ -145,7 +145,11 @@ class GitRepoViewForm extends React.Component {
   };
 
   onShowComment = (show) => {
-    this.setState({showComment: show});
+    this.setState({
+      showComment: show,
+      content: "",
+      contentPrompt: "",
+    });
   }
 
   onShowDelete = (show, ridDelete) => {
