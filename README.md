@@ -12,21 +12,24 @@ frontend -> backend -> gitrepo-svc (search) -> github.com-> db
                     -> gitrepo-svc (get/list) -> db
 ```
 
-## 编译说明
+## 安装依赖
 
-```
+```bash
 go get -u -v github.com/jinzhu/gorm
 go get -u -v github.com/jinzhu/gorm/dialects/mysql
 go get -u -v gopkg.in/yaml.v2
 go get -u -v github.com/gin-gonic/gin
 go get -u -v github.com/dgrijalva/jwt-go
 go get -u -v github.com/gin-contrib/cors
+```
 
+```bash
 go build backend-svc/backend.go && ./backend
 go build user-svc/user.go && ./user
 go build gitrepo-svc/gitrepo.go && ./gitrepo
 go build review-svc/review.go && ./review
 
+cd frontend-svc && npm run start
 ```
 
 ## 接口说明
