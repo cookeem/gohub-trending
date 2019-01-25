@@ -28,13 +28,13 @@
 
 ## 微服务部署模式设计
 
-- 如下图所示，微服务的所有实例在kubernetes容器云中都是以多副本的形式运行，并通过service的形式对外提供服务。
+- 如下图所示，微服务的所有实例在kubernetes容器云中都是以多副本的形式运行，并通过service的形式对外提供服务。
 
 ![](images/gitrepo-microservice.png)
 
 - 无状态：由于服务会被随机调度到任意pod，所有模块都不能使用有状态的形式实现，不能把会话信息保存在pod的运行态内存中，否则就会出现在pod1上已经登录，但是在pod2上没有登录而引起资源请求无权限的异常。所有服务必须使用无状态方式实现登录状态保存（可以使用jwt实现无状态服务）。
 
-- 服务发现：由于kubernetes自身已经有服务发现能力，所有模块无需再额外实现服务发现。
+- 服务发现：由于kubernetes自身已经有服务发现能力，所有模块无需再额外实现服务发现。
 
 - 流量治理：由于kubernetes的`istio`组件可以实现服务编排，包括熔断、超时、重试、服务跟踪、安全等流量治理能力，所有模块无需再额外实现流量治理能力。
 
@@ -75,7 +75,7 @@ cd frontend-svc && npm run start
 
 - 外部`github.com`的restfulAPI
 
-  - `github.com`搜索开源项目清单的接口参见文档： https://developer.github.com/v3/search/#search-repositories
+  - `github.com`开源项目清单的接口参见文档： https://developer.github.com/v3/search/#search-repositories
 
   ```bash
   https://api.github.com/search/repositories?q=kubernetes&sort=stars&order=desc
