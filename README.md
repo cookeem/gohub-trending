@@ -1,16 +1,42 @@
 # golang github trending demo app
 
-> golang github trending demo app
+## 界面样例
 
+![](images/gitrepo-search.png)
+
+## 界面流程
+
+- 界面跳转流程图如下：
+
+![](images/gitrepo-ui-diagram.png)
 
 ## 服务架构
 
-```
-frontend -> backend -> gitrepo-svc (search) -> github.com-> db
-                    -> review-svc(create/delete/list) -> db
-                    -> user-svc(create/get/update/login/logout)
-                    -> gitrepo-svc (get/list) -> db
-```
+- 服务分为五个模块，架构图如下图：
+
+  ![](images/gitrepo-modules.png)
+
+  - 前端界面（frontend-svc）：用户操作的前端webapp
+
+  - 后端服务（backend-svc）：这是一个后端服务的反向代理，frontend-svc所有请求都指向backend-svc，backend-svc再把请求forward给对应的服务。
+
+  - 用户管理服务（user-svc）：用于管理用户信息，包括新用户注册、用户登录、修改密码、注销等业务逻辑。
+
+  - 项目管理服务（gitrepo-svc）：用于管理开源项目信息。当用户发起搜索请求的时候，gitrepo-svc调用github的developer api，获取项目列表，并写入到数据库，然后返回项目列表给用户。当用户发起列表请求的时候，gitrepo-svc从数据库获取项目列表返回给用户。当用户查看某个项目的时候，gitrepo-svc调用review-svc，获取评论信息和项目信息返回给用户。
+
+  - 评论管理（review-svc）：用于管理评论信息，包括创建和删除评论，以及获取评论列表。
+
+## 微服务部署模式设计
+
+- 如下图所示，微服务的所有实例在kubernetes容器云中都是以多副本的形式运行，并通过service的形式对外提供服务。
+
+![](images/gitrepo-microservice.png)
+
+- 无状态：由于服务会被随机调度到任意pod，所有模块都不能使用有状态的形式实现，不能把会话信息保存在pod的运行态内存中，否则就会出现在pod1上已经登录，但是在pod2上没有登录而引起资源请求无权限的异常。所有服务必须使用无状态方式实现登录状态保存（可以使用jwt实现无状态服务）。
+
+- 服务发现：由于kubernetes自身已经有服务发现能力，所有模块无需再额外实现服务发现。
+
+- 流量治理：由于kubernetes的`istio`组件可以实现服务编排，包括熔断、超时、重试、服务跟踪、安全等流量治理能力，所有模块无需再额外实现流量治理能力。
 
 ## 安装依赖
 
@@ -26,11 +52,22 @@ go get -u -v github.com/gin-contrib/cors
 ## 运行服务
 
 ```bash
-go build backend-svc/backend.go && ./backend
-go build user-svc/user.go && ./user
-go build gitrepo-svc/gitrepo.go && ./gitrepo
-go build review-svc/review.go && ./review
+# 运行数据库
+$ docker-compose up -d
 
+# 运行backend-svc
+$go build backend-svc/backend.go && ./backend
+
+# 运行user-svc
+$go build user-svc/user.go && ./user
+
+# 运行gitrepo-svc
+$go build gitrepo-svc/gitrepo.go && ./gitrepo
+
+# 运行review-svc
+$go build review-svc/review.go && ./review
+
+# 运行frontend-svc
 cd frontend-svc && npm run start
 ```
 
@@ -363,19 +400,3 @@ cd frontend-svc && npm run start
       ]
     }
     ```
-
-## 运行命令，检查数据库
-
-```
-docker-compose stop && docker-compose rm -f && docker-compose up -d
-docker exec -ti mysql bash
-
-mysql -uroot -p
-
-use github;
-show tables;
-
-explain git_repos;
-
-drop table users;drop table reviews;drop table git_repos; drop table git_languages;
-```
