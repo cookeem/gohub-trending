@@ -453,5 +453,4 @@ users
 | created_at | timestamp   | YES  |     | NULL    |                |
 | updated_at | timestamp   | YES  |     | NULL    |                |
 +------------+-------------+------+-----+---------+----------------+
-
 ```
