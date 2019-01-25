@@ -400,3 +400,58 @@ cd frontend-svc && npm run start
       ]
     }
     ```
+
+## 数据库设计
+
+```bash
+git_languages
++-------------+-------------+------+-----+---------+-------+
+| Field       | Type        | Null | Key | Default | Extra |
++-------------+-------------+------+-----+---------+-------+
+| language    | varchar(50) | NO   | PRI |         |       |
+| repos_count | int(11)     | NO   |     | 0       |       |
++-------------+-------------+------+-----+---------+-------+
+
+git_repos
++-------------------+--------------+------+-----+---------+----------------+
+| Field             | Type         | Null | Key | Default | Extra          |
++-------------------+--------------+------+-----+---------+----------------+
+| gid               | int(11)      | NO   | PRI | NULL    | auto_increment |
+| full_name         | varchar(100) | NO   | PRI |         |                |
+| description       | varchar(500) | NO   |     |         |                |
+| language          | varchar(50)  | NO   |     |         |                |
+| html_url          | varchar(200) | NO   |     |         |                |
+| stargazers_count  | int(11)      | NO   |     | 0       |                |
+| watchers_count    | int(11)      | NO   |     | 0       |                |
+| forks_count       | int(11)      | NO   |     | 0       |                |
+| open_issues_count | int(11)      | NO   |     | 0       |                |
+| reviews_count     | int(11)      | NO   |     | 0       |                |
+| created_at        | timestamp    | YES  |     | NULL    |                |
+| updated_at        | timestamp    | YES  |     | NULL    |                |
+| pushed_at         | timestamp    | YES  |     | NULL    |                |
++-------------------+--------------+------+-----+---------+----------------+
+
+reviews
++------------+--------------+------+-----+---------+----------------+
+| Field      | Type         | Null | Key | Default | Extra          |
++------------+--------------+------+-----+---------+----------------+
+| rid        | int(11)      | NO   | PRI | NULL    | auto_increment |
+| gid        | int(11)      | NO   |     | 0       |                |
+| uid        | int(11)      | NO   |     | 0       |                |
+| content    | varchar(500) | NO   |     |         |                |
+| created_at | timestamp    | YES  |     | NULL    |                |
+| updated_at | timestamp    | YES  |     | NULL    |                |
++------------+--------------+------+-----+---------+----------------+
+
+users
++------------+-------------+------+-----+---------+----------------+
+| Field      | Type        | Null | Key | Default | Extra          |
++------------+-------------+------+-----+---------+----------------+
+| uid        | int(11)     | NO   | PRI | NULL    | auto_increment |
+| username   | varchar(12) | NO   | UNI |         |                |
+| password   | varchar(50) | NO   |     |         |                |
+| created_at | timestamp   | YES  |     | NULL    |                |
+| updated_at | timestamp   | YES  |     | NULL    |                |
++------------+-------------+------+-----+---------+----------------+
+
+```
