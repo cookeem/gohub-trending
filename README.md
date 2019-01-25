@@ -23,6 +23,8 @@ go get -u -v github.com/dgrijalva/jwt-go
 go get -u -v github.com/gin-contrib/cors
 ```
 
+## 运行服务
+
 ```bash
 go build backend-svc/backend.go && ./backend
 go build user-svc/user.go && ./user
@@ -34,229 +36,333 @@ cd frontend-svc && npm run start
 
 ## 接口说明
 
-### user-svc 接口说明
+- 外部`github.com`的restfulAPI
 
-#### create: 注册用户 (POST /users/)
-```
-request:
-username, password, repassword
-======
-response:
-header: x-user-token // jwt token
-{
-    error: 0,       // 0: 成功，1: 失败
-    msg: "返回提示"  // 返回提示
-}
-```
+  - `github.com`搜索开源项目清单的接口参见文档： https://developer.github.com/v3/search/#search-repositories
 
-#### login: 用户登录 (POST /users/login)
-```
-request:
-username, password
-======
-response:
-header: x-user-token // jwt token
-{
-    error: 0,       // 0: 成功，1: 失败
-    msg: "返回提示"  // 返回提示
-}
-```
+  ```bash
+  https://api.github.com/search/repositories?q=kubernetes&sort=stars&order=desc
+  ```
 
-#### logout: 用户注销 (POST /users/logout)
-```
-request: header x-user-token
-======
-response:
-header: x-user-token // 清除x-user-token
-{
-    error: 0,       // 0: 成功，1: 失败
-    msg: "返回提示"  // 返回提示
-}
-```
+- `user-svc`接口设计
 
-#### get: 修改用户信息时获取用户信息 (GET /users/)
-```
-request: header x-user-token
-===
-response:
-header: x-user-token // jwt token
-{
-    error: 0,       // 0: 成功，1: 失败
-    msg: "返回提示"  // 返回提示
-}
-```
+  - 用户注册
 
-#### update: 更新用户信息 (PUT /users/)
-```
-request: header x-user-token
-oldpassword, password, repassword
-===
-response:
-header: x-user-token // jwt token
-{
-    error: 0,       // 0: 成功，1: 失败
-    msg: "返回提示"  // 返回提示
-}
+    > `method`: POST
 
-```
+    > `path`: /users/
 
-### review-svc 接口说明
+    > `request params`: username, password, repassword（重复输入新密码）
 
-#### create: 发表gitrepo点评 (POST /reviews/)
-```
-request: header x-user-token
-gid, content
-===
-response:
-header: x-user-token // jwt token
-{
-    error: 0,       // 0: 成功，1: 失败
-    msg: "返回提示"  // 返回提示
-    rid: 0,         // 失败返回0
-}
-```
+    > `request header`: N/A
 
-#### delete: 删除gitrepo点评 (DELETE /reviews/)
-```
-request: header x-user-token
-rid
-===
-response:
-header: x-user-token // jwt token
-{
-    error: 0,       // 0: 成功，1: 失败
-    msg: "返回提示"  // 返回提示
-}
-```
+    > `response header`: x-user-token（返回用户的登录jwt）
 
-#### list: 获取gitrepo的点评列表 (GET /reviews/)
-```
-request: header x-user-token
-gid
-===
-response:
-header: x-user-token // jwt token
-{
-    error: 0,       // 0: 成功，1: 失败
-    msg: "返回提示"  // 返回提示
-    reviews: [
+    > `response body`: error=0表示成功，否则就是失败
+
+    ```json
+    {
+      "error": 0,
+      "msg": "create user succeed"
+    }
+    ```
+
+  - 用户登录
+
+    > `method`: POST
+
+    > `path`: /users/login
+
+    > `request params`: username, password
+
+    > `request header`: N/A
+
+    > `response header`: x-user-token（返回用户的登录jwt）
+
+    > `response body`: error=0表示成功，否则就是失败
+
+    ```json
+    {
+      "error": 0,
+      "msg": "login succeed"
+    }
+    ```
+
+  - 用户注销
+
+    > `method`: POST
+
+    > `path`: /users/logout
+
+    > `request params`: N/A
+
+    > `request header`: x-user-token（用户的登录jwt）
+
+    > `response header`: N/A
+
+    > `response body`: error=0表示成功，否则就是失败
+
+    ```json
+
+    {
+      "error": 0,
+      "msg": "logout succeed"
+    }
+    ```
+
+  - 修改用户信息时获取用户信息
+
+    > `method`: GET
+
+    > `path`: /users/
+
+    > `request params`: N/A
+
+    > `request header`: x-user-token（用户的登录jwt）
+
+    > `response header`: x-user-token（用户的登录jwt）
+
+    > `response body`: error=0表示成功，否则就是失败
+
+    ```json
+    {
+      "error": 0,
+      "msg": "get login user info succeed"
+    }
+    ```
+
+  - 修改用户密码
+
+    > `method`: PUT
+
+    > `path`: /users/
+
+    > `request params`: oldpassword, password, repassword
+
+    > `request header`: x-user-token（用户的登录jwt）
+
+    > `response header`: x-user-token（用户的登录jwt）
+
+    > `response body`: error=0表示成功，否则就是失败
+
+    ```json
+    {
+      "error": 0,
+      "msg": "update password succeed"
+    }
+    ```
+
+- `review-svc`接口设计
+
+  - 发表gitrepo点评
+
+    > `method`: POST
+
+    > `path`: /reviews/
+
+    > `request params`: gid（gitrepo id）, content（评论内容）
+
+    > `request header`: x-user-token（用户的登录jwt）
+
+    > `response header`: x-user-token（用户的登录jwt）
+
+    > `response body`: error=0表示成功，否则就是失败
+
+    ```json
+    {
+      "error": 0,
+      "msg": "new review succeed",
+      "rid": 4
+    }
+    ```
+
+  - 删除gitrepo点评
+
+    > `method`: DELETE
+
+    > `path`: /reviews/
+
+    > `request params`: rid（评论id）
+
+    > `request header`: x-user-token（用户的登录jwt）
+
+    > `response header`: x-user-token（用户的登录jwt）
+
+    > `response body`: error=0表示成功，否则就是失败
+
+    ```json
+    {
+      "error": 0,
+      "msg": "delete review succeed"
+    }
+    ```
+
+  - 获取gitrepo的点评列表
+
+    > `method`: GET
+
+    > `path`: /reviews/:gid
+
+    > `request params`: gid（gitrepo id）
+
+    > `request header`: x-user-token（用户的登录jwt）
+
+    > `response header`: x-user-token（用户的登录jwt）
+
+    > `response body`: error=0表示成功，否则就是失败
+
+    ```json
+    {
+      "error": 0,
+      "msg": "list reviews succeed",
+      "reviews": [
         {
-            rid: 1,
-            gid: 1,
-            uid: 1,
-            username: "cookeem",
-            content: "content",
-            created_at: "2012-01-10 12:12:12",
+          "content": "hello world",
+          "created_at": "2019-01-24T07:15:00Z",
+          "gid": 51,
+          "rid": 1,
+          "uid": 1,
+          "username": "cookeem"
         }
-    ]
-}
-```
+      ]
+    }
+    ```
 
-### gitrepo-svc 接口说明
+- `gitrepo-svc`接口设计
 
-#### list: 获取gitrepo列表 (PUT /gitrepos/)
-```
-request: header x-user-token
-language, page, per_page
-===
-response:
-header: x-user-token // jwt token
-{
-    error: 0,       // 0: 成功，1: 失败
-    msg: "返回提示"  // 返回提示
-    languages: [
-        {
-            language: "Java",
-            repos_count: 1
-        }
-    ],
-    gitrepos: [
-        {
-            gid: 1,
-            full_name: "cookeem/kubeadm-ha",
-            description: "",
-            language: "",
-            stargazers_count: 1,
-            reviews_count: 1
-        }
-    ]
-}
-```
+  - 获取gitrepo列表
 
-#### search: 搜索gitrepo列表，从github拉取信息 (POST /gitrepos/)
-```
-request: header x-user-token
-topics, page, per_page
-===
-response:
-header: x-user-token // jwt token
-{
-    error: 0,       // 0: 成功，1: 失败
-    msg: "返回提示"  // 返回提示
-    languages: [
-        {
-            language: "Java",
-            repos_count: 1
-        }
-    ],
-    gitrepos: [
-        {
-            gid: 1,
-            full_name: "cookeem/kubeadm-ha",
-            description: "",
-            language: "",
-            stargazers_count: 1,
-            reviews_count: 0
-        }
-        {
-            "Gid":59,
-            "WatchersCount":3,
-            "description":"Ubiquiti UNMS Helm Chart. ",
-            "full_name":"valentin2105/unms-chart",
-            "language":"",
-            "reviews_count":0,
-            "stargazers_count":3}
-    ]
-}
-```
+    > `method`: PUT
 
-#### get: 获取gitrepo详情 (GET /gitrepos/:gid)
-```
-request: header x-user-token
-gid
-===
-response:
-header: x-user-token // jwt token
-{
-    error: 0,       // 0: 成功，1: 失败
-    msg: "返回提示"  // 返回提示
-    gitrepo: {
-        gid: 1,
-        full_name: "",
-        description: "",
-        language: "",
-        html_url: "",
-        stargazers_count: 0,
-        watchers_count: 0,
-        forks_count: 0,
-        open_issues_count: 0,
-        reviews_count: 0,
-        created_at: "",
-        updated_at: "",
-        pushed_at: ""
-    },
-    reviews: [
+    > `path`: /gitrepos/
+
+    > `request params`: language, page（第几页）, per_page（每页项目数量）
+
+    > `request header`: x-user-token（用户的登录jwt）
+
+    > `response header`: x-user-token（用户的登录jwt）
+
+    > `response body`: error=0表示成功，否则就是失败
+
+    ```json
+    {
+      "error": 0,
+      "gitrepos": [
         {
-            rid: 1,
-            gid: 1,
-            uid: 1,
-            username: "cookeem",
-            content: "content",
-            created_at: "2012-01-10 12:12:12",
+          "gid": 51,
+          "full_name": "moby/moby",
+          "description": "Moby Project - a collaborative project for the container ecosystem to assemble container-based systems",
+          "language": "Go",
+          "html_url": "https://github.com/moby/moby",
+          "stargazers_count": 51968,
+          "watchers_count": 51968,
+          "forks_count": 15071,
+          "open_issues_count": 3576,
+          "reviews_count": 1,
+          "created_at": "2013-01-18T18:10:57Z",
+          "updated_at": "2019-01-25T01:24:13Z",
+          "pushed_at": "2019-01-24T02:34:41Z"
         }
-    ]
-}
-```
+      ],
+      "languages": [
+        {
+          "language": "Assembly",
+          "repos_count": 1
+        }
+      ],
+      "msg": "list gitrepos succeed"
+    }
+    ```
+
+  - 搜索gitrepo列表
+
+    > `method`: POST
+
+    > `path`: /gitrepos/
+
+    > `request params`: topics（关键字）, page（第几页）, per_page（每页项目数量）
+
+    > `request header`: x-user-token（用户的登录jwt）
+
+    > `response header`: x-user-token（用户的登录jwt）
+
+    > `response body`: error=0表示成功，否则就是失败
+
+    ```json
+    {
+      "error": 0,
+      "gitrepos": [
+        {
+          "gid": 106,
+          "full_name": "goharbor/harbor",
+          "description": "An open source trusted cloudnative registry project that stores, signs, andscans content.",
+          "language": "Go",
+          "html_url": "https://github.com/goharbor/harbor",
+          "stargazers_count": 6741,
+          "watchers_count": 6741,
+          "forks_count": 1867,
+          "open_issues_count": 441,
+          "reviews_count": 0,
+          "created_at": "2016-01-28T21:10:28Z",
+          "updated_at": "2019-01-24T23:34:12Z",
+          "pushed_at": "2019-01-24T16:42:29Z"
+        }
+      ],
+      "languages": [
+        {
+          "language": "Assembly",
+          "repos_count": 1
+        }
+      ],
+      "msg": "search gitrepos succeed"
+    }
+    ```
+
+  - 获取gitrepo详情
+
+    > `method`: GET
+
+    > `path`: /gitrepos/:gid
+
+    > `request params`: gid
+
+    > `request header`: x-user-token（用户的登录jwt）
+
+    > `response header`: x-user-token（用户的登录jwt）
+
+    > `response body`: error=0表示成功，否则就是失败
+
+    ```json
+    {
+      "error": 0,
+      "gitrepo": {
+        "gid": 51,
+        "full_name": "moby/moby",
+        "description": "Moby Project - a collaborative project for the container ecosystem to assemble container-based systems",
+        "language": "Go",
+        "html_url": "https://github.com/moby/moby",
+        "stargazers_count": 51968,
+        "watchers_count": 51968,
+        "forks_count": 15071,
+        "open_issues_count": 3576,
+        "reviews_count": 1,
+        "created_at": "2013-01-18T18:10:57Z",
+        "updated_at": "2019-01-25T01:24:13Z",
+        "pushed_at": "2019-01-24T02:34:41Z"
+      },
+      "msg": "get gitrepo reviews succeed",
+      "reviews": [
+        {
+          "content": "hello world",
+          "created_at": "2019-01-24T07:15:00Z",
+          "gid": 51,
+          "rid": 1,
+          "uid": 1,
+          "username": "cookeem"
+        }
+      ]
+    }
+    ```
 
 ## 运行命令，检查数据库
 
