@@ -41,13 +41,21 @@
 ## 安装依赖
 
 ```bash
+# 安装backend依赖
 go get -u -v github.com/jinzhu/gorm
 go get -u -v github.com/jinzhu/gorm/dialects/mysql
 go get -u -v gopkg.in/yaml.v2
 go get -u -v github.com/gin-gonic/gin
 go get -u -v github.com/dgrijalva/jwt-go
 go get -u -v github.com/gin-contrib/cors
+go get -u -v github.com/gin-contrib/static
 ```
+
+## 配置文件
+
+- `config.yaml`是backend的配置文件，运行在容器中请修改配置
+
+- `frontend-svc/app/config.js`是frontend的配置文件，从调试环境切换到生产环境请修改配置
 
 ## 运行服务
 
@@ -56,19 +64,19 @@ go get -u -v github.com/gin-contrib/cors
 $ docker-compose up -d
 
 # 运行backend-svc
-$go build backend-svc/backend.go && ./backend
+$ go build backend-svc/backend.go && ./backend
 
 # 运行user-svc
-$go build user-svc/user.go && ./user
+$ go build user-svc/user.go && ./user
 
 # 运行gitrepo-svc
-$go build gitrepo-svc/gitrepo.go && ./gitrepo
+$ go build gitrepo-svc/gitrepo.go && ./gitrepo
 
 # 运行review-svc
-$go build review-svc/review.go && ./review
+$ go build review-svc/review.go && ./review
 
-# 运行frontend-svc
-cd frontend-svc && npm run start
+# 构建frontend-svc
+$ cd frontend-svc && npm run build
 ```
 
 ## 接口说明

@@ -17,6 +17,8 @@ import { connect } from 'react-redux';
 import { serviceQuery } from './components/functions';
 import { LoadingView } from './components/loading';
 
+import { backendUri } from './config';
+
 const styles = theme => ({
   root: {
     flexGrow: 1,
@@ -43,7 +45,7 @@ export default class UserUpdateForm extends React.Component {
     bodyFormData.append('password', this.state.password);
 
     const axiosConfig = {
-      url: this.props.ui.uri+'/users/',
+      url: backendUri+'/users/',
       method: 'get',
       headers: {'x-user-token': userToken, },
       timeout: 5000,
@@ -115,7 +117,7 @@ export default class UserUpdateForm extends React.Component {
       const userToken = cookies.get('user-token');
 
       const axiosConfig = {
-        url: this.props.ui.uri+'/users/',
+        url: backendUri+'/users/',
         method: 'put',
         data: bodyFormData,
         headers: {'x-user-token': userToken, },

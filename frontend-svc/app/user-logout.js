@@ -8,6 +8,8 @@ import axios from 'axios';
 
 import { stateInitLogin } from './redux/reducer';
 
+import { backendUri } from './config';
+
 class UserLogoutForm extends React.Component {
   constructor(props) {
     super(props);
@@ -16,7 +18,7 @@ class UserLogoutForm extends React.Component {
 
     this.props.onLoading(true);
     axios({
-      url: this.props.ui.uri+'/users/logout/',
+      url: backendUri+'/users/logout/',
       method: 'post',
       headers: {'x-user-token': userToken, },
       timeout: 5000,

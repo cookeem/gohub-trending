@@ -18,6 +18,8 @@ import { connect } from 'react-redux';
 import { serviceQuery } from './components/functions';
 import { LoadingView } from './components/loading';
 
+import { backendUri } from './config';
+
 const styles = theme => ({
   root: {
     flexGrow: 1,
@@ -93,7 +95,7 @@ class UserCreateForm extends React.Component {
       bodyFormData.append('repassword', this.state.repassword);
 
       const axiosConfig = {
-        url: this.props.ui.uri+'/users/',
+        url: backendUri+'/users/',
         method: 'post',
         data: bodyFormData,
         config: { headers: {'Content-Type': 'multipart/form-data' }},

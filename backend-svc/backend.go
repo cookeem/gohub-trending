@@ -10,6 +10,7 @@ import (
 	"gohub-trending/dbcommon"
 
 	"github.com/gin-contrib/cors"
+	"github.com/gin-contrib/static"
 	"github.com/gin-gonic/gin"
 )
 
@@ -50,10 +51,12 @@ func main() {
 		c.JSON(404, gin.H{"error": 1, "msg": "404 page not found"})
 	})
 
+	// 使用静态文件放在根目录
+	router.Use(static.Serve("/", static.LocalFile("./frontend-svc/dist", true)))
+
 	router.Any("/users/*subpath", ReverseProxy(fmt.Sprintf("%v:%v", common.GlobalConfig.Users.Host, common.GlobalConfig.Users.Port)))
 	router.Any("/gitrepos/*subpath", ReverseProxy(fmt.Sprintf("%v:%v", common.GlobalConfig.GitRepos.Host, common.GlobalConfig.GitRepos.Port)))
 	router.Any("/reviews/*subpath", ReverseProxy(fmt.Sprintf("%v:%v", common.GlobalConfig.Reviews.Host, common.GlobalConfig.Reviews.Port)))
-	router.StaticFS("/frontend", http.Dir("frontend-svc"))
 
 	router.Run(":3000")
 }

@@ -20,6 +20,8 @@ import { connect } from 'react-redux';
 import { serviceQuery } from './components/functions';
 import { LoadingView } from './components/loading';
 
+import { backendUri } from './config';
+
 const styles = theme => ({
   root: {
     display: 'flex',
@@ -66,7 +68,7 @@ class GitRepoSearchForm extends React.Component {
     bodyFormData.append('page', page + 1);
     bodyFormData.append('per_page', per_page);
     const axiosConfig = {
-      url: this.props.ui.uri+'/gitrepos/',
+      url: backendUri+'/gitrepos/',
       method: 'put',
       data: bodyFormData,
       headers: {'x-user-token': userToken, },
@@ -96,7 +98,7 @@ class GitRepoSearchForm extends React.Component {
     bodyFormData.append('page', page);
     bodyFormData.append('per_page', this.state.per_page);
     const axiosConfig = {
-      url: this.props.ui.uri+'/gitrepos/',
+      url: backendUri+'/gitrepos/',
       method: 'put',
       data: bodyFormData,
       headers: {'x-user-token': userToken, },
@@ -131,7 +133,7 @@ class GitRepoSearchForm extends React.Component {
     bodyFormData.append('page', page + 1);
     bodyFormData.append('per_page', per_page);
     const axiosConfig = {
-      url: this.props.ui.uri+'/gitrepos/',
+      url: backendUri+'/gitrepos/',
       method: 'post',
       data: bodyFormData,
       headers: {'x-user-token': userToken, },
@@ -171,7 +173,7 @@ class GitRepoSearchForm extends React.Component {
     bodyFormData.append('page', page);
     bodyFormData.append('per_page', this.state.per_page);
     const axiosConfig = {
-      url: this.props.ui.uri+'/gitrepos/',
+      url: backendUri+'/gitrepos/',
       method: 'post',
       data: bodyFormData,
       headers: {'x-user-token': userToken, },
