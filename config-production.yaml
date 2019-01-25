@@ -1,6 +1,6 @@
 mysql:
-  # 正式环境使用gitrepo-mysql
-  host: localhost
+  # 测试环境使用localhost
+  host: gitrepo-mysql
   port: 3306
   database: github
   user: gituser
@@ -15,14 +15,14 @@ backend:
   port: 3000
   corsAllow: true
 users:
-  # 正式环境使用gitrepo-user
-  host: localhost
+  # 测试环境使用localhost
+  host: gitrepo-user
   port: 3001
 gitrepos:
-  # 正式环境使用gitrepo-gitrepo
-  host: localhost
+  # 测试环境使用localhost
+  host: gitrepo-gitrepo
   port: 3002
 reviews:
-  # 正式环境使用gitrepo-review
-  host: localhost
+  # 测试环境使用localhost
+  host: gitrepo-review
   port: 3003
