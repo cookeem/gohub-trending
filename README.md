@@ -20,9 +20,9 @@
 
   - 后端服务（backend-svc）：这是一个后端服务的反向代理，frontend-svc所有请求都指向backend-svc，backend-svc再把请求forward给对应的服务。
 
-  - 用户管理服务（user-svc）：用于管理用户信息，包括新用户注册、用户登录、修改密码、注销等业务逻辑。
+  - 用户管理服务（user-svc）：用于管理用户信息，包括新用户注册、用户登录、修改密码、注销等业务逻辑。
 
-  - 项目管理服务（gitrepo-svc）：用于管理开源项目信息。当用户发起搜索请求的时候，gitrepo-svc调用github的developer api，获取项目列表，并写入到数据库，然后返回项目列表给用户。当用户发起列表请求的时候，gitrepo-svc从数据库获取项目列表返回给用户。当用户查看某个项目的时候，gitrepo-svc调用review-svc，获取评论信息和项目信息返回给用户。
+  - 项目管理服务（gitrepo-svc）：用于管理开源项目信息。当用户发起搜索请求的时候，gitrepo-svc调用github的developer api，获取项目列表，并写入到数据库，然后返回项目列表给用户。当用户发起列表请求的时候，gitrepo-svc从数据库获取项目列表返回给用户。当用户查看某个项目的时候，gitrepo-svc调用review-svc，获取评论信息和项目信息返回给用户。
 
   - 评论管理（review-svc）：用于管理评论信息，包括创建和删除评论，以及获取评论列表。
 
