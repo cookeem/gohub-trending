@@ -20,6 +20,9 @@ services:
     hostname: gitrepo-backend
     # 需要先把镜像推送到harbor
     image: demo-03.local/demo-repo/backend:v1
+    # 挂装配置文件
+    volumes:
+    - ./config-production.yaml:/gohub-trending/config.yaml
     ports:
     - "3000:3000"
     # 指定该容器需要等待gitrepo-mysql完成启动后才启动
@@ -30,6 +33,9 @@ services:
     hostname: gitrepo-user
     # 需要先把镜像推送到harbor
     image: demo-03.local/demo-repo/user:v1
+    # 挂装配置文件
+    volumes:
+    - ./config-production.yaml:/gohub-trending/config.yaml
     ports:
     - "3001:3001"
     # 指定该容器需要等待gitrepo-mysql完成启动后才启动
@@ -40,6 +46,9 @@ services:
     hostname: gitrepo-gitrepo
     # 需要先把镜像推送到harbor
     image: demo-03.local/demo-repo/gitrepo:v1
+    # 挂装配置文件
+    volumes:
+    - ./config-production.yaml:/gohub-trending/config.yaml
     ports:
     - "3002:3002"
     # 指定该容器需要等待gitrepo-mysql完成启动后才启动
@@ -50,6 +59,9 @@ services:
     hostname: gitrepo-review
     # 需要先把镜像推送到harbor
     image: demo-03.local/demo-repo/review:v1
+    # 挂装配置文件
+    volumes:
+    - ./config-production.yaml:/gohub-trending/config.yaml
     ports:
     - "3003:3003"
     # 指定该容器需要等待gitrepo-mysql完成启动后才启动
