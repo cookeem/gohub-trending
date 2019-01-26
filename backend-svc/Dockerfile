@@ -6,4 +6,10 @@ RUN mkdir -p /gohub-trending
 COPY dist/ /gohub-trending/frontend-svc/dist/
 COPY backend /gohub-trending/
 WORKDIR /gohub-trending
+# 让container支持github的证书
+RUN apk update \
+        && apk upgrade \
+        && apk add --no-cache \
+        ca-certificates \
+        && update-ca-certificates 2>/dev/null || true
 CMD ./backend
