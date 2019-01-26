@@ -1,14 +1,57 @@
 version: '3'
 services:
-  mysql:
-    container_name: mysql
-    hostname: mysql
-    image: mysql:5.7.24
+  gitrepo-mysql:
+    container_name: gitrepo-mysql
+    hostname: gitrepo-mysql
+    # 需要先把镜像推送到harbor
+    image: demo-03.local/demo-repo/mysql:5.7.24
+    # 指定容器装载本地文件系统
+    volumes:
+    - ./gitrepo-mysql:/var/lib/mysql
+    # 通过环境变量指定mysql的启动参数
     environment:
       MYSQL_ROOT_PASSWORD: root_pwd
       MYSQL_DATABASE: github
       MYSQL_USER: gituser
       MYSQL_PASSWORD: gitpassword
     command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+  gitrepo-backend:
+    container_name: gitrepo-backend
+    hostname: gitrepo-backend
+    # 需要先把镜像推送到harbor
+    image: demo-03.local/demo-repo/backend:v1
     ports:
-    - "3306:3306"
+    - "3000:3000"
+    # 指定该容器需要等待gitrepo-mysql完成启动后才启动
+    depends_on:
+    - gitrepo-mysql
+  gitrepo-user:
+    container_name: gitrepo-user
+    hostname: gitrepo-user
+    # 需要先把镜像推送到harbor
+    image: demo-03.local/demo-repo/user:v1
+    ports:
+    - "3001:3001"
+    # 指定该容器需要等待gitrepo-mysql完成启动后才启动
+    depends_on:
+    - gitrepo-mysql
+  gitrepo-gitrepo:
+    container_name: gitrepo-gitrepo
+    hostname: gitrepo-gitrepo
+    # 需要先把镜像推送到harbor
+    image: demo-03.local/demo-repo/gitrepo:v1
+    ports:
+    - "3002:3002"
+    # 指定该容器需要等待gitrepo-mysql完成启动后才启动
+    depends_on:
+    - gitrepo-mysql
+  gitrepo-review:
+    container_name: gitrepo-review
+    hostname: gitrepo-review
+    # 需要先把镜像推送到harbor
+    image: demo-03.local/demo-repo/review:v1
+    ports:
+    - "3003:3003"
+    # 指定该容器需要等待gitrepo-mysql完成启动后才启动
+    depends_on:
+    - gitrepo-mysql
