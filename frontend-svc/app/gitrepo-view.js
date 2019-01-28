@@ -304,12 +304,6 @@ class GitRepoViewForm extends React.Component {
                       style={{color: "#FFF"}}
                     />
                     <Chip
-                      icon={<AddCircle />}
-                      label={"comments "+this.props.gitrepo.gitrepo.reviews_count}
-                      className={classes.chip}
-                      color="default"
-                    />
-                    <Chip
                       icon={<ControlPoint />}
                       label={"forks "+this.props.gitrepo.gitrepo.forks_count}
                       className={classes.chip}
@@ -352,7 +346,7 @@ class GitRepoViewForm extends React.Component {
                   <CardActions>
                     <Button size="small" variant="contained" color="secondary" className={classes.pos} style={{color: "#FFF"}} onClick={() => this.onShowComment(true)}>
                       <AddCircle />
-                      Comments
+                      Comments ({this.props.gitrepo.gitrepo.reviews_count})
                     </Button>
                     { 
                       (this.props.gitrepo.gitrepo.adapt == 0) ? (
