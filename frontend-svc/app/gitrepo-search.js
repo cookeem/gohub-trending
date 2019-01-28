@@ -10,7 +10,6 @@ import Search from '@material-ui/icons/Search';
 import ControlPoint from '@material-ui/icons/ControlPoint';
 import TextField from '@material-ui/core/TextField';
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
@@ -250,6 +249,12 @@ class GitRepoSearchForm extends React.Component {
                     color="default"
                   />
                   <Chip
+                    icon={<AddCircle />}
+                    label={"follows "+gitrepo.follows_count}
+                    className={classes.chip}
+                    color="default"
+                  />
+                  <Chip
                     icon={<ControlPoint />}
                     label={"forks "+gitrepo.forks_count}
                     className={classes.chip}
@@ -263,9 +268,6 @@ class GitRepoSearchForm extends React.Component {
                     <a href={gitrepo.html_url}>{gitrepo.html_url}</a>
                   </Typography>
                 </CardContent>
-                <CardActions>
-                  <Button size="small" variant="contained" color="primary" className={classes.pos} href={"/#/gitrepo-view/"+gitrepo.gid}>Comments</Button>
-                </CardActions>
               </Card>
             </Grid>
           </Grid>  

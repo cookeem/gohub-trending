@@ -8,9 +8,7 @@ import Stars from '@material-ui/icons/Stars';
 import AddCircle from '@material-ui/icons/AddCircle';
 import ControlPoint from '@material-ui/icons/ControlPoint';
 import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 
 import { mapDispatchToProps, mapStateToProps } from './redux/react';
@@ -170,6 +168,12 @@ class GitRepoListForm extends React.Component {
                       <Chip
                         icon={<AddCircle />}
                         label={"adapts "+gitrepo.adapts_count}
+                        className={classes.chip}
+                        color="default"
+                      />
+                      <Chip
+                        icon={<AddCircle />}
+                        label={"follows "+gitrepo.follows_count}
                         className={classes.chip}
                         color="default"
                       />

@@ -23,6 +23,9 @@ func CreateTables() (err error) {
 	if !db.HasTable(&Adapt{}) {
 		db.AutoMigrate(&Adapt{})
 	}
+	if !db.HasTable(&Follow{}) {
+		db.AutoMigrate(&Follow{})
+	}
 	if !db.HasTable(&GitRepo{}) {
 		db.AutoMigrate(&GitRepo{})
 	}
@@ -171,6 +174,36 @@ func CreateAdapt(uid int, gid int) (aid int, errmsg string) {
 	return aid, errmsg
 }
 
+func CreateFollow(uid int, gid int) (fid int, errmsg string) {
+	db, err := gorm.Open("mysql", common.ConnStr)
+	if err != nil {
+		errmsg = "database connect error"
+		return fid, errmsg
+	}
+	defer db.Close()
+
+	var gitrepo GitRepo
+	if db.Where(&GitRepo{Gid: gid}).First(&gitrepo).RecordNotFound() {
+		errmsg = "gitrepo not exists"
+	} else {
+		follow := Follow{Gid: gid, Uid: uid}
+		if db.Where(&follow).First(&follow).RecordNotFound() == false {
+			errmsg = "already followed"
+		} else {
+			if err = db.Create(&follow).Error; err != nil {
+				errmsg = err.Error()
+				return uid, errmsg
+			} else {
+				followsCount := 0
+				db.Model(&Follow{}).Where(&Follow{Gid: gid}).Count(&followsCount)
+				db.Model(&gitrepo).Update(GitRepo{FollowsCount: followsCount})
+			}
+			fid = follow.Fid
+		}
+	}
+	return fid, errmsg
+}
+
 func DeleteReview(uid int, rid int) (errmsg string) {
 	db, err := gorm.Open("mysql", common.ConnStr)
 	if err != nil {
@@ -277,18 +310,23 @@ func SearchGitRepos(grs []GitRepo) (gitrepos []GitRepo, languages []GitLanguage,
 	return gitrepos, languages, errmsg
 }
 
-func GetGitRepo(gid int, uid int) (gitrepo GitRepo, adapt int, errmsg string) {
+func GetGitRepo(gid int, uid int) (gitrepo GitRepo, adapt int, follow int, errmsg string) {
 	db, err := gorm.Open("mysql", common.ConnStr)
 	if err != nil {
 		errmsg = "database connect error"
-		return gitrepo, adapt, errmsg
+		return gitrepo, adapt, follow, errmsg
 	}
 	defer db.Close()
 
 	if db.Where(&GitRepo{Gid: gid}).First(&gitrepo).RecordNotFound() {
 		errmsg = "gitrepo not exists"
-	} else if db.Where(&Adapt{Gid: gid, Uid: uid}).First(&Adapt{}).RecordNotFound() == false {
-		adapt = 1
+	} else {
+		if db.Where(&Adapt{Gid: gid, Uid: uid}).First(&Adapt{}).RecordNotFound() == false {
+			adapt = 1
+		}
+		if db.Where(&Follow{Gid: gid, Uid: uid}).First(&Follow{}).RecordNotFound() == false {
+			follow = 1
+		}
 	}
-	return gitrepo, adapt, errmsg
+	return gitrepo, adapt, follow, errmsg
 }

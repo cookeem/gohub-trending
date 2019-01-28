@@ -59,6 +59,7 @@ class GitRepoViewForm extends React.Component {
     showComment: false,
     showDelete: false,
     showAdapt: false,
+    showFollow: false,
     content: "",
     contentPrompt: "",
     ridDelete: 0,
@@ -173,6 +174,32 @@ class GitRepoViewForm extends React.Component {
     serviceQuery(this.props, axiosConfig, axiosSuccess, axiosFail);
   };
 
+  followGitRepo = (gid) => {
+    const cookies = new Cookies();
+    this.props.onLoading(true);
+    const userToken = cookies.get('user-token');
+    var bodyFormData = new FormData();
+    bodyFormData.append('gid', gid);
+    const axiosConfig = {
+      url: backendUri+'/reviews/follow/',
+      method: 'post',
+      data: bodyFormData,
+      headers: {'x-user-token': userToken, },
+      config: { headers: {'Content-Type': 'multipart/form-data' }},
+      timeout: 5000,
+    };
+    const axiosSuccess = (obj, response) => {
+      this.props.onGitRepo({});
+      this.props.onGitRepos([]);
+      this.getGitRepo(this.props.gid);
+      this.onShowFollow(false);
+      // window.location.reload();
+    };
+    const axiosFail = (obj, response) => {
+    };
+    serviceQuery(this.props, axiosConfig, axiosSuccess, axiosFail);
+  };
+
   onShowComment = (show) => {
     this.setState({
       showComment: show,
@@ -191,6 +218,12 @@ class GitRepoViewForm extends React.Component {
   onShowAdapt = (show) => {
     this.setState({
       showAdapt: show,
+    });
+  }
+
+  onShowFollow = (show) => {
+    this.setState({
+      showFollow: show,
     });
   }
 
@@ -281,6 +314,28 @@ class GitRepoViewForm extends React.Component {
             </Button>
           </DialogActions>
         </Dialog>
+        <Dialog
+          style={{zIndex: 100}}
+          open={this.state.showFollow}
+          onClose={() => this.onShowFollow(false, 0)}
+          aria-labelledby="follow-dialog-title"
+          aria-describedby="follow-dialog-description"
+        >
+          <DialogTitle id="follow-dialog-title">Do you want to follow this github repository?</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="follow-dialog-description">
+              Do you want to follow this github repository?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => this.followGitRepo(this.props.gid)} color="secondary" style={{color: "#FF0000"}}>
+              Follow
+            </Button>
+            <Button onClick={() => this.onShowFollow(false, 0)} color="secondary" autoFocus>
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
 
         {
           (this.props.ui.showLoading) ? (
@@ -358,6 +413,19 @@ class GitRepoViewForm extends React.Component {
                         <Button size="small" variant="contained" color="default" className={classes.pos}>
                           <AddCircle />
                           Adapt ({this.props.gitrepo.gitrepo.adapts_count})
+                        </Button>
+                      ) 
+                    }
+                    { 
+                      (this.props.gitrepo.gitrepo.follow == 0) ? (
+                        <Button size="small" variant="contained" color="primary" className={classes.pos} onClick={() => this.onShowFollow(true)}>
+                          <AddCircle />
+                          follow ({this.props.gitrepo.gitrepo.follows_count})
+                        </Button>
+                      ) : (
+                        <Button size="small" variant="contained" color="default" className={classes.pos}>
+                          <AddCircle />
+                          follow ({this.props.gitrepo.gitrepo.follows_count})
                         </Button>
                       ) 
                     }

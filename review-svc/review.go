@@ -100,6 +100,48 @@ func createAdapt(c *gin.Context) {
 	c.JSON(httpStatus, data)
 }
 
+func createFollow(c *gin.Context) {
+	gidStr := c.DefaultPostForm("gid", "")
+
+	errmsg := ""
+	errorRet := 1
+	msg := ""
+	fid := 0
+
+	userToken := c.Request.Header.Get("x-user-token")
+	httpStatus := http.StatusForbidden
+
+	ut := common.VerifyTokenString(userToken, common.GlobalConfig.Jwt.Secret)
+	if ut.Uid == 0 {
+		errorRet = 2
+		errmsg = "user not login yet"
+	} else {
+		gid, err := strconv.Atoi(gidStr)
+		if err != nil {
+			errmsg = "gitrepo id incorrect"
+		} else {
+			fid, errmsg = dbcommon.CreateFollow(ut.Uid, gid)
+		}
+	}
+
+	if errmsg == "" {
+		msg = "new follow succeed"
+		errorRet = 0
+		httpStatus = http.StatusOK
+		userToken, _ = common.CreateTokenString(ut.Username, ut.Uid, common.GlobalConfig.Jwt.Secret, common.GlobalConfig.Jwt.Expires)
+	} else {
+		msg = errmsg
+		userToken = ""
+	}
+	data := map[string]interface{}{
+		"error": errorRet,
+		"msg":   msg,
+		"fid":   fid,
+	}
+	c.Header("x-user-token", userToken)
+	c.JSON(httpStatus, data)
+}
+
 func deleteReview(c *gin.Context) {
 	ridStr := c.DefaultPostForm("rid", "")
 
@@ -209,6 +251,7 @@ func main() {
 	{
 		routerReviews.POST("/", createReview)
 		routerReviews.POST("/adapt/", createAdapt)
+		routerReviews.POST("/follow/", createFollow)
 		routerReviews.DELETE("/", deleteReview)
 		routerReviews.GET("/:gid", listReviews)
 	}

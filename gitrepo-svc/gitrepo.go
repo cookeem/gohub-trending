@@ -286,6 +286,7 @@ func getGitRepo(c *gin.Context) {
 	msg := ""
 	gitrepo := dbcommon.GitRepo{}
 	adapt := 0
+	follow := 0
 	reviews := make([]interface{}, 0)
 
 	userToken := c.Request.Header.Get("x-user-token")
@@ -301,7 +302,7 @@ func getGitRepo(c *gin.Context) {
 			errorRet = 2
 			errmsg = "user not login yet"
 		} else {
-			gitrepo, adapt, errmsg = dbcommon.GetGitRepo(gid, ut.Uid)
+			gitrepo, adapt, follow, errmsg = dbcommon.GetGitRepo(gid, ut.Uid)
 		}
 
 		if errmsg == "" {
@@ -348,7 +349,9 @@ func getGitRepo(c *gin.Context) {
 		"updated_at":        gitrepo.UpdatedAt,
 		"pushed_at":         gitrepo.PushedAt,
 		"adapts_count":      gitrepo.AdaptsCount,
+		"follows_count":     gitrepo.FollowsCount,
 		"adapt":             adapt,
+		"follow":            follow,
 	}
 	data := map[string]interface{}{
 		"error":   errorRet,
