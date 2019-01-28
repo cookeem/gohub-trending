@@ -20,6 +20,9 @@ func CreateTables() (err error) {
 	if !db.HasTable(&Review{}) {
 		db.AutoMigrate(&Review{})
 	}
+	if !db.HasTable(&Adapt{}) {
+		db.AutoMigrate(&Adapt{})
+	}
 	if !db.HasTable(&GitRepo{}) {
 		db.AutoMigrate(&GitRepo{})
 	}
@@ -138,6 +141,36 @@ func CreateReview(uid int, gid int, content string) (rid int, errmsg string) {
 	return rid, errmsg
 }
 
+func CreateAdapt(uid int, gid int) (aid int, errmsg string) {
+	db, err := gorm.Open("mysql", common.ConnStr)
+	if err != nil {
+		errmsg = "database connect error"
+		return aid, errmsg
+	}
+	defer db.Close()
+
+	var gitrepo GitRepo
+	if db.Where(&GitRepo{Gid: gid}).First(&gitrepo).RecordNotFound() {
+		errmsg = "gitrepo not exists"
+	} else {
+		adapt := Adapt{Gid: gid, Uid: uid}
+		if db.Where(&adapt).First(&adapt).RecordNotFound() == false {
+			errmsg = "already adapted"
+		} else {
+			if err = db.Create(&adapt).Error; err != nil {
+				errmsg = err.Error()
+				return uid, errmsg
+			} else {
+				adaptsCount := 0
+				db.Model(&Adapt{}).Where(&Adapt{Gid: gid}).Count(&adaptsCount)
+				db.Model(&gitrepo).Update(GitRepo{AdaptsCount: adaptsCount})
+			}
+			aid = adapt.Aid
+		}
+	}
+	return aid, errmsg
+}
+
 func DeleteReview(uid int, rid int) (errmsg string) {
 	db, err := gorm.Open("mysql", common.ConnStr)
 	if err != nil {
@@ -244,17 +277,18 @@ func SearchGitRepos(grs []GitRepo) (gitrepos []GitRepo, languages []GitLanguage,
 	return gitrepos, languages, errmsg
 }
 
-func GetGitRepo(gid int) (gitrepo GitRepo, errmsg string) {
+func GetGitRepo(gid int, uid int) (gitrepo GitRepo, adapt int, errmsg string) {
 	db, err := gorm.Open("mysql", common.ConnStr)
 	if err != nil {
 		errmsg = "database connect error"
-		return gitrepo, errmsg
+		return gitrepo, adapt, errmsg
 	}
 	defer db.Close()
 
 	if db.Where(&GitRepo{Gid: gid}).First(&gitrepo).RecordNotFound() {
 		errmsg = "gitrepo not exists"
-		return gitrepo, errmsg
+	} else if db.Where(&Adapt{Gid: gid, Uid: uid}).First(&Adapt{}).RecordNotFound() == false {
+		adapt = 1
 	}
-	return gitrepo, errmsg
+	return gitrepo, adapt, errmsg
 }

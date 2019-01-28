@@ -244,6 +244,12 @@ class GitRepoSearchForm extends React.Component {
                     color="default"
                   />
                   <Chip
+                    icon={<AddCircle />}
+                    label={"adapts "+gitrepo.adapts_count}
+                    className={classes.chip}
+                    color="default"
+                  />
+                  <Chip
                     icon={<ControlPoint />}
                     label={"forks "+gitrepo.forks_count}
                     className={classes.chip}

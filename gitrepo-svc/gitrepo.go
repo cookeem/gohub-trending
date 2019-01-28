@@ -285,6 +285,7 @@ func getGitRepo(c *gin.Context) {
 	errorRet := 1
 	msg := ""
 	gitrepo := dbcommon.GitRepo{}
+	adapt := 0
 	reviews := make([]interface{}, 0)
 
 	userToken := c.Request.Header.Get("x-user-token")
@@ -300,7 +301,7 @@ func getGitRepo(c *gin.Context) {
 			errorRet = 2
 			errmsg = "user not login yet"
 		} else {
-			gitrepo, errmsg = dbcommon.GetGitRepo(gid)
+			gitrepo, adapt, errmsg = dbcommon.GetGitRepo(gid, ut.Uid)
 		}
 
 		if errmsg == "" {
@@ -332,11 +333,27 @@ func getGitRepo(c *gin.Context) {
 			userToken = ""
 		}
 	}
-
+	gitrepoMap := map[string]interface{}{
+		"gid":               gitrepo.Gid,
+		"full_name":         gitrepo.FullName,
+		"description":       gitrepo.Description,
+		"language":          gitrepo.Language,
+		"html_url":          gitrepo.HtmlUrl,
+		"stargazers_count":  gitrepo.StargazersCount,
+		"watchers_count":    gitrepo.WatchersCount,
+		"forks_count":       gitrepo.ForksCount,
+		"open_issues_count": gitrepo.OpenIssuesCount,
+		"reviews_count":     gitrepo.ReviewsCount,
+		"created_at":        gitrepo.CreatedAt,
+		"updated_at":        gitrepo.UpdatedAt,
+		"pushed_at":         gitrepo.PushedAt,
+		"adapts_count":      gitrepo.AdaptsCount,
+		"adapt":             adapt,
+	}
 	data := map[string]interface{}{
 		"error":   errorRet,
 		"msg":     msg,
-		"gitrepo": gitrepo,
+		"gitrepo": gitrepoMap,
 		"reviews": reviews,
 	}
 	c.Header("x-user-token", userToken)

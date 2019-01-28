@@ -23,6 +23,14 @@ type Review struct {
 	UpdatedAt time.Time
 }
 
+type Adapt struct {
+	Aid       int `gorm:"PRIMARY_KEY;AUTO_INCREMENT;"`
+	Gid       int `gorm:"not null;default:0"`
+	Uid       int `gorm:"not null;default:0"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
 type ReviewOutput struct {
 	Review Review
 	User   User
@@ -39,6 +47,7 @@ type GitRepo struct {
 	ForksCount      int       `gorm:"not null;default:0" json:"forks_count"`
 	OpenIssuesCount int       `gorm:"not null;default:0" json:"open_issues_count"`
 	ReviewsCount    int       `gorm:"not null;default:0" json:"reviews_count"`
+	AdaptsCount     int       `gorm:"not null;default:0" json:"adapts_count"`
 	CreatedAt       time.Time `json:"created_at"`
 	UpdatedAt       time.Time `json:"updated_at"`
 	PushedAt        time.Time `json:"pushed_at"`

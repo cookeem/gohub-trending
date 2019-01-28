@@ -168,6 +168,12 @@ class GitRepoListForm extends React.Component {
                         color="default"
                       />
                       <Chip
+                        icon={<AddCircle />}
+                        label={"adapts "+gitrepo.adapts_count}
+                        className={classes.chip}
+                        color="default"
+                      />
+                      <Chip
                         icon={<ControlPoint />}
                         label={"forks "+gitrepo.forks_count}
                         className={classes.chip}
@@ -181,9 +187,6 @@ class GitRepoListForm extends React.Component {
                         <a href={gitrepo.html_url}>{gitrepo.html_url}</a>
                       </Typography>
                     </CardContent>
-                    <CardActions>
-                      <Button size="small" variant="contained" color="primary" className={classes.pos} href={"/#/gitrepo-view/"+gitrepo.gid}>Comments</Button>
-                    </CardActions>
                   </Card>
                 </Grid>
               </Grid>

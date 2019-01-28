@@ -58,6 +58,7 @@ class GitRepoViewForm extends React.Component {
   state = {
     showComment: false,
     showDelete: false,
+    showAdapt: false,
     content: "",
     contentPrompt: "",
     ridDelete: 0,
@@ -146,6 +147,32 @@ class GitRepoViewForm extends React.Component {
     serviceQuery(this.props, axiosConfig, axiosSuccess, axiosFail);
   };
 
+  adaptGitRepo = (gid) => {
+    const cookies = new Cookies();
+    this.props.onLoading(true);
+    const userToken = cookies.get('user-token');
+    var bodyFormData = new FormData();
+    bodyFormData.append('gid', gid);
+    const axiosConfig = {
+      url: backendUri+'/reviews/adapt/',
+      method: 'post',
+      data: bodyFormData,
+      headers: {'x-user-token': userToken, },
+      config: { headers: {'Content-Type': 'multipart/form-data' }},
+      timeout: 5000,
+    };
+    const axiosSuccess = (obj, response) => {
+      this.props.onGitRepo({});
+      this.props.onGitRepos([]);
+      this.getGitRepo(this.props.gid);
+      this.onShowAdapt(false);
+      // window.location.reload();
+    };
+    const axiosFail = (obj, response) => {
+    };
+    serviceQuery(this.props, axiosConfig, axiosSuccess, axiosFail);
+  };
+
   onShowComment = (show) => {
     this.setState({
       showComment: show,
@@ -158,6 +185,12 @@ class GitRepoViewForm extends React.Component {
     this.setState({
       ridDelete: ridDelete,
       showDelete: show,
+    });
+  }
+
+  onShowAdapt = (show) => {
+    this.setState({
+      showAdapt: show,
     });
   }
 
@@ -208,12 +241,12 @@ class GitRepoViewForm extends React.Component {
           style={{zIndex: 100}}
           open={this.state.showDelete}
           onClose={() => this.onShowDelete(false, 0)}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
+          aria-labelledby="delete-dialog-title"
+          aria-describedby="delete-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">Do you want to delete this comment?</DialogTitle>
+          <DialogTitle id="delete-dialog-title">Do you want to delete this comment?</DialogTitle>
           <DialogContent>
-            <DialogContentText id="alert-dialog-description">
+            <DialogContentText id="delete-dialog-description">
               Comment can not recover after delete, are you sure want to delete?
             </DialogContentText>
           </DialogContent>
@@ -222,6 +255,28 @@ class GitRepoViewForm extends React.Component {
               Delete
             </Button>
             <Button onClick={() => this.onShowDelete(false, 0)} color="secondary" autoFocus>
+              Cancel
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          style={{zIndex: 100}}
+          open={this.state.showAdapt}
+          onClose={() => this.onShowAdapt(false, 0)}
+          aria-labelledby="adapt-dialog-title"
+          aria-describedby="adapt-dialog-description"
+        >
+          <DialogTitle id="adapt-dialog-title">Do you want to adapt this github repository?</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="adapt-dialog-description">
+              Do you want to adapt this github repository?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => this.adaptGitRepo(this.props.gid)} color="secondary" style={{color: "#FF0000"}}>
+              Adapt
+            </Button>
+            <Button onClick={() => this.onShowAdapt(false, 0)} color="secondary" autoFocus>
               Cancel
             </Button>
           </DialogActions>
@@ -299,6 +354,19 @@ class GitRepoViewForm extends React.Component {
                       <AddCircle />
                       Comments
                     </Button>
+                    { 
+                      (this.props.gitrepo.gitrepo.adapt == 0) ? (
+                        <Button size="small" variant="contained" color="primary" className={classes.pos} onClick={() => this.onShowAdapt(true)}>
+                          <AddCircle />
+                          Adapt ({this.props.gitrepo.gitrepo.adapts_count})
+                        </Button>
+                      ) : (
+                        <Button size="small" variant="contained" color="default" className={classes.pos}>
+                          <AddCircle />
+                          Adapt ({this.props.gitrepo.gitrepo.adapts_count})
+                        </Button>
+                      ) 
+                    }
                   </CardActions>
                 </Card>
               </Grid>
