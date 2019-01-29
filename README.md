@@ -63,7 +63,7 @@ go get -u -v github.com/gin-contrib/static
 
 - v2.x.x：支持github项目采用
 
-- v1.x.x：支持github项目关注
+- v3.x.x：支持github项目关注
 
 ## 运行服务
 
