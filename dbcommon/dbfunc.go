@@ -14,24 +14,14 @@ func CreateTables() (err error) {
 	}
 	defer db.Close()
 
-	if !db.HasTable(&User{}) {
-		db.AutoMigrate(&User{})
-	}
-	if !db.HasTable(&Review{}) {
-		db.AutoMigrate(&Review{})
-	}
-	if !db.HasTable(&Adapt{}) {
-		db.AutoMigrate(&Adapt{})
-	}
-	if !db.HasTable(&Follow{}) {
-		db.AutoMigrate(&Follow{})
-	}
-	if !db.HasTable(&GitRepo{}) {
-		db.AutoMigrate(&GitRepo{})
-	}
-	if !db.HasTable(&GitLanguage{}) {
-		db.AutoMigrate(&GitLanguage{})
-	}
+	// 升级数据库结构，支持增加字段
+	db.AutoMigrate(&User{})
+	db.AutoMigrate(&Review{})
+	db.AutoMigrate(&Adapt{})
+	db.AutoMigrate(&Follow{})
+	db.AutoMigrate(&GitRepo{})
+	db.AutoMigrate(&GitLanguage{})
+
 	return err
 }
 

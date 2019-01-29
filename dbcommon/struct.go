@@ -65,4 +65,5 @@ type GitRepo struct {
 type GitLanguage struct {
 	Language   string `gorm:"type:varchar(50);PRIMARY_KEY;unique_index;not null;default:''" json:"language"`
 	ReposCount int    `gorm:"not null;default:0" json:"repos_count"`
+	TestCount  int    `gorm:"not null;default:0"`
 }
