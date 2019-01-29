@@ -14,21 +14,11 @@ func CreateTables() (err error) {
 	}
 	defer db.Close()
 
-	if !db.HasTable(&User{}) {
-		db.AutoMigrate(&User{})
-	}
-	if !db.HasTable(&Review{}) {
-		db.AutoMigrate(&Review{})
-	}
-	if !db.HasTable(&Adapt{}) {
-		db.AutoMigrate(&Adapt{})
-	}
-	if !db.HasTable(&GitRepo{}) {
-		db.AutoMigrate(&GitRepo{})
-	}
-	if !db.HasTable(&GitLanguage{}) {
-		db.AutoMigrate(&GitLanguage{})
-	}
+	db.AutoMigrate(&User{})
+	db.AutoMigrate(&Review{})
+	db.AutoMigrate(&Adapt{})
+	db.AutoMigrate(&GitRepo{})
+	db.AutoMigrate(&GitLanguage{})
 	return err
 }
 
