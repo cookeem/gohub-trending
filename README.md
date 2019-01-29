@@ -57,6 +57,14 @@ go get -u -v github.com/gin-contrib/static
 
 - `frontend-svc/app/config.js`是frontend的配置文件，从调试环境切换到生产环境请修改配置
 
+## 版本特性
+
+- v1.x.x：支持github项目搜索列表，github项目评论
+
+- v2.x.x：支持github项目采用
+
+- v1.x.x：支持github项目关注
+
 ## 运行服务
 
 ```bash
