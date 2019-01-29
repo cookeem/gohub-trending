@@ -273,6 +273,50 @@ $ cd frontend-svc && npm run build
     }
     ```
 
+  - 发表gitrepo采用 (v2.0.0特性)
+
+    > `method`: POST
+
+    > `path`: /reviews/adapt/
+
+    > `request params`: gid（gitrepo id）
+
+    > `request header`: x-user-token（用户的登录jwt）
+
+    > `response header`: x-user-token（用户的登录jwt）
+
+    > `response body`: error=0表示成功，否则就是失败
+
+    ```json
+    {
+      "error": 0,
+      "msg": "new adapt succeed",
+      "aid": 4
+    }
+    ```
+
+  - 发表gitrepo关注 (v3.0.0特性)
+
+    > `method`: POST
+
+    > `path`: /reviews/follow/
+
+    > `request params`: gid（gitrepo id）
+
+    > `request header`: x-user-token（用户的登录jwt）
+
+    > `response header`: x-user-token（用户的登录jwt）
+
+    > `response body`: error=0表示成功，否则就是失败
+
+    ```json
+    {
+      "error": 0,
+      "msg": "new follow succeed",
+      "fid": 4
+    }
+    ```
+
 - `gitrepo-svc`接口设计
 
   - 获取gitrepo列表
@@ -304,9 +348,13 @@ $ cd frontend-svc && npm run build
           "forks_count": 15071,
           "open_issues_count": 3576,
           "reviews_count": 1,
+          "adapts_count": 1,
+          "follows_count": 1,
           "created_at": "2013-01-18T18:10:57Z",
           "updated_at": "2019-01-25T01:24:13Z",
-          "pushed_at": "2019-01-24T02:34:41Z"
+          "pushed_at": "2019-01-24T02:34:41Z",
+          "adapt": 1,
+          "follow": 1,
         }
       ],
       "languages": [
@@ -348,6 +396,8 @@ $ cd frontend-svc && npm run build
           "forks_count": 1867,
           "open_issues_count": 441,
           "reviews_count": 0,
+          "adapts_count": 1,
+          "follows_count": 1,
           "created_at": "2016-01-28T21:10:28Z",
           "updated_at": "2019-01-24T23:34:12Z",
           "pushed_at": "2019-01-24T16:42:29Z"
@@ -391,6 +441,8 @@ $ cd frontend-svc && npm run build
         "forks_count": 15071,
         "open_issues_count": 3576,
         "reviews_count": 1,
+          "adapts_count": 1,
+          "follows_count": 1,
         "created_at": "2013-01-18T18:10:57Z",
         "updated_at": "2019-01-25T01:24:13Z",
         "pushed_at": "2019-01-24T02:34:41Z"
@@ -434,6 +486,8 @@ git_repos
 | forks_count       | int(11)      | NO   |     | 0       |                |
 | open_issues_count | int(11)      | NO   |     | 0       |                |
 | reviews_count     | int(11)      | NO   |     | 0       |                |
+| adapts_count      | int(11)      | NO   |     | 0       |                |
+| follows_count     | int(11)      | NO   |     | 0       |                |
 | created_at        | timestamp    | YES  |     | NULL    |                |
 | updated_at        | timestamp    | YES  |     | NULL    |                |
 | pushed_at         | timestamp    | YES  |     | NULL    |                |
@@ -461,4 +515,26 @@ users
 | created_at | timestamp   | YES  |     | NULL    |                |
 | updated_at | timestamp   | YES  |     | NULL    |                |
 +------------+-------------+------+-----+---------+----------------+
+
+adapts (v2.0.0特性)
++------------+-----------+------+-----+---------+----------------+
+| Field      | Type      | Null | Key | Default | Extra          |
++------------+-----------+------+-----+---------+----------------+
+| aid        | int(11)   | NO   | PRI | NULL    | auto_increment |
+| gid        | int(11)   | NO   |     | 0       |                |
+| uid        | int(11)   | NO   |     | 0       |                |
+| created_at | timestamp | YES  |     | NULL    |                |
+| updated_at | timestamp | YES  |     | NULL    |                |
++------------+-----------+------+-----+---------+----------------+
+
+follows (v3.0.0特性)
++------------+-----------+------+-----+---------+----------------+
+| Field      | Type      | Null | Key | Default | Extra          |
++------------+-----------+------+-----+---------+----------------+
+| fid        | int(11)   | NO   | PRI | NULL    | auto_increment |
+| gid        | int(11)   | NO   |     | 0       |                |
+| uid        | int(11)   | NO   |     | 0       |                |
+| created_at | timestamp | YES  |     | NULL    |                |
+| updated_at | timestamp | YES  |     | NULL    |                |
++------------+-----------+------+-----+---------+----------------+
 ```
