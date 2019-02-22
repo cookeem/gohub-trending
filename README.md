@@ -87,6 +87,31 @@ $ go build review-svc/review.go && ./review
 $ cd frontend-svc && npm run build
 ```
 
+- 访问 http://localhost:3000 可以查看应用
+
+![](images/gitrepo-login.png)
+
+- 如果本地调试前端，可以修改前端的配置文件`frontend-svc/app/config.js`为以下内容：
+
+```javascript
+// 如果要发布到正式环境，请替换为以下内容
+//export const backendUri = '';
+
+// 如果要使用npm run start，作为开发调试，请替换为以下内容
+export const backendUri = 'http://localhost:3000';
+```
+
+- 然后使用以下命令启动frontend-svc的热加载调试
+
+```bash
+$ cd frontend-svc
+
+# 使用热加载方式启动frontend，每次修改frontend页面的内容都会自动更新前端页面
+$ npm run start
+```
+
+- 命令会自动打开 http://localhost:8080 作为前端的访问URL
+
 ## 接口说明
 
 - 外部`github.com`的restfulAPI
