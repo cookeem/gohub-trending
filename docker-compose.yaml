@@ -6,8 +6,8 @@ services:
     # 需要先把镜像推送到harbor
     image: mysql:5.7.24
     # 指定容器装载本地文件系统
-    volumes:
-    - ./gitrepo-mysql:/var/lib/mysql
+    # volumes:
+    # - ./gitrepo-mysql:/var/lib/mysql
     # 通过环境变量指定mysql的启动参数
     environment:
       MYSQL_ROOT_PASSWORD: root_pwd
