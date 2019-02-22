@@ -42,13 +42,16 @@
 
 ```bash
 # 安装backend依赖
-go get -u -v github.com/jinzhu/gorm
-go get -u -v github.com/jinzhu/gorm/dialects/mysql
-go get -u -v gopkg.in/yaml.v2
-go get -u -v github.com/gin-gonic/gin
-go get -u -v github.com/dgrijalva/jwt-go
-go get -u -v github.com/gin-contrib/cors
-go get -u -v github.com/gin-contrib/static
+$ go get -u -v github.com/jinzhu/gorm
+$ go get -u -v github.com/jinzhu/gorm/dialects/mysql
+$ go get -u -v gopkg.in/yaml.v2
+$ go get -u -v github.com/gin-gonic/gin
+$ go get -u -v github.com/dgrijalva/jwt-go
+$ go get -u -v github.com/gin-contrib/cors
+$ go get -u -v github.com/gin-contrib/static
+
+# 安装frontend依赖
+$ cd frontend-svc && npm install
 ```
 
 ## 配置文件
