@@ -262,10 +262,10 @@ class GitRepoViewForm extends React.Component {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => this.createReview(this.props.gid, this.state.content)} color="secondary">
+            <Button id="comment_send" onClick={() => this.createReview(this.props.gid, this.state.content)} color="secondary">
               Comment
             </Button>
-            <Button onClick={() => this.onShowComment(false)} color="secondary">
+            <Button id="comment_cancel" onClick={() => this.onShowComment(false)} color="secondary">
               Cancel
             </Button>
           </DialogActions>
@@ -284,10 +284,10 @@ class GitRepoViewForm extends React.Component {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => this.deleteReview(this.state.ridDelete)} color="secondary" style={{color: "#FF0000"}}>
+            <Button id="delete_send" onClick={() => this.deleteReview(this.state.ridDelete)} color="secondary" style={{color: "#FF0000"}}>
               Delete
             </Button>
-            <Button onClick={() => this.onShowDelete(false, 0)} color="secondary" autoFocus>
+            <Button id="delete_cancel" onClick={() => this.onShowDelete(false, 0)} color="secondary" autoFocus>
               Cancel
             </Button>
           </DialogActions>
@@ -306,10 +306,10 @@ class GitRepoViewForm extends React.Component {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => this.adaptGitRepo(this.props.gid)} color="secondary" style={{color: "#FF0000"}}>
+            <Button id="adapt_send" onClick={() => this.adaptGitRepo(this.props.gid)} color="secondary" style={{color: "#FF0000"}}>
               Adapt
             </Button>
-            <Button onClick={() => this.onShowAdapt(false, 0)} color="secondary" autoFocus>
+            <Button id="adapt_cancel" onClick={() => this.onShowAdapt(false, 0)} color="secondary" autoFocus>
               Cancel
             </Button>
           </DialogActions>
@@ -328,10 +328,10 @@ class GitRepoViewForm extends React.Component {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => this.followGitRepo(this.props.gid)} color="secondary" style={{color: "#FF0000"}}>
+            <Button id="follow_send" onClick={() => this.followGitRepo(this.props.gid)} color="secondary" style={{color: "#FF0000"}}>
               Follow
             </Button>
-            <Button onClick={() => this.onShowFollow(false, 0)} color="secondary" autoFocus>
+            <Button id="follow_cancel" onClick={() => this.onShowFollow(false, 0)} color="secondary" autoFocus>
               Cancel
             </Button>
           </DialogActions>
@@ -399,18 +399,18 @@ class GitRepoViewForm extends React.Component {
                     />
                   </CardContent>
                   <CardActions>
-                    <Button size="small" variant="contained" color="secondary" className={classes.pos} style={{color: "#FFF"}} onClick={() => this.onShowComment(true)}>
+                    <Button id="comment_button" size="small" variant="contained" color="secondary" className={classes.pos} style={{color: "#FFF"}} onClick={() => this.onShowComment(true)}>
                       <AddCircle />
                       Comments ({this.props.gitrepo.gitrepo.reviews_count})
                     </Button>
                     { 
                       (this.props.gitrepo.gitrepo.adapt == 0) ? (
-                        <Button size="small" variant="contained" color="primary" className={classes.pos} onClick={() => this.onShowAdapt(true)}>
+                        <Button id="adapt_button" size="small" variant="contained" color="primary" className={classes.pos} onClick={() => this.onShowAdapt(true)}>
                           <AddCircle />
                           Adapt ({this.props.gitrepo.gitrepo.adapts_count})
                         </Button>
                       ) : (
-                        <Button size="small" variant="contained" color="default" className={classes.pos}>
+                        <Button id="adapt_button" size="small" variant="contained" color="default" className={classes.pos}>
                           <AddCircle />
                           Adapt ({this.props.gitrepo.gitrepo.adapts_count})
                         </Button>
@@ -418,12 +418,12 @@ class GitRepoViewForm extends React.Component {
                     }
                     { 
                       (this.props.gitrepo.gitrepo.follow == 0) ? (
-                        <Button size="small" variant="contained" color="primary" className={classes.pos} onClick={() => this.onShowFollow(true)}>
+                        <Button id="follow_button" size="small" variant="contained" color="primary" className={classes.pos} onClick={() => this.onShowFollow(true)}>
                           <AddCircle />
                           follow ({this.props.gitrepo.gitrepo.follows_count})
                         </Button>
                       ) : (
-                        <Button size="small" variant="contained" color="default" className={classes.pos}>
+                        <Button id="follow_button" size="small" variant="contained" color="default" className={classes.pos}>
                           <AddCircle />
                           follow ({this.props.gitrepo.gitrepo.follows_count})
                         </Button>
